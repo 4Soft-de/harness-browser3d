@@ -1,0 +1,138 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "harness-browser3d-example-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/harness-browser3d-example-app",
+      "sourceRoot": "projects/harness-browser3d-example-app/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/harness-browser3d-example-app",
+            "index": "projects/harness-browser3d-example-app/src/index.html",
+            "main": "projects/harness-browser3d-example-app/src/main.ts",
+            "polyfills": "projects/harness-browser3d-example-app/src/polyfills.ts",
+            "tsConfig": "projects/harness-browser3d-example-app/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": ["projects/harness-browser3d-example-app/src/assets"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "projects/harness-browser3d-example-app/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/harness-browser3d-example-app/src/environments/environment.ts",
+                  "with": "projects/harness-browser3d-example-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "harness-browser3d-example-app:build:production"
+            },
+            "development": {
+              "browserTarget": "harness-browser3d-example-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "harness-browser3d-example-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/harness-browser3d-example-app/src/test.ts",
+            "polyfills": "projects/harness-browser3d-example-app/src/polyfills.ts",
+            "tsConfig": "projects/harness-browser3d-example-app/tsconfig.spec.json",
+            "karmaConfig": "projects/harness-browser3d-example-app/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": ["projects/harness-browser3d-example-app/src/assets"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "projects/harness-browser3d-example-app/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "harness-browser3d-library": {
+      "projectType": "library",
+      "root": "projects/harness-browser3d-library",
+      "sourceRoot": "projects/harness-browser3d-library/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/harness-browser3d-library/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/harness-browser3d-library/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/harness-browser3d-library/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/harness-browser3d-library/src/test.ts",
+            "tsConfig": "projects/harness-browser3d-library/tsconfig.spec.json",
+            "karmaConfig": "projects/harness-browser3d-library/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "harness-browser3d-example-app"
+}

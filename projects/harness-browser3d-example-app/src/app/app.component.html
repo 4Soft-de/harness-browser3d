@@ -1,0 +1,161 @@
+<div fxLayout="column" class="full-height">
+  <mat-toolbar color="primary" fxLayoutGap="10px" style="min-height: 45px">
+    <mat-icon>3d_rotation</mat-icon>
+    <span>Browser</span>
+    <span class="toolbar-spacer"></span>
+    <mat-slide-toggle class="example-margin" (change)="geometry($event)"
+      >Default Geometries</mat-slide-toggle
+    >
+    <button mat-raised-button color="accent" (click)="resetCamera()">
+      <mat-icon>restart_alt</mat-icon> Reset View
+    </button>
+    <button mat-raised-button color="accent" (click)="clearScene()">
+      <mat-icon>delete</mat-icon> Clear Scene
+    </button>
+    <button mat-raised-button color="accent" (click)="fileInput.click()">
+      <mat-icon>add</mat-icon> {{ file ? file.name : "Select Harness" }}
+    </button>
+    <input
+      hidden
+      type="file"
+      #fileInput
+      accept=".json"
+      (change)="addHarness(fileInput.files)"
+    />
+    <button mat-raised-button color="accent" (click)="copyHarness()">
+      <mat-icon>content_copy</mat-icon> Duplicate Harness
+    </button>
+  </mat-toolbar>
+  <div fxLayout="row" class="full-height browser-background" fxLayoutGap="5px">
+    <div
+      fxLayout="column"
+      fxFlex="30"
+      class="panel full-height"
+      fxLayoutGap="5px"
+      fxLayoutAlign="space-evenly stretch"
+    >
+      <mat-card fxFlex fxLayout="column" class="side-panel">
+        <mat-form-field appearance="standard">
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Filter modules..."
+          />
+        </mat-form-field>
+        <div class="table-container" fxFlex>
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="module">
+              <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <td
+                mat-cell
+                fxLayout="row"
+                fxLayoutGap="2px"
+                *matCellDef="let module"
+              >
+                <button
+                  mat-mini-fab
+                  class="my-fab color1"
+                  (click)="setToColor1(module)"
+                ></button>
+                <button
+                  mat-mini-fab
+                  class="my-fab color2"
+                  (click)="setToColor2(module)"
+                ></button>
+                <button
+                  mat-mini-fab
+                  class="my-fab color3"
+                  (click)="setToColor3(module)"
+                ></button>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-row
+              (click)="toggleRowHighlighting(row, $event)"
+              [class.highlighted-row]="selection.includes(row)"
+              *matRowDef="let row; columns: displayedColumns"
+            ></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="9999">
+                No data. Please load harness.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card>
+      <mat-card
+        fxLayout="column"
+        fxLayoutGap="10px"
+        class="side-panel"
+        *ngIf="!colorService.colorsAreEmpty()"
+      >
+        <mat-card
+          *ngIf="colorService.color1Modules.length > 0"
+          class="color-card color1"
+        >
+          <mat-list dense>
+            <mat-list-item *ngFor="let module of colorService.color1Modules">
+              <h3 mat-line>{{ module["id"] }}</h3>
+              <button mat-icon-button (click)="removeColor(module)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card>
+        <mat-card
+          *ngIf="colorService.color2Modules.length > 0"
+          class="color-card color2"
+        >
+          <mat-list dense>
+            <mat-list-item *ngFor="let module of colorService.color2Modules">
+              <h3 mat-line>{{ module["id"] }}</h3>
+              <button mat-icon-button (click)="removeColor(module)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card>
+        <mat-card
+          *ngIf="colorService.color3Modules.length > 0"
+          class="color-card color3"
+        >
+          <mat-list dense>
+            <mat-list-item *ngFor="let module of colorService.color3Modules">
+              <h3 mat-line>{{ module["id"] }}</h3>
+              <button mat-icon-button (click)="removeColor(module)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="end center"
+          fxLayoutGap="10px"
+          *ngIf="!colorService.colorsAreEmpty()"
+        >
+          <button mat-raised-button color="accent" (click)="resetColors()">
+            <mat-icon>delete</mat-icon> Discard Colors
+          </button>
+          <button mat-raised-button color="accent" (click)="setColors()">
+            <mat-icon>palette</mat-icon> Apply Colors
+          </button>
+        </div>
+      </mat-card>
+    </div>
+    <div fxLayout="column" fxFlex="70" class="browser-background">
+      <lib-harness-browser3d
+        class="browser_panel"
+        (initialized)="addAPI($event)"
+        [addHarness]="data"
+        [selectedIds]="selectedIds"
+        [colors]="colors"
+        [settings]="settings"
+      ></lib-harness-browser3d>
+    </div>
+  </div>
+</div>

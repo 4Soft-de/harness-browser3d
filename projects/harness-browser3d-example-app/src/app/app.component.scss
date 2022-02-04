@@ -1,0 +1,94 @@
+html, body {
+  height: 100vh;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.browser_panel {
+  flex: 1 1 0;
+}
+
+.mat-toolbar {
+  height: 60px;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-slide-toggle {
+  font-size: smaller;
+}
+
+.panel {
+  background-color: #cccccc;
+}
+
+.check-card {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.side-panel {
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.table-container {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-row:hover {
+  background-color: lightgray;
+}
+
+.highlighted-row {
+  background-color: #ffd740;
+}
+
+.mat-column-actions {
+  border-bottom-style: none;
+  padding-right: 10px;
+  padding-left: 5px !important
+}
+
+.my-fab {
+  width: 20px;
+  height: 20px;
+  margin-top: 12px;
+}
+
+.mat-list .mat-list-item {
+  height: 20px;
+}
+
+.color-card {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.browser-background {
+  background-color: #cccccc;
+}
+
+.color1 {
+  background-color: rgb(6, 111, 223);
+}
+
+.color2 {
+  background-color: rgb(126, 188, 137);
+}
+
+.color3 {
+  background-color: rgb(238, 150, 75);
+}

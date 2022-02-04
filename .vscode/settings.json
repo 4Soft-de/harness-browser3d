@@ -1,0 +1,8 @@
+{
+  "workbench.settings.enableNaturalLanguageSearch": false,
+  "json.schemaDownload.enable": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "npm.fetchOnlinePackageInfo": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

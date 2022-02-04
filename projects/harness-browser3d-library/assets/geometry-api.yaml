@@ -1,0 +1,332 @@
+openapi: 3.0.3
+
+info:
+  title: "@project.description@"
+  version: "@project.version@"
+
+paths:
+  /3d/bordnet:
+    summary: REST-Api call for getting the reference 3d JSON file.
+    parameters:
+      - name: param
+        in: query
+        description: map of strings
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+    get:
+      tags:
+        - Bordnet
+      summary: Generation of bordnet for 3D display.
+      operationId: bordnet
+      responses:
+        200:
+          description: Returns a bordnet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bordnet"
+
+components:
+  schemas:
+    Graphics:
+      type: object
+      description: Graphics
+      required:
+        - data
+        - partNumber
+      properties:
+        data:
+          type: string
+        partNumber:
+          type: string
+
+    Point:
+      type: object
+      description: Point
+      required:
+        - x
+        - y
+        - z
+      properties:
+        x:
+          type: number
+          format: double
+          example: 0.0
+        y:
+          type: number
+          format: double
+          example: 0.0
+        z:
+          type: number
+          format: double
+          example: 0.0
+
+    Placement:
+      type: object
+      description: Placement
+      required:
+        - location
+        - u
+        - v
+        - w
+      properties:
+        location:
+          $ref: "#/components/schemas/Point"
+        u:
+          $ref: "#/components/schemas/Point"
+        v:
+          $ref: "#/components/schemas/Point"
+        w:
+          $ref: "#/components/schemas/Point"
+
+    CenterCurve:
+      type: object
+      description: Center curve
+      required:
+        - controlPoints
+        - degree
+      properties:
+        controlPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Point"
+        degree:
+          type: integer
+
+    Identifiable:
+      type: object
+      description: Entity id
+      required:
+        - id
+        - name
+      discriminator:
+        propertyName: objectType
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+
+    HarnessOccurrence:
+      type: object
+      description: harness occurrence
+      required:
+        - partNumber
+      discriminator:
+        propertyName: objectType
+      properties:
+        partNumber:
+          type: string
+      allOf:
+        - $ref: "#/components/schemas/Identifiable"
+
+    PlacedHarnessOccurrence:
+      type: object
+      description: Placed harness occurrence
+      required:
+        - placement
+      discriminator:
+        propertyName: objectType
+      properties:
+        placement:
+          $ref: "#/components/schemas/Placement"
+      allOf:
+        - $ref: "#/components/schemas/HarnessOccurrence"
+
+    Accessory:
+      type: object
+      description: Accessory occurrence
+      allOf:
+        - $ref: "#/components/schemas/PlacedHarnessOccurrence"
+
+    Connector:
+      type: object
+      description: Connector occurrnece
+      required:
+        - geometryPoint
+        - numberOfCavities
+        - segmentDirection
+      properties:
+        geometryPoint:
+          $ref: "#/components/schemas/Point"
+        numberOfCavities:
+          type: integer
+        nodeId:
+          type: string
+        segmentDirection:
+          $ref: "#/components/schemas/Point"
+      allOf:
+        - $ref: "#/components/schemas/PlacedHarnessOccurrence"
+
+    FixingAssignment:
+      type: object
+      description: Fixing assignment
+      required:
+        - location
+        - segmentId
+      properties:
+        location:
+          type: number
+          format: double
+          example: 0.0
+        segmentId:
+          type: string
+
+    Fixing:
+      type: object
+      description: Fixing occurrence.
+      required:
+        - fixingAssignments
+      properties:
+        fixingAssignments:
+          type: array
+          items:
+            $ref: "#/components/schemas/FixingAssignment"
+      allOf:
+        - $ref: "#/components/schemas/PlacedHarnessOccurrence"
+
+    ProtectionArea:
+      type: object
+      description: Protection area.
+      required:
+        - endLocation
+        - length
+        - segmentId
+        - startLocation
+      properties:
+        endLocation:
+          type: number
+          format: double
+          example: 0.0
+        length:
+          type: number
+          format: double
+          example: 0.0
+        segmentId:
+          type: string
+        startLocation:
+          type: number
+          format: double
+          example: 0.0
+
+    Protection:
+      type: object
+      description: Protection occurrence.
+      required:
+        - protectionAreas
+      properties:
+        protectionAreas:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProtectionArea"
+      allOf:
+        - $ref: "#/components/schemas/HarnessOccurrence"
+
+    Segment:
+      type: object
+      description: Segment
+      required:
+        - centerCurves
+        - crossSectionArea
+        - endPointId
+        - endPointLocation
+        - startPointId
+        - startPointLocation
+        - virtualLength
+      properties:
+        centerCurves:
+          type: array
+          items:
+            $ref: "#/components/schemas/CenterCurve"
+        crossSectionArea:
+          type: number
+          format: double
+          example: 0.0
+        endPointId:
+          type: string
+        endPointLocation:
+          $ref: "#/components/schemas/Point"
+        startPointId:
+          type: string
+        startPointLocation:
+          $ref: "#/components/schemas/Point"
+        virtualLength:
+          type: number
+          format: double
+          example: 0.0
+      allOf:
+        - $ref: "#/components/schemas/Identifiable"
+
+    BuildingBlock:
+      type: object
+      description: Building block
+      required:
+        - entities
+      properties:
+        placement:
+          $ref: "#/components/schemas/Placement"
+        entities:
+          type: array
+          items:
+            type: string
+      allOf:
+        - $ref: "#/components/schemas/Identifiable"
+
+    Harness:
+      type: object
+      description: Harness
+      required:
+        - accessories
+        - fixings
+        - connectors
+        - protections
+        - segments
+        - geometries
+        - buildingBlocks
+      properties:
+        accessories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Accessory"
+        fixings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Fixing"
+        connectors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Connector"
+        protections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Protection"
+        segments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Segment"
+        geometries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Graphics"
+        buildingBlocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/BuildingBlock"
+      allOf:
+        - $ref: "#/components/schemas/HarnessOccurrence"
+
+    Bordnet:
+      type: object
+      description: Bordnet
+      required:
+        - harnesses
+      properties:
+        harnesses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Harness"

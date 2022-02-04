@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "run example",
+      "type": "shell",
+      "command": "ng serve --open",
+      "problemMatcher": []
+    },
+    {
+      "label": "build library",
+      "type": "shell",
+      "command": "ng build harness-browser3d-library --configuration ${input:configuration}",
+      "problemMatcher": []
+    },
+    {
+      "label": "build and watch library",
+      "type": "shell",
+      "isBackground": true,
+      "command": "ng build harness-browser3d-library --configuration development --watch",
+      "problemMatcher": {
+        "base": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Building Angular Package",
+          "endsPattern": "^Compilation complete\\. Watching for file changes\\.\\.\\."
+        }
+      }
+    },
+    {
+      "label": "build and run",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build and watch library", "run example"],
+      "problemMatcher": []
+    },
+    {
+      "label": "generate geometry typescript classes",
+      "type": "shell",
+      "command": "cd projects\\harness-browser3d-library; npx openapi-typescript assets\\geometry-api.yaml --output src\\generated\\geometry.ts",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "configuration",
+      "type": "pickString",
+      "description": "build configuration",
+      "options": ["development", "production"],
+      "default": "development"
+    }
+  ]
+}
