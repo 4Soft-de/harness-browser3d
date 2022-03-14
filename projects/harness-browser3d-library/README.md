@@ -1,24 +1,47 @@
-# HarnessBrowser3dLibrary
+# Harness Browser 3D
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.0.
+A high performance angular component for displaying 3D representations of bordnet harnesses. Harness element selection and coloring is also supported.
 
-## Code scaffolding
+## Usage
 
-Run `ng generate component component-name --project harness-browser3d-library` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project harness-browser3d-library`.
-> Note: Don't forget to add `--project harness-browser3d-library` or else it will be added to the default project in your `angular.json` file. 
+```html
+<lib-harness-browser3d
+  [addHarness]="data"
+  [selectedIds]="selectedIds"
+  [colors]="colors"
+  [settings]="settings"
+  (initialized)="addAPI($event)"
+></lib-harness-browser3d>
+```
 
-## Build
+```ts
+export class AppComponent {
+  data: Harness;
+  selectedIds: string[];
+  colors: SetColorAPIStruct[];
+  settings: SettingsAPIStruct;
+  api: HarnessBrowser3dLibraryAPI;
 
-Run `ng build harness-browser3d-library` to build the project. The build artifacts will be stored in the `dist/` directory.
+  addAPI(api: HarnessBrowser3dLibraryAPI) {
+    this.api = api;
+  }
+}
+```
 
-## Publishing
+# References
 
-After building your library with `ng build harness-browser3d-library`, go to the dist folder `cd dist/harness-browser3d-library` and run `npm publish`.
+## Angular and Three
 
-## Running unit tests
+https://github.com/JohnnyDevNull/ng-three-template/tree/609599460458974f0a9cad8ba5e6586cef109231/src/app/engine
+MIT License
 
-Run `ng test harness-browser3d-library` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- canvas element in template
+- initialize renderer with canvas element
+- animate loop outside angular in ngZone
 
-## Further help
+## API
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+https://www.ag-grid.com/angular-data-grid/grid-api/
+MIT License
+
+- component returns api object
