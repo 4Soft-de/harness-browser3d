@@ -1,3 +1,33 @@
+# Harness Browser 3D
+
+A high performance angular component for displaying 3D representations of bordnet harnesses. Harness element selection and coloring is also supported.
+
+## Usage
+
+```html
+<lib-harness-browser3d
+  [addHarness]="data"
+  [selectedIds]="selectedIds"
+  [colors]="colors"
+  [settings]="settings"
+  (initialized)="addAPI($event)"
+></lib-harness-browser3d>
+```
+
+```ts
+export class AppComponent {
+  data: Harness;
+  selectedIds: string[];
+  colors: SetColorAPIStruct[];
+  settings: SettingsAPIStruct;
+  api: HarnessBrowser3dLibraryAPI;
+
+  addAPI(api: HarnessBrowser3dLibraryAPI) {
+    this.api = api;
+  }
+}
+```
+
 # References
 
 ## Angular and Three
