@@ -1,13 +1,27 @@
+/*
+  Copyright (C) 2022 4Soft GmbH
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation, either version 2.1 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Lesser Public License for more details.
+
+  You should have received a copy of the GNU General Lesser Public
+  License along with this program. If not, see
+  http://www.gnu.org/licenses/lgpl-2.1.html.
+*/
+
 import { Injectable } from '@angular/core';
-import {
-  Identifiable
-} from 'harness-browser3d-library';
+import { Identifiable } from 'harness-browser3d-library';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ColorService {
-
   color1 = [6, 111, 223];
   color2 = [126, 188, 137];
   color3 = [238, 150, 75];
@@ -17,17 +31,14 @@ export class ColorService {
   color3Modules: Identifiable[] = [];
 
   colorsAreEmpty() {
-    return this.color1Modules.length +
+    const length =
+      this.color1Modules.length +
       this.color2Modules.length +
-      this.color3Modules.length ==
-      0
+      this.color3Modules.length;
+    return length == 0;
   }
 
-  addToColorArray(
-    array: Identifiable[],
-    module: Identifiable
-  ) {
-
+  addToColorArray(array: Identifiable[], module: Identifiable) {
     if (array.includes(module)) {
       return;
     }
@@ -48,8 +59,8 @@ export class ColorService {
 
   removeColor(module: Identifiable) {
     ColorService.checkIfExistsAndDelete(this.color1Modules, module) ||
-    ColorService.checkIfExistsAndDelete(this.color2Modules, module) ||
-    ColorService.checkIfExistsAndDelete(this.color3Modules, module);
+      ColorService.checkIfExistsAndDelete(this.color2Modules, module) ||
+      ColorService.checkIfExistsAndDelete(this.color3Modules, module);
   }
 
   private static checkIfExistsAndDelete(
@@ -75,11 +86,7 @@ export class ColorService {
       ColorService.convertToApiColorArray(module, this.color3)
     );
 
-    return [
-      ...color1ChangeList,
-      ...color2ChangeList,
-      ...color3ChangeList,
-    ];
+    return [...color1ChangeList, ...color2ChangeList, ...color3ChangeList];
   }
 
   resetColors() {
@@ -89,10 +96,7 @@ export class ColorService {
     return [];
   }
 
-  private static convertToApiColorArray(
-    module: Identifiable,
-    color: number[]
-  ) {
+  private static convertToApiColorArray(module: Identifiable, color: number[]) {
     return {
       id: module.id,
       colorR: color[0],
