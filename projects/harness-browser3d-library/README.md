@@ -1,24 +1,17 @@
-# HarnessBrowser3dLibrary
+# References
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.0.
+## Angular and Three
 
-## Code scaffolding
+https://github.com/JohnnyDevNull/ng-three-template/tree/609599460458974f0a9cad8ba5e6586cef109231/src/app/engine
+MIT License
 
-Run `ng generate component component-name --project harness-browser3d-library` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project harness-browser3d-library`.
-> Note: Don't forget to add `--project harness-browser3d-library` or else it will be added to the default project in your `angular.json` file. 
+- canvas element in template
+- initialize renderer with canvas element
+- animate loop outside angular in ngZone
 
-## Build
+## API
 
-Run `ng build harness-browser3d-library` to build the project. The build artifacts will be stored in the `dist/` directory.
+https://www.ag-grid.com/angular-data-grid/grid-api/
+MIT License
 
-## Publishing
-
-After building your library with `ng build harness-browser3d-library`, go to the dist folder `cd dist/harness-browser3d-library` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test harness-browser3d-library` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- component returns api object
