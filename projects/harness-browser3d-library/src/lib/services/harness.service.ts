@@ -17,7 +17,6 @@
 
 import { GeometryUtils } from '../utils/geometry-utils';
 import { GeometryMaterial } from '../structs/material';
-import { ElementToVertexMapping, VertexRange } from '../structs/mapping';
 import {
   Accessory,
   Connector,
@@ -34,30 +33,31 @@ import { GeometryService } from './geometry.service';
 import { SceneService } from './scene.service';
 import { SelectionService } from './selection.service';
 import { BufferGeometry, Mesh, Scene } from 'three';
+import { MappingService } from './mapping.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HarnessService {
   private harness?: Harness;
+  private harnessElementGeos: Map<string, BufferGeometry> = new Map();
 
   constructor(
     private readonly cacheService: CacheService,
     private readonly colorService: ColorService,
     private readonly geometryService: GeometryService,
+    private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService
   ) {}
 
   addHarness(harness: Harness) {
     this.harness = harness;
-    this.geometryService.harnessElementGeos.clear();
-
-    this.geometryService.processHarness(harness);
+    this.harnessElementGeos = this.geometryService.processHarness(harness);
 
     if (!this.cacheService.harnessMeshCache.has(harness.id)) {
       this.setHarnessInElements();
-      this.selectionService.setGeos();
+      this.selectionService.addGeos(this.harnessElementGeos);
       this.addHarnessMesh(
         harness.id,
         this.mergeGeosIntoHarness(),
@@ -85,38 +85,16 @@ export class HarnessService {
     }
   }
 
-  private fillMapping() {
-    if (this.harness) {
-      const mapping = new ElementToVertexMapping();
-      this.cacheService.vertexMappings.set(this.harness.id, mapping);
-      this.fillMappingHelper(mapping.harnessElementsToVertices);
-    }
-  }
-
-  /**
-   * BufferGeometryUtils.mergeBufferGeometries
-   * simply joins all the attributes of the geos in the
-   * same order as they have been passed to the function.
-   * The mapping is filled according to this information.
-   */
-  private fillMappingHelper(map: Map<String, VertexRange>) {
-    let index = 0;
-    for (let entry of this.geometryService.harnessElementGeos.entries()) {
-      const id = entry[0];
-      const geo = entry[1];
-      const newIndex = index + geo.attributes['position'].count;
-      map.set(id, new VertexRange(index, newIndex - 1));
-      index = newIndex;
-    }
-  }
-
   private mergeGeosIntoHarness() {
     const harnessGeos: BufferGeometry[] = [];
-    this.geometryService.harnessElementGeos.forEach((geo) =>
-      harnessGeos.push(geo)
-    );
+    this.harnessElementGeos.forEach((geo) => harnessGeos.push(geo));
     const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
-    this.fillMapping();
+    if (this.harness) {
+      this.mappingService.addHarnessElementVertexMappings(
+        this.harness,
+        this.harnessElementGeos
+      );
+    }
 
     const position = GeometryUtils.centerGeometry(mergedHarnessGeo);
     const mesh = new Mesh(mergedHarnessGeo, GeometryMaterial.harness);

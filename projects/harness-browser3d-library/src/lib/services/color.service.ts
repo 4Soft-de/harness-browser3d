@@ -31,12 +31,16 @@ import { ErrorUtils } from '../utils/error-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { HarnessUtils } from '../utils/harness-utils';
 import { CacheService } from './cache.service';
+import { MappingService } from './mapping.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ColorService {
-  constructor(private readonly cacheService: CacheService) {}
+  constructor(
+    private readonly cacheService: CacheService,
+    private readonly mappingService: MappingService
+  ) {}
 
   public setColors(input: SetColorAPIStruct[]) {
     const harness = HarnessUtils.getHarness(
@@ -93,12 +97,12 @@ export class ColorService {
   }
 
   private applyColors(harness: Harness, colors: Map<string, Color>) {
-    const mapping = this.cacheService.vertexMappings.get(harness.id);
+    const mapping = this.mappingService.getHarnessMapping(harness);
     const harnessMesh = this.cacheService.harnessMeshCache.get(harness.id);
 
     if (harnessMesh && mapping) {
-      const arrays = mapping.apply(
-        harnessMesh.geometry,
+      const arrays = this.mappingService.applyMapping(
+        harness,
         GeometryColors.notFound,
         colors
       );

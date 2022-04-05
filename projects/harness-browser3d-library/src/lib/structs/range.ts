@@ -15,24 +15,19 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Injectable } from '@angular/core';
-import { Harness, Identifiable } from '../../api/alias';
-import { Mesh } from 'three';
+export class VertexRange {
+  constructor(public readonly high: number, public readonly low: number) {}
 
-@Injectable({
-  providedIn: 'root',
-})
-export class CacheService {
-  public readonly harnessCache: Map<string, Harness> = new Map();
-  public readonly elementHarnessCache: Map<string, Harness> = new Map();
-  public readonly elementCache: Map<string, Identifiable> = new Map();
-  public readonly harnessMeshCache: Map<string, Mesh> = new Map();
-
-  public clear() {
-    this.elementCache.clear();
-    this.elementHarnessCache.clear();
-    this.harnessMeshCache.clear();
+  public toArray() {
+    const array: number[] = [];
+    for (let i = this.high; i <= this.low; i++) {
+      array.push(i);
+    }
+    return array;
   }
+}
 
-  constructor() {}
+export class HarnessElementVertexMappings {
+  public readonly harnessElementsToVertices: Map<string, VertexRange> =
+    new Map();
 }
