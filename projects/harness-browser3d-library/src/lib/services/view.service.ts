@@ -16,7 +16,7 @@
 */
 
 import { Injectable } from '@angular/core';
-import { BufferAttribute, BufferGeometry, ShaderMaterial } from 'three';
+import { BufferAttribute, BufferGeometry } from 'three';
 import { Harness, Identifiable } from '../../api/alias';
 import { View } from '../../api/view';
 import { CacheService } from './cache.service';
@@ -34,10 +34,7 @@ export class ViewService {
   public applyView(view: View, harness: Harness): void {
     const mesh = this.cacheService.harnessMeshCache.get(harness.id);
     if (mesh) {
-      mesh.material = new ShaderMaterial({
-        vertexShader: view.vertexShader,
-        fragmentShader: view.fragmentShader,
-      });
+      mesh.material = view.material;
       const array = this.mappingService.applyMapping(
         harness,
         view.defaultValue,

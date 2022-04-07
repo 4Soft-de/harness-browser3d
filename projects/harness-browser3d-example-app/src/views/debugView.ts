@@ -16,23 +16,38 @@
 */
 
 import { View } from 'harness-browser3d-library';
-import { Color, Float32BufferAttribute } from 'three';
+import {
+  Color,
+  Float32BufferAttribute,
+  FrontSide,
+  MeshLambertMaterial,
+  ShaderLib,
+} from 'three';
 
 const debugViewProperty = 'debug';
 const debugViewDefaultValue = 'false';
 
-// copied and modified shaders
-// https://threejs.org/examples/#webgl_custom_attributes_lines
-const debugViewVertexShader = `attribute vec3 debug;
-  varying vec3 debugColor;
-  void main() {
-  outputColor = debug;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }`;
-const debugViewFragmentShader = `varying vec3 debugColor;
-  void main() {
-  gl_FragColor = vec4(debugColor, 1.0);
-  }`;
+function debugViewVertexShader() {
+  let shader = ShaderLib.lambert.vertexShader;
+  let anchor = '#include <common>';
+  shader = shader.replace(anchor, anchor + 'attribute vec3 debug;');
+  shader = shader.replace('#include <color_vertex>', 'vColor = debug;');
+  return shader;
+}
+
+function debugViewMaterial() {
+  const material = new MeshLambertMaterial({
+    vertexColors: true,
+    side: FrontSide,
+    wireframe: false,
+    reflectivity: 1,
+  });
+  material.onBeforeCompile = (shader) => {
+    shader.vertexShader = debugViewVertexShader();
+    shader.fragmentShader = ShaderLib.lambert.fragmentShader;
+  };
+  return material;
+}
 
 const debugViewMapper = (properties: string[]) => {
   const array: number[] = [];
@@ -51,7 +66,6 @@ const debugViewMapper = (properties: string[]) => {
 export const debugView = new View(
   debugViewProperty,
   debugViewDefaultValue,
-  debugViewVertexShader,
-  debugViewFragmentShader,
+  debugViewMaterial(),
   debugViewMapper
 );

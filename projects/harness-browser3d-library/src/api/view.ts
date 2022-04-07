@@ -15,14 +15,13 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { BufferAttribute } from 'three';
+import { BufferAttribute, Material } from 'three';
 
 export class View {
   constructor(
     public readonly viewProperty: string,
     public readonly defaultValue: string,
-    public readonly vertexShader: string,
-    public readonly fragmentShader: string,
+    public readonly material: Material,
     public readonly mapper: (properties: string[]) => BufferAttribute
   ) {}
 }
