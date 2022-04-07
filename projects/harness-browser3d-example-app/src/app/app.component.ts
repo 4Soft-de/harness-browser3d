@@ -30,6 +30,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
 import * as exampleHarness from '../assets/exampleHarness.json';
+import { debugView } from '../views/debugView';
 
 @Component({
   selector: 'app-root',
@@ -76,6 +77,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     this.data = this.dataService.copyHarness(this.data);
+  }
+
+  setView() {
+    if (this.api && this.data) {
+      this.api.setView(debugView, this.data);
+    }
   }
 
   async addHarness(files: FileList | null) {

@@ -15,9 +15,14 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-export * from './lib/component/harness-browser3d-library.component';
-export * from './lib/component/harness-browser3d-library.module';
-export * from './api/alias';
-export * from './api/api';
-export * from './api/structs';
-export * from './api/view';
+import { BufferAttribute } from 'three';
+
+export class View {
+  constructor(
+    public readonly viewProperty: string,
+    public readonly defaultValue: string,
+    public readonly vertexShader: string,
+    public readonly fragmentShader: string,
+    public readonly mapper: (properties: string[]) => BufferAttribute
+  ) {}
+}

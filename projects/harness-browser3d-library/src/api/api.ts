@@ -22,8 +22,11 @@ import { ColorService } from '../lib/services/color.service';
 import { RenderService } from '../lib/services/render.service';
 import { SceneService } from '../lib/services/scene.service';
 import { SelectionService } from '../lib/services/selection.service';
+import { ViewService } from '../lib/services/view.service';
 import { isHarness } from '../lib/utils/cast';
 import { ErrorUtils } from '../lib/utils/error-utils';
+import { Harness } from './alias';
+import { View } from './view';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +38,8 @@ export class HarnessBrowser3dLibraryAPI {
     private readonly colorService: ColorService,
     private readonly renderService: RenderService,
     private readonly sceneService: SceneService,
-    private readonly selectionService: SelectionService
+    private readonly selectionService: SelectionService,
+    private readonly viewService: ViewService
   ) {}
 
   public resetCamera() {
@@ -60,5 +64,9 @@ export class HarnessBrowser3dLibraryAPI {
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
     this.selectionService.resetSphere();
+  }
+
+  public setView(view: View, harness: Harness) {
+    this.viewService.applyView(view, harness);
   }
 }

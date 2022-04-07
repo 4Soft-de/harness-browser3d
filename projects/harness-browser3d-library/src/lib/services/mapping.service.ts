@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { BufferGeometry } from 'three';
-import { Harness } from '../../public-api';
+import { Harness } from '../../api/alias';
 import { HarnessElementVertexMappings, VertexRange } from '../structs/range';
 import { CacheService } from './cache.service';
 
