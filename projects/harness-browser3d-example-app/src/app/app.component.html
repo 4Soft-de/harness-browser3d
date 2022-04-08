@@ -42,9 +42,9 @@
     <button mat-raised-button color="accent" (click)="copyHarness()">
       <mat-icon>content_copy</mat-icon> Duplicate Harness
     </button>
-    <button mat-raised-button color="accent" (click)="setView()">
-      Debug View
-    </button>
+    <mat-slide-toggle class="example-margin" (change)="setView($event)"
+      >Debug View</mat-slide-toggle
+    >
   </mat-toolbar>
   <div fxLayout="row" class="full-height browser-background" fxLayoutGap="5px">
     <div

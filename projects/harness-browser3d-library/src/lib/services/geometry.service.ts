@@ -46,6 +46,10 @@ import {
   Vector3,
 } from 'three';
 import { DefaultGeometryCreationService } from './default-geometries.service';
+import {
+  defaultHarnessPropertyKey,
+  DefaultViewProperties,
+} from '../../views/default.view';
 
 @Injectable({
   providedIn: 'root',
@@ -355,6 +359,7 @@ export class GeometryService {
     }
     this.handleBlocks(harness);
     this.loadGeometries(harness);
+    this.setDefaultColors(harness);
     return this.positionGeometries(harness);
   }
 
@@ -369,6 +374,33 @@ export class GeometryService {
     if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
       this.loadingService.parseGeometryData(harness.geometries);
     }
+  }
+
+  private setDefaultColors(harness: Harness) {
+    const harnessElementGeos: Map<string, BufferGeometry> = new Map();
+    harness.segments.forEach((segment) =>
+      this.setDefaultColor(segment, DefaultViewProperties.segment)
+    );
+    harness.protections.forEach((protection) =>
+      this.setDefaultColor(protection, DefaultViewProperties.protection)
+    );
+    harness.fixings.forEach((fixing) =>
+      this.setDefaultColor(fixing, DefaultViewProperties.fixing)
+    );
+    harness.connectors.forEach((connector) =>
+      this.setDefaultColor(connector, DefaultViewProperties.connector)
+    );
+    harness.accessories.forEach((accessory) =>
+      this.setDefaultColor(accessory, DefaultViewProperties.accessory)
+    );
+    return harnessElementGeos;
+  }
+
+  private setDefaultColor(object: any, color: string) {
+    if (object.viewProperties === undefined) {
+      object.viewProperties = {};
+    }
+    object.viewProperties[defaultHarnessPropertyKey] = color;
   }
 
   private positionGeometries(harness: Harness) {

@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { BufferAttribute, BufferGeometry } from 'three';
 import { Harness, Identifiable } from '../../api/alias';
-import { View } from '../../api/view';
+import { View } from '../../views/view';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
@@ -38,13 +38,26 @@ export class ViewService {
       const array = this.mappingService.applyMapping(
         harness,
         view.defaultValue,
-        this.readProperties(harness, view.viewProperty)
+        this.readProperties(harness, view.harnessPropertyKey)
       );
       this.applyAttributes(
         mesh.geometry,
-        view.viewProperty,
+        view.shaderPropertyKey,
         view.mapper(array)
       );
+    }
+  }
+
+  public disposeView(view: View, harness: Harness): void {
+    const mesh = this.cacheService.harnessMeshCache.get(harness.id);
+    if (mesh) {
+      if ('length' in mesh.material) {
+        mesh.material.forEach((material) => material.dispose());
+        mesh.material = [];
+      } else if (mesh.material) {
+        mesh.material.dispose();
+      }
+      mesh.geometry.deleteAttribute(view.shaderPropertyKey);
     }
   }
 

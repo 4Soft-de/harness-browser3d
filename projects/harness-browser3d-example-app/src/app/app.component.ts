@@ -24,13 +24,14 @@ import {
   Harness,
   Identifiable,
   Bordnet,
+  defaultView,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
 import * as exampleHarness from '../assets/exampleHarness.json';
-import { debugView } from '../views/debugView';
+import { debugView } from '../views/debug.view';
 
 @Component({
   selector: 'app-root',
@@ -77,12 +78,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     this.data = this.dataService.copyHarness(this.data);
-  }
-
-  setView() {
-    if (this.api && this.data) {
-      this.api.setView(debugView, this.data);
-    }
   }
 
   async addHarness(files: FileList | null) {
@@ -161,6 +156,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.settings = { geometryMode: GeometryModeAPIEnum.default };
     } else {
       this.settings = { geometryMode: GeometryModeAPIEnum.loaded };
+    }
+  }
+
+  setView(event: MatSlideToggleChange) {
+    if (this.api && this.data) {
+      if (event.checked) {
+        this.api.disposeView(defaultView, this.data);
+        this.api.setView(debugView, this.data);
+      } else {
+        this.api.disposeView(debugView, this.data);
+        this.api.setView(defaultView, this.data);
+      }
     }
   }
 

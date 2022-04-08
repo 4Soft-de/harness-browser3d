@@ -25,8 +25,8 @@ import { SelectionService } from '../lib/services/selection.service';
 import { ViewService } from '../lib/services/view.service';
 import { isHarness } from '../lib/utils/cast';
 import { ErrorUtils } from '../lib/utils/error-utils';
+import { View } from '../views/view';
 import { Harness } from './alias';
-import { View } from './view';
 
 @Injectable({
   providedIn: 'root',
@@ -68,5 +68,9 @@ export class HarnessBrowser3dLibraryAPI {
 
   public setView(view: View, harness: Harness) {
     this.viewService.applyView(view, harness);
+  }
+
+  public disposeView(view: View, harness: Harness) {
+    this.viewService.disposeView(view, harness);
   }
 }

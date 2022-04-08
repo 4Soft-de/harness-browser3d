@@ -24,7 +24,8 @@ import {
   ShaderLib,
 } from 'three';
 
-const debugViewProperty = 'debug';
+const debugViewHarnessPropertyKey = 'debug';
+const debugViewShaderPropertyKey = 'shaderDebug';
 const debugViewDefaultValue = 'false';
 
 function debugViewVertexShader() {
@@ -64,7 +65,8 @@ const debugViewMapper = (properties: string[]) => {
 };
 
 export const debugView = new View(
-  debugViewProperty,
+  debugViewHarnessPropertyKey,
+  debugViewShaderPropertyKey,
   debugViewDefaultValue,
   debugViewMaterial(),
   debugViewMapper
