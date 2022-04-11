@@ -41,15 +41,14 @@ import {
   BoxBufferGeometry,
   BufferGeometry,
   CatmullRomCurve3,
+  Color,
   Quaternion,
   TubeBufferGeometry,
   Vector3,
 } from 'three';
 import { DefaultGeometryCreationService } from './default-geometries.service';
-import {
-  defaultHarnessPropertyKey,
-  DefaultViewProperties,
-} from '../../views/default.view';
+import { defaultHarnessPropertyKey } from '../../views/default.view';
+import { GeometryColors } from '../structs/colors';
 
 @Injectable({
   providedIn: 'root',
@@ -378,22 +377,22 @@ export class GeometryService {
 
   private setDefaultColors(harness: Harness) {
     const harnessElementGeos: Map<string, BufferGeometry> = new Map();
-    const set = (object: any, color: string) =>
-      HarnessUtils.setViewProperty(object, defaultHarnessPropertyKey, color);
-    harness.segments.forEach((segment) =>
-      set(segment, DefaultViewProperties.segment)
-    );
+    const set = (object: any, color: Color) =>
+      HarnessUtils.setViewProperty(
+        object,
+        defaultHarnessPropertyKey,
+        '0x' + color.getHexString()
+      );
+    harness.segments.forEach((segment) => set(segment, GeometryColors.segment));
     harness.protections.forEach((protection) =>
-      set(protection, DefaultViewProperties.protection)
+      set(protection, GeometryColors.protection)
     );
-    harness.fixings.forEach((fixing) =>
-      set(fixing, DefaultViewProperties.fixing)
-    );
+    harness.fixings.forEach((fixing) => set(fixing, GeometryColors.fixing));
     harness.connectors.forEach((connector) =>
-      set(connector, DefaultViewProperties.connector)
+      set(connector, GeometryColors.connector)
     );
     harness.accessories.forEach((accessory) =>
-      set(accessory, DefaultViewProperties.accessory)
+      set(accessory, GeometryColors.accessory)
     );
     return harnessElementGeos;
   }

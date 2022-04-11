@@ -15,61 +15,15 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Float32BufferAttribute, FrontSide, MeshLambertMaterial } from 'three';
 import { View } from '../views/view';
-import { GeometryColors } from '../lib/structs/colors';
-
-export class DefaultViewProperties {
-  public static readonly segment = 'segment';
-  public static readonly protection = 'protection';
-  public static readonly fixing = 'fixing';
-  public static readonly connector = 'connector';
-  public static readonly accessory = 'accessory';
-}
+import { colorView } from './color.view';
 
 export const defaultHarnessPropertyKey = 'defaultColor';
 
-const defaultShaderPropertyKey = 'color';
-
-const defaultViewDefaultValue = 'none';
-
-const defaultViewMaterial = new MeshLambertMaterial({
-  vertexColors: true,
-  side: FrontSide,
-  wireframe: false,
-  reflectivity: 1,
-});
-
-const defaultViewMapper = (properties: string[]) => {
-  const array: number[] = [];
-  properties
-    .map((property) => {
-      let color = GeometryColors.notFound;
-      if (property === DefaultViewProperties.segment) {
-        color = GeometryColors.segment;
-      }
-      if (property === DefaultViewProperties.protection) {
-        color = GeometryColors.protection;
-      }
-      if (property === DefaultViewProperties.fixing) {
-        color = GeometryColors.fixing;
-      }
-      if (property === DefaultViewProperties.connector) {
-        color = GeometryColors.connector;
-      }
-      if (property === DefaultViewProperties.accessory) {
-        color = GeometryColors.accessory;
-      }
-      return color;
-    })
-    .forEach((color) => array.push(color.r, color.g, color.b));
-  return new Float32BufferAttribute(array, 3);
-};
-
 export const defaultView = new View(
   defaultHarnessPropertyKey,
-  defaultShaderPropertyKey,
-  defaultViewDefaultValue,
-  defaultViewMaterial,
-  defaultViewMapper
+  colorView.shaderPropertyKey,
+  colorView.defaultValue,
+  colorView.material,
+  colorView.mapper
 );

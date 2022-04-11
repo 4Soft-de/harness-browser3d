@@ -20,6 +20,7 @@ import { BufferAttribute, BufferGeometry } from 'three';
 import { Identifiable } from '../../api/alias';
 import { SetViewPropertyAPIStruct } from '../../api/structs';
 import { View } from '../../views/view';
+import { ErrorUtils } from '../utils/error-utils';
 import { HarnessUtils } from '../utils/harness-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
@@ -47,6 +48,8 @@ export class ViewService {
         view.shaderPropertyKey,
         view.mapper(array)
       );
+    } else {
+      console.error(ErrorUtils.notFound(harnessId));
     }
   }
 
@@ -60,6 +63,8 @@ export class ViewService {
         mesh.material.dispose();
       }
       mesh.geometry.deleteAttribute(view.shaderPropertyKey);
+    } else {
+      console.error(ErrorUtils.notFound(harnessId));
     }
   }
 
@@ -74,6 +79,8 @@ export class ViewService {
           view.harnessPropertyKey,
           struct.propertyValue
         );
+      } else {
+        console.error(ErrorUtils.notFound(struct.harnessElementId));
       }
     });
   }
@@ -96,13 +103,15 @@ export class ViewService {
 
   private readProperties(
     harnessId: string,
-    viewProperty: string
+    harnessPropertyKey: string
   ): Map<string, string> {
     const properties: Map<string, string> = new Map();
     const set = (harnessElement: Identifiable) => {
-      const property = this.readProperty(harnessElement, viewProperty);
+      const property = this.readProperty(harnessElement, harnessPropertyKey);
       if (property) {
         properties.set(harnessElement.id, property);
+      } else {
+        console.error(ErrorUtils.notFound(harnessPropertyKey));
       }
     };
     const harness = this.cacheService.harnessCache.get(harnessId);
@@ -116,9 +125,12 @@ export class ViewService {
     return properties;
   }
 
-  private readProperty(object: any, viewProperty: string): string | undefined {
+  private readProperty(
+    object: any,
+    harnessPropertyKey: string
+  ): string | undefined {
     if ('viewProperties' in object) {
-      return object.viewProperties[viewProperty];
+      return object.viewProperties[harnessPropertyKey];
     } else return undefined;
   }
 

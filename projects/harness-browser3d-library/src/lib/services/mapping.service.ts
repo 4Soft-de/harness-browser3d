@@ -19,6 +19,7 @@ import { Injectable } from '@angular/core';
 import { BufferGeometry } from 'three';
 import { Harness } from '../../api/alias';
 import { HarnessElementVertexMappings, VertexRange } from '../structs/range';
+import { ErrorUtils } from '../utils/error-utils';
 import { CacheService } from './cache.service';
 
 @Injectable({
@@ -41,7 +42,7 @@ export class MappingService {
     harnessId: string,
     defaultValue: any,
     values: Map<string, any>
-  ) {
+  ): any[] {
     const harnessMesh = this.cacheService.harnessMeshCache.get(harnessId);
     const harnessMapping = this.harnessMappings.get(harnessId);
     if (harnessMesh && harnessMapping) {
@@ -58,11 +59,16 @@ export class MappingService {
         });
       }
       return this.mapToArray(map);
+    } else {
+      console.error(ErrorUtils.notFound(harnessId));
     }
     return [];
   }
 
-  private initializeMap(geo: BufferGeometry, defaultValue: any) {
+  private initializeMap(
+    geo: BufferGeometry,
+    defaultValue: any
+  ): Map<number, any> {
     const size = geo.attributes['position'].count;
     const map: Map<number, any> = new Map();
     for (let i = 0; i < size; i++) {
@@ -71,7 +77,7 @@ export class MappingService {
     return map;
   }
 
-  private mapToArray(map: Map<number, any>) {
+  private mapToArray(map: Map<number, any>): any[] {
     const array: any[] = [];
     map.forEach((value) => array.push(value));
     return array;
@@ -86,7 +92,7 @@ export class MappingService {
   public addHarnessElementVertexMappings(
     harness: Harness,
     harnessElementGeos: Map<string, BufferGeometry>
-  ) {
+  ): void {
     const mapping = new HarnessElementVertexMappings();
     this.harnessMappings.set(harness.id, mapping);
     let index = 0;
