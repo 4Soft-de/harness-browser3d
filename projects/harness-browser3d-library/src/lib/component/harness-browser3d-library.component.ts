@@ -37,9 +37,11 @@ import { CameraService } from '../services/camera.service';
 import { SceneService } from '../services/scene.service';
 import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
-import { ColorService } from '../services/color.service';
 import { CacheService } from '../services/cache.service';
 import { SettingsService } from '../services/settings.service';
+import { colorView } from '../../views/color.view';
+import { HarnessUtils } from '../utils/harness-utils';
+import { ViewService } from '../services/view.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -53,15 +55,15 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
 
   constructor(
     private readonly ngZone: NgZone,
+    private readonly api: HarnessBrowser3dLibraryAPI,
     private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
-    private readonly colorService: ColorService,
     private readonly harnessService: HarnessService,
     private readonly renderService: RenderService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
-    private readonly api: HarnessBrowser3dLibraryAPI
+    private readonly viewService: ViewService
   ) {}
 
   ngAfterViewInit(): void {
@@ -100,7 +102,22 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   // all ids are in same harness
   @Input()
   set colors(colors: SetColorAPIStruct[]) {
-    this.colorService.setColors(colors);
+    this.viewService.setViewProperties(
+      colors.map((struct) => {
+        return {
+          harnessElementId: struct.harnessElementId,
+          propertyValue: '0x' + struct.color.getHexString(),
+        };
+      }),
+      colorView
+    );
+    const harness = HarnessUtils.getHarness(
+      colors.map((color) => color.harnessElementId),
+      this.cacheService
+    );
+    if (harness) {
+      this.api.setView(colorView, harness.id);
+    }
   }
 
   @Input()

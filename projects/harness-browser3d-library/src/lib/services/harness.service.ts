@@ -28,12 +28,13 @@ import {
 } from '../../api/alias';
 import { Injectable } from '@angular/core';
 import { CacheService } from './cache.service';
-import { ColorService } from './color.service';
 import { GeometryService } from './geometry.service';
 import { SceneService } from './scene.service';
 import { SelectionService } from './selection.service';
 import { BufferGeometry, Mesh, Scene } from 'three';
 import { MappingService } from './mapping.service';
+import { ViewService } from './view.service';
+import { defaultView } from '../../views/default.view';
 
 @Injectable({
   providedIn: 'root',
@@ -44,15 +45,16 @@ export class HarnessService {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly colorService: ColorService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
-    private readonly selectionService: SelectionService
+    private readonly selectionService: SelectionService,
+    private readonly viewService: ViewService
   ) {}
 
   addHarness(harness: Harness) {
     this.harness = harness;
+    this.cacheService.harnessCache.set(harness.id, harness);
     this.harnessElementGeos = this.geometryService.processHarness(harness);
 
     if (!this.cacheService.harnessMeshCache.has(harness.id)) {
@@ -63,10 +65,8 @@ export class HarnessService {
         this.mergeGeosIntoHarness(),
         this.sceneService.getScene()
       );
-      this.colorService.setDefaultColors(harness);
+      this.viewService.applyView(defaultView, harness.id);
     }
-
-    this.cacheService.harnessCache.set(harness.id, harness);
   }
 
   private setHarness(identifiable: Identifiable) {

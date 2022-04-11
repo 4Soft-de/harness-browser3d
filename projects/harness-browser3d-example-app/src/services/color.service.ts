@@ -17,14 +17,15 @@
 
 import { Injectable } from '@angular/core';
 import { Identifiable } from 'harness-browser3d-library';
+import { Color } from 'three';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ColorService {
-  color1 = [6, 111, 223];
-  color2 = [126, 188, 137];
-  color3 = [238, 150, 75];
+  color1 = new Color('blue');
+  color2 = new Color('green');
+  color3 = new Color('red');
 
   color1Modules: Identifiable[] = [];
   color2Modules: Identifiable[] = [];
@@ -96,12 +97,10 @@ export class ColorService {
     return [];
   }
 
-  private static convertToApiColorArray(module: Identifiable, color: number[]) {
+  private static convertToApiColorArray(module: Identifiable, color: Color) {
     return {
-      id: module.id,
-      colorR: color[0],
-      colorG: color[1],
-      colorB: color[2],
+      harnessElementId: module.id,
+      color: color,
     };
   }
 }

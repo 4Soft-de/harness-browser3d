@@ -378,29 +378,24 @@ export class GeometryService {
 
   private setDefaultColors(harness: Harness) {
     const harnessElementGeos: Map<string, BufferGeometry> = new Map();
+    const set = (object: any, color: string) =>
+      HarnessUtils.setViewProperty(object, defaultHarnessPropertyKey, color);
     harness.segments.forEach((segment) =>
-      this.setDefaultColor(segment, DefaultViewProperties.segment)
+      set(segment, DefaultViewProperties.segment)
     );
     harness.protections.forEach((protection) =>
-      this.setDefaultColor(protection, DefaultViewProperties.protection)
+      set(protection, DefaultViewProperties.protection)
     );
     harness.fixings.forEach((fixing) =>
-      this.setDefaultColor(fixing, DefaultViewProperties.fixing)
+      set(fixing, DefaultViewProperties.fixing)
     );
     harness.connectors.forEach((connector) =>
-      this.setDefaultColor(connector, DefaultViewProperties.connector)
+      set(connector, DefaultViewProperties.connector)
     );
     harness.accessories.forEach((accessory) =>
-      this.setDefaultColor(accessory, DefaultViewProperties.accessory)
+      set(accessory, DefaultViewProperties.accessory)
     );
     return harnessElementGeos;
-  }
-
-  private setDefaultColor(object: any, color: string) {
-    if (object.viewProperties === undefined) {
-      object.viewProperties = {};
-    }
-    object.viewProperties[defaultHarnessPropertyKey] = color;
   }
 
   private positionGeometries(harness: Harness) {

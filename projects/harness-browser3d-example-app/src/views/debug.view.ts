@@ -31,8 +31,8 @@ const debugViewDefaultValue = 'false';
 function debugViewVertexShader() {
   let shader = ShaderLib.lambert.vertexShader;
   let anchor = '#include <common>';
-  shader = shader.replace(anchor, anchor + 'attribute vec3 debug;');
-  shader = shader.replace('#include <color_vertex>', 'vColor = debug;');
+  shader = shader.replace(anchor, anchor + 'attribute vec3 shaderDebug;');
+  shader = shader.replace('#include <color_vertex>', 'vColor = shaderDebug;');
   return shader;
 }
 

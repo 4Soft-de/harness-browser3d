@@ -15,6 +15,8 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
+import { Color } from 'three';
+
 export interface SettingsAPIStruct {
   geometryMode?: GeometryModeAPIEnum;
   splineMode?: SplineModeAPIEnum;
@@ -23,16 +25,19 @@ export interface SettingsAPIStruct {
   pixelRatio?: number;
 }
 
-export interface SetColorAPIStruct {
-  id: string;
-  colorR: number;
-  colorG: number;
-  colorB: number;
-}
-
 export interface BoundingSphereAPIStruct {
   centerId: string;
   radius: number;
+}
+
+export interface SetColorAPIStruct {
+  harnessElementId: string;
+  color: Color;
+}
+
+export interface SetViewPropertyAPIStruct {
+  harnessElementId: string;
+  propertyValue: string;
 }
 
 export enum GeometryModeAPIEnum {

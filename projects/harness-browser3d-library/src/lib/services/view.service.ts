@@ -17,8 +17,10 @@
 
 import { Injectable } from '@angular/core';
 import { BufferAttribute, BufferGeometry } from 'three';
-import { Harness, Identifiable } from '../../api/alias';
+import { Identifiable } from '../../api/alias';
+import { SetViewPropertyAPIStruct } from '../../api/structs';
 import { View } from '../../views/view';
+import { HarnessUtils } from '../utils/harness-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
@@ -31,14 +33,14 @@ export class ViewService {
     private readonly mappingService: MappingService
   ) {}
 
-  public applyView(view: View, harness: Harness): void {
-    const mesh = this.cacheService.harnessMeshCache.get(harness.id);
+  public applyView(view: View, harnessId: string): void {
+    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
       mesh.material = view.material;
       const array = this.mappingService.applyMapping(
-        harness,
+        harnessId,
         view.defaultValue,
-        this.readProperties(harness, view.harnessPropertyKey)
+        this.readProperties(harnessId, view.harnessPropertyKey)
       );
       this.applyAttributes(
         mesh.geometry,
@@ -48,8 +50,8 @@ export class ViewService {
     }
   }
 
-  public disposeView(view: View, harness: Harness): void {
-    const mesh = this.cacheService.harnessMeshCache.get(harness.id);
+  public disposeView(view: View, harnessId: string): void {
+    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
       if ('length' in mesh.material) {
         mesh.material.forEach((material) => material.dispose());
@@ -61,8 +63,39 @@ export class ViewService {
     }
   }
 
+  public setViewProperties(structs: SetViewPropertyAPIStruct[], view: View) {
+    structs.forEach((struct) => {
+      const harnessElement = this.cacheService.elementCache.get(
+        struct.harnessElementId
+      );
+      if (harnessElement) {
+        HarnessUtils.setViewProperty(
+          harnessElement,
+          view.harnessPropertyKey,
+          struct.propertyValue
+        );
+      }
+    });
+  }
+
+  public deleteViewProperties(view: View, harnessId: string) {
+    const deleteProperty = (object: any) => {
+      if ('viewProperties' in object) {
+        delete object.viewProperties[view.harnessPropertyKey];
+      }
+    };
+    const harness = this.cacheService.harnessCache.get(harnessId);
+    if (harness) {
+      harness.segments.forEach(deleteProperty);
+      harness.protections.forEach(deleteProperty);
+      harness.fixings.forEach(deleteProperty);
+      harness.connectors.forEach(deleteProperty);
+      harness.accessories.forEach(deleteProperty);
+    }
+  }
+
   private readProperties(
-    harness: Harness,
+    harnessId: string,
     viewProperty: string
   ): Map<string, string> {
     const properties: Map<string, string> = new Map();
@@ -72,11 +105,14 @@ export class ViewService {
         properties.set(harnessElement.id, property);
       }
     };
-    harness.segments.forEach(set);
-    harness.protections.forEach(set);
-    harness.fixings.forEach(set);
-    harness.connectors.forEach(set);
-    harness.accessories.forEach(set);
+    const harness = this.cacheService.harnessCache.get(harnessId);
+    if (harness) {
+      harness.segments.forEach(set);
+      harness.protections.forEach(set);
+      harness.fixings.forEach(set);
+      harness.connectors.forEach(set);
+      harness.accessories.forEach(set);
+    }
     return properties;
   }
 

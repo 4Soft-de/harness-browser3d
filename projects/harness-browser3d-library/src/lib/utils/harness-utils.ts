@@ -93,4 +93,15 @@ export class HarnessUtils {
   public static computeDefaultProtectionRadius(segmentRadius: number) {
     return segmentRadius + this.PROTECTION_RADIUS_INCREASE;
   }
+
+  public static setViewProperty(
+    object: any,
+    propertyKey: string,
+    propertyValue: string
+  ) {
+    if (object.viewProperties === undefined) {
+      object.viewProperties = {};
+    }
+    object.viewProperties[propertyKey] = propertyValue;
+  }
 }

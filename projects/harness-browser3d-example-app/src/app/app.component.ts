@@ -162,11 +162,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   setView(event: MatSlideToggleChange) {
     if (this.api && this.data) {
       if (event.checked) {
-        this.api.disposeView(defaultView, this.data);
-        this.api.setView(debugView, this.data);
+        this.api.disposeView(defaultView, this.data.id);
+        this.api.setView(debugView, this.data.id);
       } else {
-        this.api.disposeView(debugView, this.data);
-        this.api.setView(defaultView, this.data);
+        this.api.disposeView(debugView, this.data.id);
+        this.api.setView(defaultView, this.data.id);
       }
     }
   }

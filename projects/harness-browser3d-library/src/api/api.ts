@@ -16,26 +16,21 @@
 */
 
 import { Injectable } from '@angular/core';
-import { CacheService } from '../lib/services/cache.service';
 import { CameraService } from '../lib/services/camera.service';
-import { ColorService } from '../lib/services/color.service';
 import { RenderService } from '../lib/services/render.service';
 import { SceneService } from '../lib/services/scene.service';
 import { SelectionService } from '../lib/services/selection.service';
 import { ViewService } from '../lib/services/view.service';
-import { isHarness } from '../lib/utils/cast';
-import { ErrorUtils } from '../lib/utils/error-utils';
+import { colorView } from '../views/color.view';
+import { defaultView } from '../views/default.view';
 import { View } from '../views/view';
-import { Harness } from './alias';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HarnessBrowser3dLibraryAPI {
   constructor(
-    private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
-    private readonly colorService: ColorService,
     private readonly renderService: RenderService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
@@ -51,12 +46,8 @@ export class HarnessBrowser3dLibraryAPI {
   }
 
   public resetColors(harnessId: string) {
-    const harness = this.cacheService.harnessCache.get(harnessId);
-    if (isHarness(harness)) {
-      this.colorService.setDefaultColors(harness);
-    } else {
-      console.error(ErrorUtils.notFound(harnessId));
-    }
+    this.viewService.deleteViewProperties(colorView, harnessId);
+    this.viewService.applyView(defaultView, harnessId);
   }
 
   public clear() {
@@ -66,11 +57,11 @@ export class HarnessBrowser3dLibraryAPI {
     this.selectionService.resetSphere();
   }
 
-  public setView(view: View, harness: Harness) {
-    this.viewService.applyView(view, harness);
+  public setView(view: View, harnessId: string) {
+    this.viewService.applyView(view, harnessId);
   }
 
-  public disposeView(view: View, harness: Harness) {
-    this.viewService.disposeView(view, harness);
+  public disposeView(view: View, harnessId: string) {
+    this.viewService.disposeView(view, harnessId);
   }
 }

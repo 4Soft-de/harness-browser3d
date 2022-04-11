@@ -33,15 +33,12 @@ const defaultShaderPropertyKey = 'color';
 
 const defaultViewDefaultValue = 'none';
 
-function defaultViewMaterial() {
-  const material = new MeshLambertMaterial({
-    vertexColors: true,
-    side: FrontSide,
-    wireframe: false,
-    reflectivity: 1,
-  });
-  return material;
-}
+const defaultViewMaterial = new MeshLambertMaterial({
+  vertexColors: true,
+  side: FrontSide,
+  wireframe: false,
+  reflectivity: 1,
+});
 
 const defaultViewMapper = (properties: string[]) => {
   const array: number[] = [];
@@ -73,6 +70,6 @@ export const defaultView = new View(
   defaultHarnessPropertyKey,
   defaultShaderPropertyKey,
   defaultViewDefaultValue,
-  defaultViewMaterial(),
+  defaultViewMaterial,
   defaultViewMapper
 );

@@ -21,8 +21,6 @@ import { GeometryModeAPIEnum } from '../../api/structs';
 import {
   BoxBufferGeometry,
   BufferGeometry,
-  Color,
-  Float32BufferAttribute,
   SphereBufferGeometry,
   TubeBufferGeometry,
   Vector3,
@@ -31,23 +29,6 @@ import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
 
 export class GeometryUtils {
-  public static colorGeo(harnessGeo: BufferGeometry, vertexColors: Color[]) {
-    if (harnessGeo.attributes['position'].count != vertexColors.length) {
-      console.error(
-        `vertex count ${harnessGeo.attributes['position'].count} and color array length ${vertexColors.length} must be same`
-      );
-      return;
-    }
-
-    let array: number[] = [];
-    vertexColors.forEach((color) => {
-      array.push(color.r);
-      array.push(color.g);
-      array.push(color.b);
-    });
-    harnessGeo.setAttribute('color', new Float32BufferAttribute(array, 3));
-  }
-
   public static mergeGeos(geos: BufferGeometry[]) {
     const geo = mergeBufferGeometries(geos);
     if (geo) {

@@ -38,12 +38,12 @@ export class MappingService {
    * converts map into attribute array
    */
   public applyMapping(
-    harness: Harness,
+    harnessId: string,
     defaultValue: any,
     values: Map<string, any>
   ) {
-    const harnessMesh = this.cacheService.harnessMeshCache.get(harness.id);
-    const harnessMapping = this.harnessMappings.get(harness.id);
+    const harnessMesh = this.cacheService.harnessMeshCache.get(harnessId);
+    const harnessMapping = this.harnessMappings.get(harnessId);
     if (harnessMesh && harnessMapping) {
       const harnessGeo = harnessMesh.geometry;
       const map = this.initializeMap(harnessGeo, defaultValue);
