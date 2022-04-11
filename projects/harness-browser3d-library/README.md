@@ -1,6 +1,6 @@
 # Harness Browser 3D
 
-A high performance angular component for displaying 3D representations of bordnet harnesses. Harness element selection and coloring is also supported.
+A high performance angular component for displaying 3D representations of bordnet harnesses. Harness element selection, arbitrary coloring and custom views are also supported.
 
 ## Usage
 
@@ -15,7 +15,7 @@ A high performance angular component for displaying 3D representations of bordne
 ```
 
 ```ts
-export class AppComponent {
+class AppComponent {
   data: Harness;
   selectedIds: string[];
   colors: SetColorAPIStruct[];
@@ -27,6 +27,77 @@ export class AppComponent {
   }
 }
 ```
+
+### Add a Harness
+
+Add a harness by inserting a `Harness` object into the `addHarness` property. Include Harness from `api\alias.ts`.
+
+Harness has been generated from `assets\geometry-api.yaml`.
+
+### Select Ids
+
+Select harness elements by inserting an array of harness element ids into the `selectedIds` property.
+
+All harness elements must belong to the same harness and the harness must have been added before.
+
+### Set Colors
+
+Set arbitrary colors for harness elements by inserting an array of `SetColorAPIStruct` objects into the `colors` property. Include SetColorAPIStruct from `api\structs.ts`.
+
+All harness elements must belong to the same harness and the harness must have been added before.
+
+### Apply Settings
+
+Apply settings by inserting an array of `SettingsAPIStruct` objects into the `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
+
+### Additional API
+
+A `HarnessBrowser3dLibraryAPI` object is used to invoke certain actions, like resetting the camera. It is passed in the `initialized` event directly after the component has been initialized. Include HarnessBrowser3dLibraryAPI from `api\api.ts`.
+
+## Views
+
+Predefined and also custom views on the harness geometries are supported. Predefined views are located in the `views` folder.
+
+Views operate on string properties that are defined on the input harness data.
+
+```json
+{
+  "id": "exampleId",
+  "viewProperties": {
+    "exampleProperty": "exampleValue"
+  }
+}
+```
+
+In this example an `exampleProperty` property is added to the object `exampleId` with value `exampleValue`.
+
+### Apply Views
+
+Pass the view and the target harness id into the `applyView` API function.
+
+### Dispose Views
+
+Views must be disposed before deletion to free allocated memory. Pass the view and the target harness id into the `disposeView` API function.
+
+### Define custom Views
+
+Views are instances of `View` in `views\view.ts`.
+
+```ts
+class View {
+  public readonly harnessPropertyKey: string;
+  public readonly shaderPropertyKey: string;
+  public readonly defaultValue: string;
+  public readonly material: Material;
+  public readonly mapper: (properties: string[]) => BufferAttribute;
+}
+```
+
+- `harnessPropertyKey` is the property key in the input data
+- `shaderPropertyKey` is the corresponding key used in the vertex shader
+- `defaultValue` is the default value for harness elements without this property
+- `material` contains the shaders for this view
+- `mapper` is a function that processes the property values into a suitable buffer attribute
 
 # References
 
