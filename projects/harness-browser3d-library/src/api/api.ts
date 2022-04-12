@@ -22,7 +22,6 @@ import { SceneService } from '../lib/services/scene.service';
 import { SelectionService } from '../lib/services/selection.service';
 import { ViewService } from '../lib/services/view.service';
 import { colorView } from '../views/color.view';
-import { defaultView } from '../views/default.view';
 import { View } from '../views/view';
 
 @Injectable({
@@ -47,7 +46,7 @@ export class HarnessBrowser3dLibraryAPI {
 
   public resetColors(harnessId: string) {
     this.viewService.deleteViewProperties(colorView, harnessId);
-    this.viewService.applyView(defaultView, harnessId);
+    this.viewService.applyView(colorView, harnessId);
   }
 
   public clear() {

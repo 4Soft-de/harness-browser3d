@@ -25,6 +25,7 @@ import {
   Identifiable,
   Bordnet,
   defaultView,
+  colorView,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -32,6 +33,7 @@ import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
 import * as exampleHarness from '../assets/exampleHarness.json';
 import { debugView } from '../views/debug.view';
+import { ViewSelectionStruct } from '../structs';
 
 @Component({
   selector: 'app-root',
@@ -49,6 +51,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['actions', 'module'];
   dataSource = new MatTableDataSource<Identifiable>();
   selection: Identifiable[] = [];
+
+  selectableViews: ViewSelectionStruct[] = [
+    new ViewSelectionStruct(defaultView, 'Default'),
+    new ViewSelectionStruct(colorView, 'Color'),
+    new ViewSelectionStruct(debugView, 'Debug'),
+  ];
+  selectedViewInternal: ViewSelectionStruct = this.selectableViews[0];
 
   colorService = new ColorService();
   dataService = new DataService();
@@ -159,16 +168,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setView(event: MatSlideToggleChange) {
+  set selectedView(selectedView: ViewSelectionStruct) {
     if (this.api && this.data) {
-      if (event.checked) {
-        this.api.disposeView(defaultView, this.data.id);
-        this.api.setView(debugView, this.data.id);
-      } else {
-        this.api.disposeView(debugView, this.data.id);
-        this.api.setView(defaultView, this.data.id);
-      }
+      this.api.disposeView(this.selectedViewInternal.view, this.data.id);
+      this.api.setView(selectedView.view, this.data.id);
     }
+    this.selectedViewInternal = selectedView;
+  }
+
+  get selectedView() {
+    return this.selectedViewInternal;
   }
 
   addAPI(api: HarnessBrowser3dLibraryAPI) {
