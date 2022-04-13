@@ -110,8 +110,6 @@ export class ViewService {
       const property = this.readProperty(harnessElement, harnessPropertyKey);
       if (property) {
         properties.set(harnessElement.id, property);
-      } else {
-        console.error(ErrorUtils.notFound(harnessPropertyKey));
       }
     };
     const harness = this.cacheService.harnessCache.get(harnessId);
