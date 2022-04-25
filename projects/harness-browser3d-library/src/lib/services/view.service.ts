@@ -16,12 +16,10 @@
 */
 
 import { Injectable } from '@angular/core';
-import { BufferAttribute, BufferGeometry } from 'three';
 import { Identifiable } from '../../api/alias';
-import { SetViewPropertyAPIStruct } from '../../api/structs';
 import { View } from '../../views/view';
 import { ErrorUtils } from '../utils/error-utils';
-import { HarnessUtils } from '../utils/harness-utils';
+import { GeometryUtils } from '../utils/geometry-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
@@ -38,16 +36,18 @@ export class ViewService {
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
       mesh.material = view.material;
-      const array = this.mappingService.applyMapping(
-        harnessId,
-        view.defaultValue,
-        this.readProperties(harnessId, view.harnessPropertyKey)
-      );
-      this.applyAttributes(
-        mesh.geometry,
-        view.shaderPropertyKey,
-        view.mapper(array)
-      );
+      if (view.propertyKey) {
+        const array = this.mappingService.applyMapping(
+          harnessId,
+          view.defaultValue,
+          this.readProperties(harnessId, view.propertyKey)
+        );
+        GeometryUtils.applyGeoAttribute(
+          mesh.geometry,
+          view.propertyKey,
+          view.mapper(array)
+        );
+      }
     } else {
       console.error(ErrorUtils.notFound(harnessId));
     }
@@ -62,42 +62,11 @@ export class ViewService {
       } else if (mesh.material) {
         mesh.material.dispose();
       }
-      mesh.geometry.deleteAttribute(view.shaderPropertyKey);
+      if (view.propertyKey) {
+        mesh.geometry.deleteAttribute(view.propertyKey);
+      }
     } else {
       console.error(ErrorUtils.notFound(harnessId));
-    }
-  }
-
-  public setViewProperties(structs: SetViewPropertyAPIStruct[], view: View) {
-    structs.forEach((struct) => {
-      const harnessElement = this.cacheService.elementCache.get(
-        struct.harnessElementId
-      );
-      if (harnessElement) {
-        HarnessUtils.setViewProperty(
-          harnessElement,
-          view.harnessPropertyKey,
-          struct.propertyValue
-        );
-      } else {
-        console.error(ErrorUtils.notFound(struct.harnessElementId));
-      }
-    });
-  }
-
-  public deleteViewProperties(view: View, harnessId: string) {
-    const deleteProperty = (object: any) => {
-      if ('viewProperties' in object) {
-        delete object.viewProperties[view.harnessPropertyKey];
-      }
-    };
-    const harness = this.cacheService.harnessCache.get(harnessId);
-    if (harness) {
-      harness.segments.forEach(deleteProperty);
-      harness.protections.forEach(deleteProperty);
-      harness.fixings.forEach(deleteProperty);
-      harness.connectors.forEach(deleteProperty);
-      harness.accessories.forEach(deleteProperty);
     }
   }
 
@@ -130,21 +99,5 @@ export class ViewService {
     if ('viewProperties' in object) {
       return object.viewProperties[harnessPropertyKey];
     } else return undefined;
-  }
-
-  private applyAttributes(
-    harnessGeo: BufferGeometry,
-    name: string,
-    bufferAttribute: BufferAttribute
-  ): void {
-    const attributeSize =
-      bufferAttribute.array.length / bufferAttribute.itemSize;
-    if (harnessGeo.attributes['position'].count != attributeSize) {
-      console.error(
-        `vertex count ${harnessGeo.attributes['position'].count} and buffer attribute size ${attributeSize} must be same`
-      );
-      return;
-    }
-    harnessGeo.setAttribute(name, bufferAttribute);
   }
 }

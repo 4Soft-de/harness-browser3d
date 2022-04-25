@@ -42,8 +42,7 @@ const removedState = new State('removed', 2, new Color('red'));
 const modifiedState = new State('modified', 3, new Color('blue'));
 const unmodifiedState = new State('unmodified', 4, GeometryColors.clear);
 
-const diffViewHarnessPropertyKey = 'diffState';
-const diffViewShaderPropertyKey = diffViewHarnessPropertyKey;
+const diffViewPropertyKey = 'diffState';
 
 const diffViewDefaultValue = unmodifiedState.name;
 
@@ -127,8 +126,7 @@ function mapProperty(property: string): number {
 }
 
 export const diffView = new View(
-  diffViewHarnessPropertyKey,
-  diffViewShaderPropertyKey,
+  diffViewPropertyKey,
   diffViewDefaultValue,
   diffViewMaterial(),
   diffViewMapper

@@ -19,8 +19,7 @@ import { BufferAttribute, Material } from 'three';
 
 export class View {
   constructor(
-    public readonly harnessPropertyKey: string,
-    public readonly shaderPropertyKey: string,
+    public readonly propertyKey: string | undefined,
     public readonly defaultValue: string,
     public readonly material: Material,
     public readonly mapper: (properties: string[]) => BufferAttribute

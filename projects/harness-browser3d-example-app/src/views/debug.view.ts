@@ -24,15 +24,14 @@ import {
   ShaderLib,
 } from 'three';
 
-const debugViewHarnessPropertyKey = 'debug';
-const debugViewShaderPropertyKey = 'shaderDebug';
+const debugViewPropertyKey = 'debug';
 const debugViewDefaultValue = 'false';
 
 function debugViewVertexShader() {
   let shader = ShaderLib.lambert.vertexShader;
   let anchor = '#include <common>';
-  shader = shader.replace(anchor, anchor + 'attribute vec3 shaderDebug;');
-  shader = shader.replace('#include <color_vertex>', 'vColor = shaderDebug;');
+  shader = shader.replace(anchor, anchor + 'attribute vec3 debug;');
+  shader = shader.replace('#include <color_vertex>', 'vColor = debug;');
   return shader;
 }
 
@@ -65,8 +64,7 @@ const debugViewMapper = (properties: string[]) => {
 };
 
 export const debugView = new View(
-  debugViewHarnessPropertyKey,
-  debugViewShaderPropertyKey,
+  debugViewPropertyKey,
   debugViewDefaultValue,
   debugViewMaterial(),
   debugViewMapper

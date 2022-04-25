@@ -20,6 +20,7 @@ import { HarnessOccurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import {
   BoxBufferGeometry,
+  BufferAttribute,
   BufferGeometry,
   SphereBufferGeometry,
   TubeBufferGeometry,
@@ -29,6 +30,22 @@ import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
 
 export class GeometryUtils {
+  public static applyGeoAttribute(
+    harnessGeo: BufferGeometry,
+    name: string,
+    bufferAttribute: BufferAttribute
+  ): void {
+    const attributeSize =
+      bufferAttribute.array.length / bufferAttribute.itemSize;
+    if (harnessGeo.attributes['position'].count != attributeSize) {
+      console.error(
+        `vertex count ${harnessGeo.attributes['position'].count} and buffer attribute size ${attributeSize} must be same`
+      );
+      return;
+    }
+    harnessGeo.setAttribute(name, bufferAttribute);
+  }
+
   public static mergeGeos(geos: BufferGeometry[]) {
     const geo = mergeBufferGeometries(geos);
     if (geo) {

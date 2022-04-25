@@ -25,7 +25,6 @@ import {
   Identifiable,
   Bordnet,
   defaultView,
-  colorView,
   diffView,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
@@ -55,7 +54,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   selectableViews: ViewSelectionStruct[] = [
     new ViewSelectionStruct(defaultView, 'Default'),
-    new ViewSelectionStruct(colorView, 'Color'),
     new ViewSelectionStruct(debugView, 'Debug'),
     new ViewSelectionStruct(diffView, 'Diff'),
   ];

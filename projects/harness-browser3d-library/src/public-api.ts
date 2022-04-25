@@ -20,7 +20,6 @@ export * from './lib/component/harness-browser3d-library.module';
 export * from './api/alias';
 export * from './api/api';
 export * from './api/structs';
-export * from './views/color.view';
 export * from './views/default.view';
 export * from './views/diff.view';
 export * from './views/view';

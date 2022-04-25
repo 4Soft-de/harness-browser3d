@@ -60,11 +60,7 @@
       fxLayoutAlign="space-evenly stretch"
     >
       <mat-card fxFlex fxLayout="column" class="side-panel">
-        <ng-container
-          *ngIf="
-            selectedView.name === 'Default' || selectedView.name === 'Color'
-          "
-        >
+        <ng-container *ngIf="selectedView.name === 'Default'">
           <mat-form-field appearance="standard">
             <input
               matInput
@@ -84,7 +80,7 @@
                   fxLayoutGap="2px"
                   *matCellDef="let module"
                 >
-                  <ng-container *ngIf="selectedView.name === 'Color'">
+                  <ng-container *ngIf="selectedView.name === 'Default'">
                     <button
                       mat-mini-fab
                       class="my-fab color1"

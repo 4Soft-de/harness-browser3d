@@ -17,11 +17,11 @@
 
 import { Injectable } from '@angular/core';
 import { CameraService } from '../lib/services/camera.service';
+import { ColorService } from '../lib/services/color.service';
 import { RenderService } from '../lib/services/render.service';
 import { SceneService } from '../lib/services/scene.service';
 import { SelectionService } from '../lib/services/selection.service';
 import { ViewService } from '../lib/services/view.service';
-import { colorView } from '../views/color.view';
 import { View } from '../views/view';
 
 @Injectable({
@@ -30,6 +30,7 @@ import { View } from '../views/view';
 export class HarnessBrowser3dLibraryAPI {
   constructor(
     private readonly cameraService: CameraService,
+    private readonly colorService: ColorService,
     private readonly renderService: RenderService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
@@ -45,8 +46,7 @@ export class HarnessBrowser3dLibraryAPI {
   }
 
   public resetColors(harnessId: string) {
-    this.viewService.deleteViewProperties(colorView, harnessId);
-    this.viewService.applyView(colorView, harnessId);
+    this.colorService.resetColors(harnessId);
   }
 
   public clear() {
