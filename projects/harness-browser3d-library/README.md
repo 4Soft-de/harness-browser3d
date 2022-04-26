@@ -85,19 +85,24 @@ Views are instances of `View` in `views\view.ts`.
 
 ```ts
 class View {
-  public readonly harnessPropertyKey: string;
-  public readonly shaderPropertyKey: string;
+  public readonly propertyKey: string;
   public readonly defaultValue: string;
   public readonly material: Material;
   public readonly mapper: (properties: string[]) => BufferAttribute;
 }
 ```
 
-- `harnessPropertyKey` is the property key in the input data
-- `shaderPropertyKey` is the corresponding key used in the vertex shader
+- `propertyKey` is the property key in the input data and in the vertex shader
 - `defaultValue` is the default value for harness elements without this property
 - `material` contains the shaders for this view
 - `mapper` is a function that processes the property values into a suitable buffer attribute
+
+### Built-in Shader Attributes
+
+Built-in shader attributes are controlled by the viewer and can be used by custom views.
+
+- `vec3 pDefaultColor` is the default color of the corresponding harness element
+- `vec3 pColor` is the specified color as set in the `colors` input property on the angular component
 
 # References
 
