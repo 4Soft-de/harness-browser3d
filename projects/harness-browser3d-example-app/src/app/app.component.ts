@@ -149,6 +149,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.selection.length > 0) {
       this.selectedIds = this.selection.map((module) => module.id);
     } else {
+      this.selectedIds = [];
       this.api?.resetCamera();
     }
   }
