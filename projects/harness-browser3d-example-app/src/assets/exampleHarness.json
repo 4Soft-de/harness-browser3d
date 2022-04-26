@@ -94,6 +94,9 @@
             "u": { "x": 0.69892, "y": -0.63407, "z": 0.33087 },
             "v": { "x": -0.20284, "y": -0.61936, "z": -0.75846 },
             "w": { "x": 0.68584, "y": 0.46299, "z": -0.5615 }
+          },
+          "viewProperties": {
+            "debug": "true"
           }
         },
         {
@@ -188,7 +191,10 @@
               "location": 0.66621,
               "segmentId": "d602af5a-281d-4ccd-8dbf-40370cce8972"
             }
-          ]
+          ],
+          "viewProperties": {
+            "diffState": "removed"
+          }
         },
         {
           "name": "GPc8",
@@ -1300,7 +1306,10 @@
           "geometryPoint": { "x": 364.20119, "y": -484.09444, "z": 568.02839 },
           "numberOfCavities": 1,
           "nodeId": "d0bcb1d1-a078-4a82-bfcb-077b54556caa",
-          "segmentDirection": { "x": -0.46536, "y": 0.81941, "z": 0.33468 }
+          "segmentDirection": { "x": -0.46536, "y": 0.81941, "z": 0.33468 },
+          "viewProperties": {
+            "diffState": "added"
+          }
         },
         {
           "name": "\\E2K25",
@@ -3017,7 +3026,10 @@
               "segmentId": "5df97f42-627c-43ce-99f6-9db166bf922a",
               "startLocation": 0.0
             }
-          ]
+          ],
+          "viewProperties": {
+            "diffState": "modified"
+          }
         },
         {
           "name": "[T1Rccc547c557c4515=;4145145144144144149=",
