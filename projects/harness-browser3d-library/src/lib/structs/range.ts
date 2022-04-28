@@ -15,15 +15,19 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Color } from 'three';
+export class VertexRange {
+  constructor(public readonly high: number, public readonly low: number) {}
 
-export class GeometryColors {
-  public static readonly segment = new Color('grey');
-  public static readonly connector = new Color('yellow');
-  public static readonly accessory = new Color('green');
-  public static readonly fixing = new Color('blue');
-  public static readonly protection = new Color(0x3b3b3b);
-  public static readonly notFound = new Color('black');
-  public static readonly clear = new Color(0xcccccc);
-  public static readonly empty = new Color(0, 0, 0);
+  public toArray() {
+    const array: number[] = [];
+    for (let i = this.high; i <= this.low; i++) {
+      array.push(i);
+    }
+    return array;
+  }
+}
+
+export class HarnessElementVertexMappings {
+  public readonly harnessElementsToVertices: Map<string, VertexRange> =
+    new Map();
 }

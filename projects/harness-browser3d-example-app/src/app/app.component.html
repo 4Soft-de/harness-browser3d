@@ -42,6 +42,14 @@
     <button mat-raised-button color="accent" (click)="copyHarness()">
       <mat-icon>content_copy</mat-icon> Duplicate Harness
     </button>
+    <mat-form-field>
+      <mat-label>View</mat-label>
+      <mat-select [(value)]="selectedView">
+        <mat-option *ngFor="let struct of selectableViews" [value]="struct">
+          {{ struct.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </mat-toolbar>
   <div fxLayout="row" class="full-height browser-background" fxLayoutGap="5px">
     <div
@@ -52,57 +60,61 @@
       fxLayoutAlign="space-evenly stretch"
     >
       <mat-card fxFlex fxLayout="column" class="side-panel">
-        <mat-form-field appearance="standard">
-          <input
-            matInput
-            (keyup)="applyFilter($event)"
-            placeholder="Filter modules..."
-          />
-        </mat-form-field>
-        <div class="table-container" fxFlex>
-          <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="module">
-              <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-              <td
-                mat-cell
-                fxLayout="row"
-                fxLayoutGap="2px"
-                *matCellDef="let module"
-              >
-                <button
-                  mat-mini-fab
-                  class="my-fab color1"
-                  (click)="setToColor1(module)"
-                ></button>
-                <button
-                  mat-mini-fab
-                  class="my-fab color2"
-                  (click)="setToColor2(module)"
-                ></button>
-                <button
-                  mat-mini-fab
-                  class="my-fab color3"
-                  (click)="setToColor3(module)"
-                ></button>
-              </td>
-            </ng-container>
+        <ng-container *ngIf="selectedView.name === 'Default'">
+          <mat-form-field appearance="standard">
+            <input
+              matInput
+              (keyup)="applyFilter($event)"
+              placeholder="Filter modules..."
+            />
+          </mat-form-field>
+          <div class="table-container" fxFlex>
+            <table mat-table [dataSource]="dataSource">
+              <ng-container matColumnDef="module">
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <td
+                  mat-cell
+                  fxLayout="row"
+                  fxLayoutGap="2px"
+                  *matCellDef="let module"
+                >
+                  <ng-container *ngIf="selectedView.name === 'Default'">
+                    <button
+                      mat-mini-fab
+                      class="my-fab color1"
+                      (click)="setToColor1(module)"
+                    ></button>
+                    <button
+                      mat-mini-fab
+                      class="my-fab color2"
+                      (click)="setToColor2(module)"
+                    ></button>
+                    <button
+                      mat-mini-fab
+                      class="my-fab color3"
+                      (click)="setToColor3(module)"
+                    ></button>
+                  </ng-container>
+                </td>
+              </ng-container>
 
-            <tr
-              mat-row
-              (click)="toggleRowHighlighting(row, $event)"
-              [class.highlighted-row]="selection.includes(row)"
-              *matRowDef="let row; columns: displayedColumns"
-            ></tr>
+              <tr
+                mat-row
+                (click)="toggleRowHighlighting(row, $event)"
+                [class.highlighted-row]="selection.includes(row)"
+                *matRowDef="let row; columns: displayedColumns"
+              ></tr>
 
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" colspan="9999">
-                No data. Please load harness.
-              </td>
-            </tr>
-          </table>
-        </div>
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="9999">
+                  No data. Please load harness.
+                </td>
+              </tr>
+            </table>
+          </div>
+        </ng-container>
       </mat-card>
       <mat-card
         fxLayout="column"

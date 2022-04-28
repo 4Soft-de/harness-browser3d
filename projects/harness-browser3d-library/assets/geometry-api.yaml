@@ -98,6 +98,11 @@ components:
         degree:
           type: integer
 
+    ViewProperties:
+      type: object
+      additionalProperties:
+        type: string
+
     Identifiable:
       type: object
       description: Entity id
@@ -122,6 +127,8 @@ components:
       properties:
         partNumber:
           type: string
+        viewProperties:
+          $ref: "#/components/schemas/ViewProperties"
       allOf:
         - $ref: "#/components/schemas/Identifiable"
 
@@ -259,6 +266,8 @@ components:
           type: number
           format: double
           example: 0.0
+        viewProperties:
+          $ref: "#/components/schemas/ViewProperties"
       allOf:
         - $ref: "#/components/schemas/Identifiable"
 

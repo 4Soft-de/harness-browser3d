@@ -37,9 +37,9 @@ import { CameraService } from '../services/camera.service';
 import { SceneService } from '../services/scene.service';
 import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
-import { ColorService } from '../services/color.service';
 import { CacheService } from '../services/cache.service';
 import { SettingsService } from '../services/settings.service';
+import { ColorService } from '../services/color.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -53,6 +53,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
 
   constructor(
     private readonly ngZone: NgZone,
+    private readonly api: HarnessBrowser3dLibraryAPI,
     private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
@@ -60,8 +61,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
     private readonly renderService: RenderService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
-    private readonly settingsService: SettingsService,
-    private readonly api: HarnessBrowser3dLibraryAPI
+    private readonly settingsService: SettingsService
   ) {}
 
   ngAfterViewInit(): void {
@@ -100,7 +100,9 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   // all ids are in same harness
   @Input()
   set colors(colors: SetColorAPIStruct[]) {
-    this.colorService.setColors(colors);
+    if (colors.length) {
+      this.colorService.setColors(colors);
+    }
   }
 
   @Input()

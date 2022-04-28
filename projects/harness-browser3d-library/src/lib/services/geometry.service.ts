@@ -51,7 +51,6 @@ import { DefaultGeometryCreationService } from './default-geometries.service';
   providedIn: 'root',
 })
 export class GeometryService {
-  public readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();
   private readonly defaultConnectors: BufferGeometry[];
   private readonly defaultAccessories: BufferGeometry;
   private readonly defaultFixings: BufferGeometry;
@@ -71,11 +70,10 @@ export class GeometryService {
     this.defaultFixings = this.defaultGeometryCreationService.fixing();
   }
 
-  private processConnector(connector: Connector | null) {
-    if (!connector) {
-      console.warn(ErrorUtils.isNull('connector'));
-      return;
-    }
+  private processConnector(
+    connector: Connector,
+    harnessElementGeos: Map<string, BufferGeometry>
+  ) {
     if (!connector.placement || !connector.geometryPoint) {
       console.warn(ErrorUtils.notPlaced(connector));
       return;
@@ -134,15 +132,14 @@ export class GeometryService {
     this.positionService.positionGeometry(position, rotation, geos);
     this.buildingBlockService.applyBuildingBlock(connector.id, geos);
 
-    this.harnessElementGeos.set(connector.id, geos);
+    harnessElementGeos.set(connector.id, geos);
     this.cacheService.elementCache.set(connector.id, connector);
   }
 
-  private processAccessory(accessory: Accessory | null) {
-    if (!accessory) {
-      console.warn(ErrorUtils.isNull('accessory'));
-      return;
-    }
+  private processAccessory(
+    accessory: Accessory,
+    harnessElementGeos: Map<string, BufferGeometry>
+  ) {
     if (!accessory.placement || !accessory.placement.location) {
       console.warn(ErrorUtils.notPlaced(accessory));
       return;
@@ -164,18 +161,19 @@ export class GeometryService {
     this.positionService.positionGeometry(position, rotation, geos);
     this.buildingBlockService.applyBuildingBlock(accessory.id, geos);
 
-    this.harnessElementGeos.set(accessory.id, geos);
+    harnessElementGeos.set(accessory.id, geos);
     this.cacheService.elementCache.set(accessory.id, accessory);
   }
 
   private processFixingAssignment(
     assignment: FixingAssignment,
     fixing: Fixing,
-    rotation: Quaternion
+    rotation: Quaternion,
+    harnessElementGeos: Map<string, BufferGeometry>
   ) {
     let position: Vector3 | null = null;
     if (this.settingsService.geometryMode) {
-      const cacheElem = this.harnessElementGeos.get(assignment.segmentId);
+      const cacheElem = harnessElementGeos.get(assignment.segmentId);
       if (cacheElem) {
         position = (cacheElem as TubeBufferGeometry).parameters.path.getPoint(
           assignment.location
@@ -198,7 +196,7 @@ export class GeometryService {
       );
       this.positionService.positionGeometry(position, rotation, geos);
       this.buildingBlockService.applyBuildingBlock(fixing.id, geos);
-      this.harnessElementGeos.set(fixing.id, geos);
+      harnessElementGeos.set(fixing.id, geos);
       return geos;
     } else {
       console.warn(`fixing assignment on ${fixing.id}, no position computed`);
@@ -206,11 +204,10 @@ export class GeometryService {
     }
   }
 
-  private processFixing(fixing: Fixing | null) {
-    if (!fixing) {
-      console.warn(ErrorUtils.isNull('fixing'));
-      return;
-    }
+  private processFixing(
+    fixing: Fixing,
+    harnessElementGeos: Map<string, BufferGeometry>
+  ) {
     if (!fixing.placement) {
       console.warn(ErrorUtils.notPlaced(fixing));
       return;
@@ -231,14 +228,19 @@ export class GeometryService {
       const assignmentGeos: BufferGeometry[] = [];
       fixing.fixingAssignments
         .map((assignment) =>
-          this.processFixingAssignment(assignment, fixing, rotation)
+          this.processFixingAssignment(
+            assignment,
+            fixing,
+            rotation,
+            harnessElementGeos
+          )
         )
         .forEach((assignment) => {
           if (assignment) {
             assignmentGeos.push(assignment);
           }
         });
-      this.harnessElementGeos.set(
+      harnessElementGeos.set(
         fixing.id,
         GeometryUtils.mergeGeos(assignmentGeos)
       );
@@ -246,18 +248,18 @@ export class GeometryService {
       this.processFixingAssignment(
         fixing.fixingAssignments[0],
         fixing,
-        rotation
+        rotation,
+        harnessElementGeos
       );
     }
 
     this.cacheService.elementCache.set(fixing.id, fixing);
   }
 
-  private processSegment(segment: Segment | null) {
-    if (!segment) {
-      console.warn(ErrorUtils.isNull('segment'));
-      return;
-    }
+  private processSegment(
+    segment: Segment,
+    harnessElementGeos: Map<string, BufferGeometry>
+  ) {
     if (!segment.centerCurves) {
       console.error(`${segment.id} has no center curves`);
       return;
@@ -277,11 +279,14 @@ export class GeometryService {
     );
     this.buildingBlockService.applyBuildingBlock(segment.id, geos);
 
-    this.harnessElementGeos.set(segment.id, geos);
+    harnessElementGeos.set(segment.id, geos);
     this.cacheService.elementCache.set(segment.id, segment);
   }
 
-  private processProtection(protection: Protection | null) {
+  private processProtection(
+    protection: Protection | null,
+    harnessElementGeos: Map<string, BufferGeometry>
+  ) {
     if (!protection) {
       console.warn(ErrorUtils.isNull('protection'));
       return;
@@ -293,15 +298,16 @@ export class GeometryService {
 
     this.cacheService.elementCache.set(protection.id, protection);
     protection.protectionAreas.forEach((area: any) =>
-      this.processSingleProtectionArea(area, protection.id)
+      this.processSingleProtectionArea(area, protection.id, harnessElementGeos)
     );
   }
 
   private processSingleProtectionArea(
     protectionArea: ProtectionArea,
-    protectionId: string
+    protectionId: string,
+    harnessElementGeos: Map<string, BufferGeometry>
   ) {
-    const segmentGeos = this.harnessElementGeos.get(protectionArea.segmentId);
+    const segmentGeos = harnessElementGeos.get(protectionArea.segmentId);
     if (!segmentGeos) {
       console.warn(ErrorUtils.notFound(protectionArea.segmentId));
       return;
@@ -339,18 +345,17 @@ export class GeometryService {
       geos
     );
 
-    this.harnessElementGeos.set(protectionId, geos);
+    harnessElementGeos.set(protectionId, geos);
   }
 
   public processHarness(harness: Harness) {
-    this.harnessElementGeos.clear();
     if (this.cacheService.harnessMeshCache.has(harness.id)) {
       console.info(`harness ${harness.id} is already loaded`);
-      return;
+      return new Map();
     }
     this.handleBlocks(harness);
     this.loadGeometries(harness);
-    this.positionGeometries(harness);
+    return this.positionGeometries(harness);
   }
 
   private handleBlocks(harness: Harness) {
@@ -367,10 +372,22 @@ export class GeometryService {
   }
 
   private positionGeometries(harness: Harness) {
-    harness.segments.forEach((s: Segment) => this.processSegment(s));
-    harness.protections.forEach((p: Protection) => this.processProtection(p));
-    harness.fixings.forEach((f: Fixing) => this.processFixing(f));
-    harness.connectors.forEach((c: Connector) => this.processConnector(c));
-    harness.accessories.forEach((a: Accessory) => this.processAccessory(a));
+    const harnessElementGeos: Map<string, BufferGeometry> = new Map();
+    harness.segments.forEach((s: Segment) =>
+      this.processSegment(s, harnessElementGeos)
+    );
+    harness.protections.forEach((p: Protection) =>
+      this.processProtection(p, harnessElementGeos)
+    );
+    harness.fixings.forEach((f: Fixing) =>
+      this.processFixing(f, harnessElementGeos)
+    );
+    harness.connectors.forEach((c: Connector) =>
+      this.processConnector(c, harnessElementGeos)
+    );
+    harness.accessories.forEach((a: Accessory) =>
+      this.processAccessory(a, harnessElementGeos)
+    );
+    return harnessElementGeos;
   }
 }

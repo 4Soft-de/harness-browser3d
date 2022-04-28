@@ -21,6 +21,7 @@ export type Graphics = components['schemas']['Graphics'];
 export type Point = components['schemas']['Point'];
 export type Placement = components['schemas']['Placement'];
 export type CenterCurve = components['schemas']['CenterCurve'];
+export type ViewProperties = components['schemas']['ViewProperties'];
 export type Identifiable = components['schemas']['Identifiable'];
 export type HarnessOccurrence = components['schemas']['HarnessOccurrence'];
 export type PlacedHarnessOccurrence =

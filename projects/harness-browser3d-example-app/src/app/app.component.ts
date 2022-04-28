@@ -24,12 +24,16 @@ import {
   Harness,
   Identifiable,
   Bordnet,
+  defaultView,
+  diffView,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
 import * as exampleHarness from '../assets/exampleHarness.json';
+import { debugView } from '../views/debug.view';
+import { ViewSelectionStruct } from '../structs';
 
 @Component({
   selector: 'app-root',
@@ -47,6 +51,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['actions', 'module'];
   dataSource = new MatTableDataSource<Identifiable>();
   selection: Identifiable[] = [];
+
+  selectableViews: ViewSelectionStruct[] = [
+    new ViewSelectionStruct(defaultView, 'Default'),
+    new ViewSelectionStruct(debugView, 'Debug'),
+    new ViewSelectionStruct(diffView, 'Diff'),
+  ];
+  selectedViewInternal: ViewSelectionStruct = this.selectableViews[0];
 
   colorService = new ColorService();
   dataService = new DataService();
@@ -138,6 +149,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.selection.length > 0) {
       this.selectedIds = this.selection.map((module) => module.id);
     } else {
+      this.selectedIds = [];
       this.api?.resetCamera();
     }
   }
@@ -155,6 +167,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       this.settings = { geometryMode: GeometryModeAPIEnum.loaded };
     }
+  }
+
+  set selectedView(selectedView: ViewSelectionStruct) {
+    if (this.api && this.data) {
+      this.api.disposeView(this.selectedViewInternal.view, this.data.id);
+      this.api.setView(selectedView.view, this.data.id);
+    }
+    this.selectedViewInternal = selectedView;
+  }
+
+  get selectedView() {
+    return this.selectedViewInternal;
   }
 
   addAPI(api: HarnessBrowser3dLibraryAPI) {

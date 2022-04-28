@@ -16,95 +16,119 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Color } from 'three';
-import {
-  Accessory,
-  Connector,
-  Fixing,
-  Harness,
-  Protection,
-  Segment,
-} from '../../api/alias';
+import { Color, Float32BufferAttribute, Mesh } from 'three';
+import { Harness, Identifiable } from '../../api/alias';
 import { SetColorAPIStruct } from '../../api/structs';
 import { GeometryColors } from '../structs/colors';
 import { ErrorUtils } from '../utils/error-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { HarnessUtils } from '../utils/harness-utils';
 import { CacheService } from './cache.service';
+import { MappingService } from './mapping.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ColorService {
-  constructor(private readonly cacheService: CacheService) {}
+  private readonly key = 'pColor';
+  private readonly defaultKey = 'pDefaultColor';
 
-  public setColors(input: SetColorAPIStruct[]) {
+  constructor(
+    private readonly cacheService: CacheService,
+    private readonly mappingService: MappingService
+  ) {}
+
+  public setColors(colors: SetColorAPIStruct[]): void {
     const harness = HarnessUtils.getHarness(
-      input.map((color) => color.id),
+      colors.map((color) => color.harnessElementId),
       this.cacheService
     );
+    let mesh = undefined;
     if (harness) {
-      const colors: Map<string, Color> = new Map();
-      this.initColors(harness, colors);
-      this.convertInput(input, colors);
-      this.applyColors(harness, colors);
-    } else if (input.length) {
-      console.warn(ErrorUtils.notFound('harness'));
+      mesh = this.cacheService.harnessMeshCache.get(harness.id);
     }
-  }
-
-  public setDefaultColors(harness: Harness) {
-    const colors: Map<string, Color> = new Map();
-    this.initColors(harness, colors);
-    this.applyColors(harness, colors);
-  }
-
-  private conversion(value: number) {
-    return value / 255;
-  }
-
-  private initColors(harness: Harness, colors: Map<string, Color>) {
-    harness.segments.forEach((s: Segment) =>
-      colors.set(s.id, GeometryColors.segment)
-    );
-    harness.protections.forEach((p: Protection) =>
-      colors.set(p.id, GeometryColors.protection)
-    );
-    harness.fixings.forEach((f: Fixing) =>
-      colors.set(f.id, GeometryColors.fixing)
-    );
-    harness.connectors.forEach((c: Connector) =>
-      colors.set(c.id, GeometryColors.connector)
-    );
-    harness.accessories.forEach((a: Accessory) =>
-      colors.set(a.id, GeometryColors.accessory)
-    );
-  }
-
-  private convertInput(input: SetColorAPIStruct[], colors: Map<string, Color>) {
-    input.forEach((color) => {
-      const value = new Color(
-        this.conversion(color.colorR),
-        this.conversion(color.colorG),
-        this.conversion(color.colorB)
-      );
-      colors.set(color.id, value);
-    });
-  }
-
-  private applyColors(harness: Harness, colors: Map<string, Color>) {
-    const mapping = this.cacheService.vertexMappings.get(harness.id);
-    const harnessMesh = this.cacheService.harnessMeshCache.get(harness.id);
-
-    if (harnessMesh && mapping) {
-      const arrays = mapping.apply(
-        harnessMesh.geometry,
-        GeometryColors.notFound,
-        colors
-      );
-      GeometryUtils.colorGeo(harnessMesh.geometry, arrays);
+    if (harness && mesh) {
+      this.applyColors(harness.id, this.key, this.createMap(colors), mesh);
     } else {
-      console.error(ErrorUtils.notFound('harnessMesh or mapping'));
+      console.error(ErrorUtils.notFound('harness'));
     }
+  }
+
+  public resetColors(harnessId: string) {
+    const harness = this.cacheService.harnessCache.get(harnessId);
+    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
+    if (harness && mesh) {
+      const colors = this.createEmptyColorMap(harness);
+      this.applyColors(harnessId, this.key, colors, mesh);
+    } else {
+      console.error(ErrorUtils.notFound(harnessId));
+    }
+  }
+
+  public setDefaultColors(harnessId: string) {
+    const harness = this.cacheService.harnessCache.get(harnessId);
+    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
+    if (harness && mesh) {
+      const colors = this.createDefaultColorMap(harness);
+      this.applyColors(harnessId, this.defaultKey, colors, mesh);
+    } else {
+      console.error(ErrorUtils.notFound(harnessId));
+    }
+  }
+
+  private applyColors(
+    harnessId: string,
+    key: string,
+    colors: Map<string, Color>,
+    mesh: Mesh
+  ) {
+    const array: number[] = [];
+    this.mappingService
+      .applyMapping(harnessId, GeometryColors.empty, colors)
+      .forEach((color) => array.push(color.r, color.g, color.b));
+    GeometryUtils.applyGeoAttribute(
+      mesh.geometry,
+      key,
+      new Float32BufferAttribute(array, 3)
+    );
+  }
+
+  private createMap(array: SetColorAPIStruct[]): Map<string, Color> {
+    const map: Map<string, Color> = new Map();
+    array.forEach((struct) => map.set(struct.harnessElementId, struct.color));
+    return map;
+  }
+
+  private createEmptyColorMap(harness: Harness): Map<string, Color> {
+    const map: Map<string, Color> = new Map();
+    const add = (identifiable: Identifiable) => {
+      map.set(identifiable.id, GeometryColors.empty);
+    };
+    harness.segments.forEach(add);
+    harness.protections.forEach(add);
+    harness.fixings.forEach(add);
+    harness.connectors.forEach(add);
+    harness.accessories.forEach(add);
+    return map;
+  }
+
+  private createDefaultColorMap(harness: Harness): Map<string, Color> {
+    const map: Map<string, Color> = new Map();
+    harness.segments.forEach((segment) =>
+      map.set(segment.id, GeometryColors.segment)
+    );
+    harness.protections.forEach((protection) =>
+      map.set(protection.id, GeometryColors.protection)
+    );
+    harness.fixings.forEach((fixing) =>
+      map.set(fixing.id, GeometryColors.fixing)
+    );
+    harness.connectors.forEach((connector) =>
+      map.set(connector.id, GeometryColors.connector)
+    );
+    harness.accessories.forEach((accessory) =>
+      map.set(accessory.id, GeometryColors.accessory)
+    );
+    return map;
   }
 }

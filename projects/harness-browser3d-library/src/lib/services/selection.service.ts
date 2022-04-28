@@ -22,7 +22,6 @@ import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
 import { SceneService } from './scene.service';
-import { GeometryService } from './geometry.service';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { BufferGeometry, Mesh, Scene, SphereBufferGeometry } from 'three';
 
@@ -53,12 +52,11 @@ export class SelectionService {
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly geometryService: GeometryService,
     private readonly sceneService: SceneService
   ) {}
 
-  public setGeos() {
-    for (const entry of this.geometryService.harnessElementGeos) {
+  public addGeos(geos: Map<string, BufferGeometry>) {
+    for (const entry of geos) {
       this.harnessElementGeos.set(entry[0], entry[1]);
     }
   }
