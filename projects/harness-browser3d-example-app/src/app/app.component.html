@@ -181,8 +181,8 @@
         class="browser_panel"
         (initialized)="addAPI($event)"
         [addHarness]="data"
-        [selectedIds]="selectedIds"
-        [colors]="colors"
+        [selectedIds]="selectedIds$ | async"
+        [colors]="colors$ | async"
         [settings]="settings"
       ></lib-harness-browser3d>
     </div>
