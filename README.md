@@ -24,3 +24,15 @@ ng build harness-browser3d-library --configuration production
 
 ng serve --open
 ```
+
+# Publishing
+
+To publish the lib:
+
+```shell
+cd dist\harness-browser3d-library
+
+npm login
+
+npm publish --access public
+```

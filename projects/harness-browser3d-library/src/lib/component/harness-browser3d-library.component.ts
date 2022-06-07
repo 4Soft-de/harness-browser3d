@@ -92,16 +92,17 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
-  set selectedIds(ids: string[]) {
-    this.selectionService.selectElements(ids);
+  set selectedIds(ids: string[] | null | undefined) {
+    this.selectionService.selectElements(ids ?? []);
   }
 
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
-  set colors(colors: SetColorAPIStruct[]) {
-    if (colors.length) {
-      this.colorService.setColors(colors);
+  set colors(colors: SetColorAPIStruct[] | null | undefined) {
+    const safeColors = colors ?? [];
+    if (safeColors.length) {
+      this.colorService.setColors(safeColors);
     }
   }
 

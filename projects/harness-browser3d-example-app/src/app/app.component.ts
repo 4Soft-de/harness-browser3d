@@ -34,6 +34,7 @@ import { DataService } from '../services/data.service';
 import * as exampleHarness from '../assets/exampleHarness.json';
 import { debugView } from '../views/debug.view';
 import { ViewSelectionStruct } from '../structs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -44,8 +45,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
   data?: Harness;
-  selectedIds: string[] = [];
-  colors: SetColorAPIStruct[] = [];
+  selectedIds$: Subject<string[] | undefined> = new Subject();
+  colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
   settings?: SettingsAPIStruct;
 
   displayedColumns: string[] = ['actions', 'module'];
@@ -147,9 +148,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     if (this.selection.length > 0) {
-      this.selectedIds = this.selection.map((module) => module.id);
+      this.selectedIds$.next(this.selection.map((module) => module.id));
     } else {
-      this.selectedIds = [];
+      this.selectedIds$.next(undefined);
       this.api?.resetCamera();
     }
   }
@@ -202,7 +203,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.colors = this.colorService.setColors();
+    this.colors$.next(this.colorService.setColors());
   }
 
   resetColors() {
@@ -211,7 +212,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     this.api?.resetColors(this.data.id);
-    this.colors = this.colorService.resetColors();
+    this.colors$.next(this.colorService.resetColors());
   }
 
   removeColor(module: Identifiable) {
