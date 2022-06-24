@@ -21,7 +21,6 @@ import {
   MeshLambertMaterial,
   ShaderLib,
 } from 'three';
-import { GeometryColors } from '../lib/structs/colors';
 import { View } from '../views/view';
 
 class State {
@@ -37,10 +36,10 @@ class State {
   }
 }
 
-const addedState = new State('added', 1, new Color('green'));
+const addedState = new State('added', 1, new Color('mediumseagreen'));
 const removedState = new State('removed', 2, new Color('red'));
-const modifiedState = new State('modified', 3, new Color('blue'));
-const unmodifiedState = new State('unmodified', 4, GeometryColors.clear);
+const modifiedState = new State('modified', 3, new Color('dodgerblue'));
+const unmodifiedState = new State('unmodified', 4, new Color('black'));
 
 const diffViewPropertyKey = 'diffState';
 
