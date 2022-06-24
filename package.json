@@ -21,9 +21,9 @@
     "@angular/platform-browser": "13.x",
     "@angular/platform-browser-dynamic": "13.x",
     "@angular/router": "13.x",
-    "@types/three": "0.139.x",
+    "@types/three": "0.141.x",
     "rxjs": "7.x",
-    "three": "0.139.x",
+    "three": "0.141.x",
     "tslib": "2.x",
     "zone.js": "0.11.x"
   },
