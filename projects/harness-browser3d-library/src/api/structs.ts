@@ -23,6 +23,7 @@ export interface SettingsAPIStruct {
   segmentCount?: number;
   curveStepsFactor?: number;
   pixelRatio?: number;
+  backgroundColor?: Color;
 }
 
 export interface BoundingSphereAPIStruct {

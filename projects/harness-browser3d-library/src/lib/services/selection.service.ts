@@ -15,7 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { PlacedHarnessOccurrence } from '../../api/alias';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { GeometryMaterial } from '../structs/material';
@@ -24,6 +24,8 @@ import { CameraService } from './camera.service';
 import { SceneService } from './scene.service';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { BufferGeometry, Mesh, Scene, SphereBufferGeometry } from 'three';
+import { Subscription } from 'rxjs';
+import { SettingsService } from './settings.service';
 
 class BoundingSphere {
   constructor(
@@ -45,15 +47,29 @@ class BoundingSphere {
 @Injectable({
   providedIn: 'root',
 })
-export class SelectionService {
+export class SelectionService implements OnDestroy {
   private selectMesh: Mesh | undefined;
   private selectSphere: BoundingSphere | undefined;
   private readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly sceneService: SceneService
-  ) {}
+    private readonly sceneService: SceneService,
+    settingsService: SettingsService
+  ) {
+    this.subscription.add(
+      settingsService.updatedGeometrySettings.subscribe(() => {
+        this.clearGeos();
+        this.resetMesh();
+        this.resetSphere();
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   public addGeos(geos: Map<string, BufferGeometry>) {
     for (const entry of geos) {

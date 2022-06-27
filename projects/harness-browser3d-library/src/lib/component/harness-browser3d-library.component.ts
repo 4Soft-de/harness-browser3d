@@ -50,6 +50,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   @ViewChild('harness3dBrowserCanvas')
   private canvasElement!: ElementRef<HTMLCanvasElement>;
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
+  private isInitialized = false;
 
   constructor(
     private readonly ngZone: NgZone,
@@ -70,6 +71,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
     this.cameraService.initControls(this.canvasElement.nativeElement);
     this.sceneService.setupScene();
     this.initialized.emit(this.api);
+    this.isInitialized = true;
     this.animate();
   }
 
@@ -109,11 +111,10 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   @Input()
   set settings(additionalSettings: SettingsAPIStruct | undefined) {
     if (additionalSettings) {
-      this.settingsService.add(additionalSettings);
-      this.api.clear();
-      this.cacheService.clear();
-      this.renderService.resizeRendererToCanvasSize();
-      this.sceneService.setupScene();
+      this.settingsService.set(additionalSettings);
+      if (this.isInitialized) {
+        this.settingsService.apply();
+      }
     }
   }
 

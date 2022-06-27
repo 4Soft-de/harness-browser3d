@@ -35,6 +35,7 @@ import * as exampleHarness from '../assets/exampleHarness.json';
 import { debugView } from '../views/debug.view';
 import { ViewSelectionStruct } from '../structs';
 import { Subject } from 'rxjs';
+import { Color } from 'three';
 
 @Component({
   selector: 'app-root',
@@ -47,7 +48,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   data?: Harness;
   selectedIds$: Subject<string[] | undefined> = new Subject();
   colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
-  settings?: SettingsAPIStruct;
+  settings: SettingsAPIStruct = {
+    backgroundColor: new Color('white'),
+  };
 
   displayedColumns: string[] = ['actions', 'module'];
   dataSource = new MatTableDataSource<Identifiable>();
