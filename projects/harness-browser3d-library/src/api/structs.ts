@@ -26,11 +26,6 @@ export interface SettingsAPIStruct {
   backgroundColor?: Color;
 }
 
-export interface BoundingSphereAPIStruct {
-  centerId: string;
-  radius: number;
-}
-
 export interface SetColorAPIStruct {
   harnessElementId: string;
   color: Color;

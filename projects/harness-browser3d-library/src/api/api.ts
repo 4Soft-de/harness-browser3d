@@ -53,7 +53,6 @@ export class HarnessBrowser3dLibraryAPI {
     this.sceneService.clearScene();
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
-    this.selectionService.resetSphere();
   }
 
   public setView(view: View, harnessId: string) {

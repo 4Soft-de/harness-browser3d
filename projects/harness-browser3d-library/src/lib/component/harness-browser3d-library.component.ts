@@ -27,17 +27,12 @@ import {
 } from '@angular/core';
 import { Harness } from '../../api/alias';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
-import {
-  BoundingSphereAPIStruct,
-  SetColorAPIStruct,
-  SettingsAPIStruct,
-} from '../../api/structs';
+import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
 import { RenderService } from '../services/render.service';
 import { CameraService } from '../services/camera.service';
 import { SceneService } from '../services/scene.service';
 import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
-import { CacheService } from '../services/cache.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
 
@@ -55,7 +50,6 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   constructor(
     private readonly ngZone: NgZone,
     private readonly api: HarnessBrowser3dLibraryAPI,
-    private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly harnessService: HarnessService,
@@ -115,16 +109,6 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
       if (this.isInitialized) {
         this.settingsService.apply();
       }
-    }
-  }
-
-  @Input()
-  set boundingSphere(sphere: BoundingSphereAPIStruct) {
-    const centerElement = this.cacheService.elementCache.get(sphere.centerId);
-    if (centerElement && 'placement' in centerElement) {
-      this.selectionService.drawBoundingSphere(centerElement, sphere.radius);
-    } else {
-      console.log(`element '${sphere.centerId}' is not found`);
     }
   }
 }
