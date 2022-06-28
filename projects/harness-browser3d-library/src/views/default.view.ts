@@ -15,13 +15,8 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import {
-  Color,
-  Float32BufferAttribute,
-  FrontSide,
-  MeshLambertMaterial,
-  ShaderLib,
-} from 'three';
+import { Color, Float32BufferAttribute, ShaderLib } from 'three';
+import { GeometryMaterial } from '../lib/structs/material';
 import { View } from '../views/view';
 
 const defaultViewPropertyKey = undefined;
@@ -50,12 +45,7 @@ function defaultViewVertexShader(): string {
 }
 
 function defaultViewMaterial() {
-  const material = new MeshLambertMaterial({
-    vertexColors: true,
-    side: FrontSide,
-    wireframe: false,
-    reflectivity: 1,
-  });
+  const material = GeometryMaterial.defaultHarness;
   material.onBeforeCompile = (shader) => {
     shader.vertexShader = defaultViewVertexShader();
     shader.fragmentShader = ShaderLib.lambert.fragmentShader;

@@ -16,7 +16,6 @@
 */
 
 import { GeometryUtils } from '../utils/geometry-utils';
-import { GeometryMaterial } from '../structs/material';
 import {
   Accessory,
   Connector,
@@ -100,7 +99,7 @@ export class HarnessService {
     }
 
     const position = GeometryUtils.centerGeometry(mergedHarnessGeo);
-    const mesh = new Mesh(mergedHarnessGeo, GeometryMaterial.harness);
+    const mesh = new Mesh(mergedHarnessGeo);
     mesh.position.copy(position);
     return mesh;
   }
