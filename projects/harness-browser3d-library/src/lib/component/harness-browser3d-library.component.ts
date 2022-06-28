@@ -79,7 +79,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   }
 
   @Input()
-  set addHarness(harness: Harness | undefined) {
+  set addHarness(harness: Harness | null | undefined) {
     if (harness) {
       this.harnessService.addHarness(harness);
     }
@@ -103,7 +103,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   }
 
   @Input()
-  set settings(additionalSettings: SettingsAPIStruct | undefined) {
+  set settings(additionalSettings: SettingsAPIStruct | null | undefined) {
     if (additionalSettings) {
       this.settingsService.set(additionalSettings);
       if (this.isInitialized) {
