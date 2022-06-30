@@ -28,13 +28,9 @@ import { MathUtils, Mesh, PerspectiveCamera, Vector3 } from 'three';
 })
 export class CameraService {
   private cameraSettings = {
-    resetCameraDistance: 1000,
+    resetCameraDistanceFactor: 0.5,
     resetCameraAngle: 45,
     resetCameraHeightFactor: 1.2,
-
-    zoomOnMeshDistance: 100,
-    zoomOnMeshAngle: 0,
-    zoomOnMeshHeightFactor: 1,
   };
 
   private camera: PerspectiveCamera;
@@ -46,7 +42,7 @@ export class CameraService {
     this.camera.updateProjectionMatrix();
   }
 
-  initControls(canvas: HTMLCanvasElement) {
+  public initControls(canvas: HTMLCanvasElement) {
     this.controls = new OrbitControls(this.camera, canvas);
   }
 
@@ -144,35 +140,18 @@ export class CameraService {
     }
 
     const vecMinMax = new Vector3().subVectors(min, max);
+    const distance =
+      vecMinMax.length() * this.cameraSettings.resetCameraDistanceFactor;
     const initCamDir = vecMinMax.clone();
     initCamDir
       .crossVectors(initCamDir, this.camera.up)
-      .normalize()
+      .setLength(distance)
       .applyAxisAngle(
         this.camera.up,
         MathUtils.degToRad(-this.cameraSettings.resetCameraAngle)
       );
     this.camera.position.subVectors(mid, initCamDir);
     this.controls.target.copy(mid);
-    this.controls.update();
-    this.camera.updateMatrixWorld();
-
-    const leftViewPos = new Vector3(-1, 0, 0).unproject(this.camera);
-    const leftViewDir = this.camera.position
-      .clone()
-      .sub(leftViewPos)
-      .normalize();
-
-    this.camera.position
-      .addVectors(
-        min,
-        leftViewDir.multiplyScalar(this.cameraSettings.resetCameraDistance)
-      )
-      .set(
-        this.camera.position.x,
-        this.camera.position.y,
-        max.z * this.cameraSettings.resetCameraHeightFactor
-      );
 
     this.camera.updateMatrixWorld();
     this.controls.update();
