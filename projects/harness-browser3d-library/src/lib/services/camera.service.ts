@@ -16,19 +16,17 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Point } from '../../api/alias';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { CacheService } from './cache.service';
 import { ErrorUtils } from '../utils/error-utils';
-import { isPlacedHarnessOccurrence } from '../utils/cast';
-import { MathUtils, Mesh, PerspectiveCamera, Vector3 } from 'three';
+import { Box3, Mesh, PerspectiveCamera, Sphere, Vector3 } from 'three';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CameraService {
   private cameraSettings = {
-    resetCameraDistanceFactor: 0.5,
+    resetCameraDistanceFactor: 1.15,
     resetCameraAngle: 45,
     resetCameraHeightFactor: 1.2,
   };
@@ -54,104 +52,50 @@ export class CameraService {
     return this.controls;
   }
 
-  private computeMinMaxOfLoadedElements(): {
-    min: Vector3;
-    max: Vector3;
-  } {
-    const min: Vector3 = new Vector3(Infinity, Infinity, Infinity);
-    const max: Vector3 = new Vector3(-Infinity, -Infinity, -Infinity);
-
-    for (const element of this.cacheService.elementCache.values()) {
-      let meshPos: Point | undefined = undefined;
-      let harnessId: string | undefined = undefined;
-      if (isPlacedHarnessOccurrence(element) && element.placement) {
-        meshPos = element.placement.location;
-      }
-      const harness = this.cacheService.elementHarnessCache.get(element.id);
-      harnessId = harness?.id;
-
-      if (meshPos && harnessId) {
-        max.x = meshPos.x > max.x ? meshPos.x : max.x;
-        max.y = meshPos.y > max.y ? meshPos.y : max.y;
-        max.z = meshPos.z > max.z ? meshPos.z : max.z;
-
-        min.x = meshPos.x < min.x ? meshPos.x : min.x;
-        min.y = meshPos.y < min.y ? meshPos.y : min.y;
-        min.z = meshPos.z < min.z ? meshPos.z : min.z;
-      }
-    }
-
-    return { min, max };
-  }
-
-  private computeMidOfLoadedElements(min: Vector3, max: Vector3): Vector3 {
-    const result: Vector3 = new Vector3(0, 0, 0);
-    return result.addVectors(min, result.subVectors(max, min).divideScalar(2));
-  }
-
   public resetCamera() {
-    if (this.cacheService.elementCache.size > 0) {
-      const minMax = this.computeMinMaxOfLoadedElements();
-      const mid: Vector3 = this.computeMidOfLoadedElements(
-        minMax.min,
-        minMax.max
-      );
-      this.focusCameraOnPosition(minMax.min, minMax.max, mid);
+    if (this.cacheService.harnessMeshCache.size) {
+      const sphere = this.computeSceneBoundingSphere();
+      this.focusCameraOnSphere(sphere);
     } else {
-      this.focusCameraOnPosition(
-        new Vector3(-0.5, -0.5, -0.5),
-        new Vector3(0.5, 0.5, 0.5),
-        new Vector3(0, 0, 0)
-      );
+      this.focusCameraOnSphere(new Sphere(new Vector3(0, 0, 0), 1));
     }
   }
 
   public focusCameraOnMesh(mesh: Mesh) {
     if (mesh.geometry.boundingBox) {
-      const minMaxMid = this.computeMinMaxMidOfMesh(mesh);
-      this.focusCameraOnPosition(minMaxMid.min, minMaxMid.max, minMaxMid.mid);
+      const sphere = this.computeBoundingSphere(mesh);
+      this.focusCameraOnSphere(sphere);
     } else {
       console.error('no bounding box computed');
     }
   }
 
-  private computeMinMaxMidOfMesh(mesh: Mesh): {
-    min: Vector3;
-    max: Vector3;
-    mid: Vector3;
-  } {
-    const mid = mesh.position;
-
-    const halveSize = new Vector3();
-    mesh.geometry.computeBoundingBox();
-    mesh.geometry.boundingBox!.getSize(halveSize);
-    halveSize.divideScalar(2);
-
-    const min = mid.clone().sub(halveSize);
-    const max = mid.clone().add(halveSize);
-
-    return { min, max, mid };
+  private computeSceneBoundingSphere() {
+    const boxes: Box3[] = [];
+    this.cacheService.harnessMeshCache.forEach((mesh) =>
+      boxes.push(new Box3().setFromObject(mesh))
+    );
+    const vectors = boxes.flatMap((box) => [box.min, box.max]);
+    return new Sphere().setFromPoints(vectors);
   }
 
-  private focusCameraOnPosition(min: Vector3, max: Vector3, mid: Vector3) {
+  private computeBoundingSphere(mesh: Mesh) {
+    return new Box3().setFromObject(mesh).getBoundingSphere(new Sphere());
+  }
+
+  private focusCameraOnSphere(sphere: Sphere) {
     if (!this.controls) {
       console.error(ErrorUtils.isUndefined('controls'));
       return;
     }
 
-    const vecMinMax = new Vector3().subVectors(min, max);
-    const distance =
-      vecMinMax.length() * this.cameraSettings.resetCameraDistanceFactor;
-    const initCamDir = vecMinMax.clone();
-    initCamDir
-      .crossVectors(initCamDir, this.camera.up)
-      .setLength(distance)
-      .applyAxisAngle(
-        this.camera.up,
-        MathUtils.degToRad(-this.cameraSettings.resetCameraAngle)
-      );
-    this.camera.position.subVectors(mid, initCamDir);
-    this.controls.target.copy(mid);
+    const camPos = sphere.center
+      .clone()
+      .sub(new Vector3(0, sphere.radius, 0))
+      .multiplyScalar(this.cameraSettings.resetCameraDistanceFactor);
+
+    this.camera.position.copy(camPos);
+    this.controls.target.copy(sphere.center);
 
     this.camera.updateMatrixWorld();
     this.controls.update();
