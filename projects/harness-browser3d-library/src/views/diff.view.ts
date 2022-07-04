@@ -35,7 +35,7 @@ class State {
 const addedState = new State('added', 1, new Color('mediumseagreen'));
 const removedState = new State('removed', 2, new Color('red'));
 const modifiedState = new State('modified', 3, new Color('dodgerblue'));
-const unmodifiedState = new State('unmodified', 4, new Color('black'));
+const unmodifiedState = new State('unmodified', 4, new Color('lightgrey'));
 
 const diffViewPropertyKey = 'diffState';
 
