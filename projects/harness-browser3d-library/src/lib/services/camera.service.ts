@@ -27,8 +27,7 @@ import { Box3, Mesh, PerspectiveCamera, Sphere, Vector3 } from 'three';
 export class CameraService {
   private cameraSettings = {
     resetCameraDistanceFactor: 1.15,
-    resetCameraAngle: 45,
-    resetCameraHeightFactor: 1.2,
+    selectionDistanceFactor: 1.5,
   };
 
   private camera: PerspectiveCamera;
@@ -53,18 +52,22 @@ export class CameraService {
   }
 
   public resetCamera() {
-    if (this.cacheService.harnessMeshCache.size) {
-      const sphere = this.computeSceneBoundingSphere();
-      this.focusCameraOnSphere(sphere);
-    } else {
-      this.focusCameraOnSphere(new Sphere(new Vector3(0, 0, 0), 1));
-    }
+    const sphere = this.cacheService.harnessMeshCache.size
+      ? this.computeSceneBoundingSphere()
+      : new Sphere(new Vector3(0, 0, 0), 1);
+    this.focusCameraOnSphere(
+      sphere,
+      this.cameraSettings.resetCameraDistanceFactor
+    );
   }
 
   public focusCameraOnMesh(mesh: Mesh) {
     if (mesh.geometry.boundingBox) {
       const sphere = this.computeBoundingSphere(mesh);
-      this.focusCameraOnSphere(sphere);
+      this.focusCameraOnSphere(
+        sphere,
+        this.cameraSettings.selectionDistanceFactor
+      );
     } else {
       console.error('no bounding box computed');
     }
@@ -83,21 +86,73 @@ export class CameraService {
     return new Box3().setFromObject(mesh).getBoundingSphere(new Sphere());
   }
 
-  private focusCameraOnSphere(sphere: Sphere) {
+  private focusCameraOnSphere(sphere: Sphere, distanceFactor: number) {
     if (!this.controls) {
       console.error(ErrorUtils.isUndefined('controls'));
       return;
     }
 
-    const camPos = sphere.center
-      .clone()
-      .sub(new Vector3(0, sphere.radius, 0))
-      .multiplyScalar(this.cameraSettings.resetCameraDistanceFactor);
+    const leftSpherePos = new Vector3(1, 0, 0)
+      .multiplyScalar(sphere.radius)
+      .sub(sphere.center)
+      .multiplyScalar(-1);
 
-    this.camera.position.copy(camPos);
+    const leftSphereDir =
+      this.computeLeftSideCameraDirection(sphere).add(leftSpherePos);
+
+    const centerSphereDir = new Vector3().addVectors(
+      sphere.center,
+      new Vector3(0, 1, 0)
+    );
+
+    const intersection = this.computeIntersection(
+      leftSpherePos,
+      leftSphereDir,
+      sphere.center,
+      centerSphereDir
+    );
+
+    const additionalDistance = intersection.y * distanceFactor - intersection.y;
+
+    this.camera.position.addVectors(
+      intersection,
+      new Vector3(0, additionalDistance, 0)
+    );
     this.controls.target.copy(sphere.center);
-
-    this.camera.updateMatrixWorld();
     this.controls.update();
+    this.camera.updateMatrixWorld();
+  }
+
+  private computeLeftSideCameraDirection(sphere: Sphere) {
+    this.camera.position.copy(new Vector3(0, 1, 0).add(sphere.center));
+    this.camera.lookAt(sphere.center);
+    this.camera.updateMatrixWorld();
+
+    return new Vector3().subVectors(
+      this.camera.position,
+      new Vector3(-1, 0, 0).unproject(this.camera)
+    );
+  }
+
+  // see https://de.wikipedia.org/wiki/Schnittpunkt
+  private computeIntersection(
+    beginA: Vector3,
+    endA: Vector3,
+    beginB: Vector3,
+    endB: Vector3
+  ) {
+    const A = beginB.x * endB.y - beginB.y * endB.x;
+    const B = beginA.x * endA.y - beginA.y * endA.x;
+
+    const a = endA.x - beginA.x;
+    const b = endB.x - beginB.x;
+    const c = endA.y - beginA.y;
+    const d = endB.y - beginB.y;
+
+    const x = a * A - b * B;
+    const y = c * A - d * B;
+    const s = a * d - c * b;
+
+    return new Vector3(x, y, 0).divideScalar(s).setZ(beginA.z);
   }
 }
