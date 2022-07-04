@@ -28,13 +28,15 @@ import { CacheService } from './cache.service';
 @Injectable({
   providedIn: 'root',
 })
-export class SettingsService {
+export class SettingsService implements SettingsAPIStruct {
   public geometryMode = GeometryModeAPIEnum.default;
   public splineMode = SplineModeAPIEnum.unclamped;
   public pixelRatio = window.devicePixelRatio;
   public segmentCount = 15;
   public curveStepsFactor = 0.1;
   public backgroundColor = new Color(0xcccccc);
+  public addHarnessResetCamera = true;
+  public zoomSelection = true;
 
   public updatedGeometrySettings = new Subject<void>();
   public updatedCameraSettings = new Subject<void>();

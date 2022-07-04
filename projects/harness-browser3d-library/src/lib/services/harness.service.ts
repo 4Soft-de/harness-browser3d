@@ -35,6 +35,8 @@ import { MappingService } from './mapping.service';
 import { ViewService } from './view.service';
 import { defaultView } from '../../views/default.view';
 import { ColorService } from './color.service';
+import { CameraService } from './camera.service';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -45,11 +47,13 @@ export class HarnessService {
 
   constructor(
     private readonly cacheService: CacheService,
+    private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
+    private readonly settingsService: SettingsService,
     private readonly viewService: ViewService
   ) {}
 
@@ -68,6 +72,9 @@ export class HarnessService {
       );
       this.colorService.setDefaultColors(harness.id);
       this.viewService.applyView(defaultView, harness.id);
+      if (this.settingsService.addHarnessResetCamera) {
+        this.cameraService.resetCamera();
+      }
     }
   }
 

@@ -37,7 +37,7 @@ export class SelectionService implements OnDestroy {
   constructor(
     private readonly cameraService: CameraService,
     private readonly sceneService: SceneService,
-    settingsService: SettingsService
+    private readonly settingsService: SettingsService
   ) {
     this.subscription.add(
       settingsService.updatedGeometrySettings.subscribe(() => {
@@ -79,8 +79,9 @@ export class SelectionService implements OnDestroy {
       const selectCenter = GeometryUtils.centerGeometry(selectGeo);
       this.selectMesh.position.copy(selectCenter);
       this.sceneService.getScene().add(this.selectMesh);
-
-      this.cameraService.focusCameraOnMesh(this.selectMesh);
+    }
+    if (this.settingsService.zoomSelection) {
+      this.zoomSelection();
     }
   }
 
@@ -88,6 +89,14 @@ export class SelectionService implements OnDestroy {
     if (this.selectMesh) {
       this.sceneService.getScene().remove(this.selectMesh);
       this.selectMesh = undefined;
+    }
+  }
+
+  private zoomSelection() {
+    if (this.selectMesh) {
+      this.cameraService.focusCameraOnMesh(this.selectMesh);
+    } else {
+      this.cameraService.resetCamera();
     }
   }
 }

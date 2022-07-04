@@ -24,6 +24,8 @@ export interface SettingsAPIStruct {
   curveStepsFactor?: number;
   pixelRatio?: number;
   backgroundColor?: Color;
+  addHarnessResetCamera?: boolean;
+  zoomSelection?: boolean;
 }
 
 export interface SetColorAPIStruct {

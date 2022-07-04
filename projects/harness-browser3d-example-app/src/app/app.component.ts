@@ -15,7 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import {
   GeometryModeAPIEnum,
   HarnessBrowser3dLibraryAPI,
@@ -42,7 +42,7 @@ import { Color } from 'three';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements AfterViewInit {
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
   data?: Harness;
@@ -68,16 +68,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   file: File | null = null;
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     const bordnet: Bordnet = exampleHarness;
     this.data = bordnet.harnesses[0];
     this.setTableData();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.api) {
-      this.api.resetCamera();
-    }
   }
 
   applyFilter(event: Event) {
@@ -94,18 +88,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   async addHarness(files: FileList | null) {
-    if (files == null || files.item(0) == null) {
-      return;
-    }
-
-    // @ts-ignore
-    const file: File = files.item(0);
-
-    try {
-      this.data = await this.dataService.parseData(file);
-      this.setTableData();
-    } catch (e) {
-      console.log(e);
+    if (files) {
+      const file = files.item(0);
+      if (file) {
+        try {
+          this.data = await this.dataService.parseData(file);
+          this.setTableData();
+        } catch (e) {
+          console.log(e);
+        }
+      }
     }
   }
 
@@ -132,11 +124,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   clearScene() {
-    if (this.api) {
-      this.data = undefined;
-      this.api.clear();
-      this.dataSource = new MatTableDataSource<Identifiable>();
-    }
+    this.data = undefined;
+    this.api?.clear();
+    this.dataSource = new MatTableDataSource<Identifiable>();
   }
 
   toggleRowHighlighting(row: Identifiable, event: MouseEvent) {
@@ -154,15 +144,16 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.selectedIds$.next(this.selection.map((module) => module.id));
     } else {
       this.selectedIds$.next(undefined);
-      this.api?.resetCamera();
     }
   }
 
   resetCamera() {
-    if (this.api) {
-      this.api.resetCamera();
-      this.selection = [];
-    }
+    this.api?.resetCamera();
+  }
+
+  resetSelection() {
+    this.selectedIds$.next([]);
+    this.selection = [];
   }
 
   geometry(event: MatSlideToggleChange) {
