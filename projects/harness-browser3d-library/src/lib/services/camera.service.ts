@@ -41,6 +41,7 @@ export class CameraService {
 
   public initControls(canvas: HTMLCanvasElement) {
     this.controls = new OrbitControls(this.camera, canvas);
+    this.controls.listenToKeyEvents(canvas);
   }
 
   public getCamera() {
