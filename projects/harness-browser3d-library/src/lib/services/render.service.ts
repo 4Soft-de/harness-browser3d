@@ -37,9 +37,7 @@ class DefaultPass extends Pass {
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class RenderService implements OnDestroy {
   private postProcessor?: EffectComposer;
   private subscription: Subscription = new Subscription();

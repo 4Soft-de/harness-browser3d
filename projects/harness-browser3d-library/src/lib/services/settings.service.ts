@@ -25,9 +25,7 @@ import {
 } from '../../api/structs';
 import { CacheService } from './cache.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SettingsService implements SettingsAPIStruct {
   public geometryMode = GeometryModeAPIEnum.default;
   public splineMode = SplineModeAPIEnum.unclamped;

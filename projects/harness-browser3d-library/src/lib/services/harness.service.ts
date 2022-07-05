@@ -38,9 +38,7 @@ import { ColorService } from './color.service';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class HarnessService {
   private harness?: Harness;
   private harnessElementGeos: Map<string, BufferGeometry> = new Map();

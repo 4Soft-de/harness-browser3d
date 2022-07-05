@@ -20,9 +20,7 @@ import { Subscription } from 'rxjs';
 import { DirectionalLight, HemisphereLight, Scene } from 'three';
 import { SettingsService } from './settings.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SceneService implements OnDestroy {
   private readonly scene: Scene;
   private subscription: Subscription = new Subscription();

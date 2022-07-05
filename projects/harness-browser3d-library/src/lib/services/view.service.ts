@@ -23,9 +23,7 @@ import { GeometryUtils } from '../utils/geometry-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ViewService {
   constructor(
     private readonly cacheService: CacheService,

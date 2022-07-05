@@ -27,9 +27,7 @@ import {
 } from 'three';
 import { CameraService } from './camera.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CoordinateSystemService {
   private axesHelper: AxesHelper;
   private axesScene: Scene;

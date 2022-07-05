@@ -25,9 +25,7 @@ import {
 import { GeometryUtils } from '../utils/geometry-utils';
 import { SettingsService } from './settings.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class DefaultGeometryCreationService {
   constructor(private readonly settingsService: SettingsService) {}
 

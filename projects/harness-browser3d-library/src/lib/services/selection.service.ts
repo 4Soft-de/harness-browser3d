@@ -26,9 +26,7 @@ import { BufferGeometry, Mesh } from 'three';
 import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SelectionService implements OnDestroy {
   private selectMesh: Mesh | undefined;
   private readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();

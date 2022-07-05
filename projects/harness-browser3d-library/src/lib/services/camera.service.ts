@@ -21,9 +21,7 @@ import { CacheService } from './cache.service';
 import { ErrorUtils } from '../utils/error-utils';
 import { Box3, Mesh, PerspectiveCamera, Sphere, Vector3 } from 'three';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CameraService {
   private cameraSettings = {
     resetCameraDistanceFactor: 1.15,

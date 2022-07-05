@@ -47,9 +47,7 @@ import {
 } from 'three';
 import { DefaultGeometryCreationService } from './default-geometries.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class GeometryService {
   private readonly defaultConnectors: BufferGeometry[];
   private readonly defaultAccessories: BufferGeometry;

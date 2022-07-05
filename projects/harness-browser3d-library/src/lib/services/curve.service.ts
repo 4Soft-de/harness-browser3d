@@ -21,9 +21,7 @@ import { CurvePath, Vector3, Vector4 } from 'three';
 import { SettingsService } from './settings.service';
 import { SplineModeAPIEnum } from '../../api/structs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CurveService {
   constructor(private readonly settingsService: SettingsService) {}
 

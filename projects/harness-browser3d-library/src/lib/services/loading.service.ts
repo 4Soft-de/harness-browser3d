@@ -21,9 +21,7 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 import { Graphics } from '../../api/alias';
 import { LoadedGeometry } from '../structs/loaded-geometries';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class LoadingService {
   private readonly geometries: Map<string, LoadedGeometry> = new Map();
 
