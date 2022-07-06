@@ -21,11 +21,11 @@
     "@angular/platform-browser": "14.x",
     "@angular/platform-browser-dynamic": "14.x",
     "@angular/router": "14.x",
-    "@types/three": "0.141.x",
     "rxjs": "7.x",
     "three": "0.141.x",
     "tslib": "2.x",
-    "zone.js": "0.11.x"
+    "zone.js": "0.11.x",
+    "stats.js": "0.17.x"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "14.x",
@@ -33,6 +33,8 @@
     "@angular/compiler-cli": "14.x",
     "@types/jasmine": "4.x",
     "@types/node": "17.x",
+    "@types/three": "0.141.x",
+    "@types/stats.js": "0.17.x",
     "jasmine-core": "4.x",
     "karma": "6.x",
     "karma-chrome-launcher": "3.x",

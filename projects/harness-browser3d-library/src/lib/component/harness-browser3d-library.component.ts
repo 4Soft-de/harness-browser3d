@@ -35,6 +35,7 @@ import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
+import Stats from 'stats.js';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -46,6 +47,7 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   private canvasElement!: ElementRef<HTMLCanvasElement>;
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
   private isInitialized = false;
+  private stats?: Stats;
 
   constructor(
     private readonly ngZone: NgZone,
@@ -70,8 +72,10 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   }
 
   private animateImplementation() {
-    requestAnimationFrame(() => this.animateImplementation());
+    this.stats?.begin();
     this.renderService.mainLoop();
+    this.stats?.end();
+    requestAnimationFrame(() => this.animateImplementation());
   }
 
   private animate() {
@@ -109,6 +113,18 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
       if (this.isInitialized) {
         this.settingsService.apply();
       }
+    }
+  }
+
+  @Input()
+  set showStats(parent: HTMLElement | null | undefined) {
+    if (parent && !this.stats) {
+      this.stats = new Stats();
+      this.stats.dom.style.position = 'inherit';
+      this.stats.dom.style.removeProperty('top');
+      this.stats.dom.style.removeProperty('left');
+      parent.appendChild(this.stats.dom);
+      this.stats.showPanel(0);
     }
   }
 }
