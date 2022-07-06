@@ -10,6 +10,7 @@ A high performance angular component for displaying 3D representations of bordne
   [selectedIds]="selectedIds"
   [colors]="colors"
   [settings]="settings"
+  [showStats]="htmlElement"
   (initialized)="addAPI($event)"
 ></lib-harness-browser3d>
 ```
@@ -103,6 +104,13 @@ Built-in shader attributes are controlled by the viewer and can be used by custo
 
 - `vec3 pDefaultColor` is the default color of the corresponding harness element
 - `vec3 pColor` is the specified color as set in the `colors` input property on the angular component
+
+### Predefined Views
+
+Diff
+
+- property `diffState`
+- values can be modified, unmodified, added, removed
 
 # References
 
