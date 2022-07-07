@@ -84,28 +84,44 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
     this.ngZone.runOutsideAngular(() => this.animateImplementation());
   }
 
+  private checkInput<Input>(
+    exec: (input: Input) => void,
+    input: Input | null | undefined
+  ) {
+    if (!this.isInitialized && input) {
+      console.warn('harness-browser3d is not initialized yet');
+    }
+    if (input) {
+      exec(input);
+    }
+  }
+
   @Input()
   set addHarness(harness: Harness | null | undefined) {
-    if (harness) {
-      this.harnessService.addHarness(harness);
-    }
+    this.checkInput(
+      this.harnessService.addHarness.bind(this.harnessService),
+      harness
+    );
   }
 
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
   set selectedIds(ids: string[] | null | undefined) {
-    this.selectionService.selectElements(ids ?? []);
+    this.checkInput(
+      this.selectionService.selectElements.bind(this.selectionService),
+      ids
+    );
   }
 
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
   set colors(colors: SetColorAPIStruct[] | null | undefined) {
-    const safeColors = colors ?? [];
-    if (safeColors.length) {
-      this.colorService.setColors(safeColors);
-    }
+    this.checkInput(
+      this.colorService.setColors.bind(this.colorService),
+      colors
+    );
   }
 
   @Input()
