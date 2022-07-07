@@ -15,7 +15,11 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { AfterViewInit, Component } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+} from '@angular/core';
 import {
   GeometryModeAPIEnum,
   HarnessBrowser3dLibraryAPI,
@@ -41,6 +45,7 @@ import { Color } from 'three';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements AfterViewInit {
   title = 'harness-browser3d-example-app';

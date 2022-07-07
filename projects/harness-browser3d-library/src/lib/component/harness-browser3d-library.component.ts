@@ -17,6 +17,7 @@
 
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -41,6 +42,7 @@ import Stats from 'stats.js';
   selector: 'lib-harness-browser3d',
   templateUrl: './harness-browser3d-library.component.html',
   styleUrls: ['./harness-browser3d-library.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
   @ViewChild('harness3dBrowserCanvas')

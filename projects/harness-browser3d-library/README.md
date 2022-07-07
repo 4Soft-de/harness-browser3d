@@ -29,6 +29,8 @@ class AppComponent {
 }
 ```
 
+It is recommended to set the change detection strategy of the parent component to `OnPush`. It improves the performance when moving the camera.
+
 ### Add a Harness
 
 Add a harness by inserting a `Harness` object into the `addHarness` property. Include Harness from `api\alias.ts`.
