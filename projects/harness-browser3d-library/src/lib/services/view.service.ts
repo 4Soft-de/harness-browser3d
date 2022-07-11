@@ -98,7 +98,7 @@ export class ViewService {
     object: any,
     harnessPropertyKey: string
   ): string | undefined {
-    if ('viewProperties' in object) {
+    if ('viewProperties' in object && object.viewProperties) {
       return object.viewProperties[harnessPropertyKey];
     } else return undefined;
   }
