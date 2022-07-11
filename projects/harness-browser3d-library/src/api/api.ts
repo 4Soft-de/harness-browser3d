@@ -58,8 +58,4 @@ export class HarnessBrowser3dLibraryAPI {
   public setView(view: View, harnessId: string) {
     this.viewService.applyView(view, harnessId);
   }
-
-  public disposeView(view: View, harnessId: string) {
-    this.viewService.disposeView(view, harnessId);
-  }
 }

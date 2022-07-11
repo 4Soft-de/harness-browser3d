@@ -171,10 +171,9 @@ export class AppComponent implements AfterViewInit {
 
   set selectedView(selectedView: ViewSelectionStruct) {
     if (this.api && this.data) {
-      this.api.disposeView(this.selectedViewInternal.view, this.data.id);
       this.api.setView(selectedView.view, this.data.id);
+      this.selectedViewInternal = selectedView;
     }
-    this.selectedViewInternal = selectedView;
   }
 
   get selectedView() {

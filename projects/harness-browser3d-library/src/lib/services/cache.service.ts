@@ -18,6 +18,7 @@
 import { Injectable } from '@angular/core';
 import { Harness, Identifiable } from '../../api/alias';
 import { Mesh } from 'three';
+import { dispose } from '../utils/dispose-utils';
 
 @Injectable()
 export class CacheService {
@@ -29,6 +30,7 @@ export class CacheService {
   public clear() {
     this.elementCache.clear();
     this.elementHarnessCache.clear();
+    this.harnessMeshCache.forEach(dispose);
     this.harnessMeshCache.clear();
   }
 

@@ -23,6 +23,7 @@ import {
   EventEmitter,
   Input,
   NgZone,
+  OnDestroy,
   Output,
   ViewChild,
 } from '@angular/core';
@@ -44,7 +45,9 @@ import Stats from 'stats.js';
   styleUrls: ['./harness-browser3d-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
+export class HarnessBrowser3dLibraryComponent
+  implements AfterViewInit, OnDestroy
+{
   @ViewChild('harness3dBrowserCanvas')
   private canvasElement!: ElementRef<HTMLCanvasElement>;
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
@@ -71,6 +74,10 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
     this.initialized.emit(this.api);
     this.isInitialized = true;
     this.animate();
+  }
+
+  ngOnDestroy(): void {
+    this.api.clear();
   }
 
   private animateImplementation() {

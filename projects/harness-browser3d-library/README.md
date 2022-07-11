@@ -76,11 +76,7 @@ In this example an `exampleProperty` property is added to the object `exampleId`
 
 ### Apply Views
 
-Pass the view and the target harness id into the `applyView` API function.
-
-### Dispose Views
-
-Views must be disposed before deletion to free allocated memory. Pass the view and the target harness id into the `disposeView` API function.
+Pass the view and the target harness id into the `applyView` API function. Previous views on the harnesses are disposed and removed.
 
 ### Define custom Views
 

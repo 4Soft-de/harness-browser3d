@@ -18,6 +18,7 @@
 import { Injectable } from '@angular/core';
 import { Identifiable } from '../../api/alias';
 import { View } from '../../views/view';
+import { dispose } from '../utils/dispose-utils';
 import { ErrorUtils } from '../utils/error-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { CacheService } from './cache.service';
@@ -25,12 +26,17 @@ import { MappingService } from './mapping.service';
 
 @Injectable()
 export class ViewService {
+  private currentViews = new Map<string, View>();
+
   constructor(
     private readonly cacheService: CacheService,
     private readonly mappingService: MappingService
   ) {}
 
   public applyView(view: View, harnessId: string): void {
+    if (this.currentViews.has(harnessId)) {
+      this.removeView(harnessId);
+    }
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
       mesh.material = view.material;
@@ -46,24 +52,22 @@ export class ViewService {
           view.mapper(array)
         );
       }
+      this.currentViews.set(harnessId, view);
     } else {
       console.error(ErrorUtils.notFound(harnessId));
     }
   }
 
-  public disposeView(view: View, harnessId: string): void {
+  private removeView(harnessId: string): void {
+    const view = this.currentViews.get(harnessId);
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
-    if (mesh) {
-      if ('length' in mesh.material) {
-        mesh.material.forEach((material) => material.dispose());
-        mesh.material = [];
-      } else if (mesh.material) {
-        mesh.material.dispose();
-      }
+    if (view && mesh) {
+      dispose(mesh.material);
       if (view.propertyKey) {
         mesh.geometry.deleteAttribute(view.propertyKey);
       }
-    } else {
+      this.currentViews.delete(harnessId);
+    } else if (view) {
       console.error(ErrorUtils.notFound(harnessId));
     }
   }

@@ -25,6 +25,7 @@ import { GeometryUtils } from '../utils/geometry-utils';
 import { BufferGeometry, Mesh } from 'three';
 import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
+import { dispose } from '../utils/dispose-utils';
 
 @Injectable()
 export class SelectionService implements OnDestroy {
@@ -46,6 +47,7 @@ export class SelectionService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.resetMesh();
     this.subscription.unsubscribe();
   }
 
@@ -56,6 +58,7 @@ export class SelectionService implements OnDestroy {
   }
 
   public clearGeos() {
+    this.harnessElementGeos.forEach((geo) => geo.dispose());
     this.harnessElementGeos.clear();
   }
 
@@ -86,6 +89,7 @@ export class SelectionService implements OnDestroy {
   public resetMesh() {
     if (this.selectMesh) {
       this.sceneService.getScene().remove(this.selectMesh);
+      dispose(this.selectMesh);
       this.selectMesh = undefined;
     }
   }
