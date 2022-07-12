@@ -17,6 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { Identifiable } from '../../api/alias';
+import { defaultView } from '../../views/default.view';
 import { View } from '../../views/view';
 import { dispose } from '../utils/dispose-utils';
 import { ErrorUtils } from '../utils/error-utils';
@@ -26,17 +27,27 @@ import { MappingService } from './mapping.service';
 
 @Injectable()
 export class ViewService {
-  private currentViews = new Map<string, View>();
+  private currentView = defaultView;
 
   constructor(
     private readonly cacheService: CacheService,
     private readonly mappingService: MappingService
   ) {}
 
-  public applyView(view: View, harnessId: string): void {
-    if (this.currentViews.has(harnessId)) {
-      this.removeView(harnessId);
+  public applyView(view: View): void {
+    for (let entry of this.cacheService.harnessMeshCache) {
+      const harnessId = entry[0];
+      this.removeView(this.currentView, harnessId);
+      this.setView(view, harnessId);
     }
+    this.currentView = view;
+  }
+
+  public applyCurrentView(harnessId: string): void {
+    this.setView(this.currentView, harnessId);
+  }
+
+  private setView(view: View, harnessId: string): void {
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
       mesh.material = view.material;
@@ -52,21 +63,18 @@ export class ViewService {
           view.mapper(array)
         );
       }
-      this.currentViews.set(harnessId, view);
     } else {
       console.error(ErrorUtils.notFound(harnessId));
     }
   }
 
-  private removeView(harnessId: string): void {
-    const view = this.currentViews.get(harnessId);
+  private removeView(view: View, harnessId: string): void {
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
-    if (view && mesh) {
+    if (mesh) {
       dispose(mesh.material);
       if (view.propertyKey) {
         mesh.geometry.deleteAttribute(view.propertyKey);
       }
-      this.currentViews.delete(harnessId);
     } else if (view) {
       console.error(ErrorUtils.notFound(harnessId));
     }

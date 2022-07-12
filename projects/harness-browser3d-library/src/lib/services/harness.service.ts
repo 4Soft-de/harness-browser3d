@@ -33,7 +33,6 @@ import { SelectionService } from './selection.service';
 import { BufferGeometry, Mesh, Scene } from 'three';
 import { MappingService } from './mapping.service';
 import { ViewService } from './view.service';
-import { defaultView } from '../../views/default.view';
 import { ColorService } from './color.service';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
@@ -69,7 +68,7 @@ export class HarnessService {
         this.sceneService.getScene()
       );
       this.colorService.setDefaultColors(harness.id);
-      this.viewService.applyView(defaultView, harness.id);
+      this.viewService.applyCurrentView(harness.id);
       if (this.settingsService.addHarnessResetCamera) {
         this.cameraService.resetCamera();
       }

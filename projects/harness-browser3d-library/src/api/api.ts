@@ -55,7 +55,7 @@ export class HarnessBrowser3dLibraryAPI {
     this.selectionService.resetMesh();
   }
 
-  public setView(view: View, harnessId: string) {
-    this.viewService.applyView(view, harnessId);
+  public setView(view: View) {
+    this.viewService.applyView(view);
   }
 }
