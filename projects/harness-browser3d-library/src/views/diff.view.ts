@@ -15,13 +15,8 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import {
-  Color,
-  Int8BufferAttribute,
-  MeshLambertMaterial,
-  ShaderLib,
-} from 'three';
-import { GeometryColors } from '../lib/structs/colors';
+import { Color, Int8BufferAttribute, ShaderLib } from 'three';
+import { GeometryMaterial } from '../lib/structs/material';
 import { View } from '../views/view';
 
 class State {
@@ -37,10 +32,10 @@ class State {
   }
 }
 
-const addedState = new State('added', 1, new Color('green'));
+const addedState = new State('added', 1, new Color('mediumseagreen'));
 const removedState = new State('removed', 2, new Color('red'));
-const modifiedState = new State('modified', 3, new Color('blue'));
-const unmodifiedState = new State('unmodified', 4, GeometryColors.clear);
+const modifiedState = new State('modified', 3, new Color('dodgerblue'));
+const unmodifiedState = new State('unmodified', 4, new Color('lightgrey'));
 
 const diffViewPropertyKey = 'diffState';
 
@@ -91,11 +86,7 @@ function diffViewFragmentShader(): string {
 }
 
 function diffViewMaterial() {
-  const material = new MeshLambertMaterial({
-    vertexColors: true,
-    wireframe: false,
-    reflectivity: 1,
-  });
+  const material = GeometryMaterial.defaultHarness;
   material.onBeforeCompile = (shader) => {
     shader.vertexShader = diffViewVertexShader();
     shader.fragmentShader = diffViewFragmentShader();

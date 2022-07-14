@@ -15,14 +15,20 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Harness, PlacedHarnessOccurrence } from '../../api/alias';
+import { Material, Mesh, Texture } from 'three';
 
-export function isHarness(object: any): object is Harness {
-  return (object as Harness) !== undefined;
-}
-
-export function isPlacedHarnessOccurrence(
-  object: any
-): object is PlacedHarnessOccurrence {
-  return (object as PlacedHarnessOccurrence) !== undefined;
+export function dispose(object: Mesh | Material | Material[] | Texture) {
+  if ('isMesh' in object) {
+    object.geometry.dispose();
+    dispose(object.material);
+  }
+  if ('isMaterial' in object) {
+    object.dispose();
+  }
+  if ('length' in object) {
+    object.forEach(dispose);
+  }
+  if ('isTexture' in object) {
+    object.dispose();
+  }
 }

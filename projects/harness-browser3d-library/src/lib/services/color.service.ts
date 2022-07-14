@@ -26,9 +26,7 @@ import { HarnessUtils } from '../utils/harness-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ColorService {
   private readonly key = 'pColor';
   private readonly defaultKey = 'pDefaultColor';

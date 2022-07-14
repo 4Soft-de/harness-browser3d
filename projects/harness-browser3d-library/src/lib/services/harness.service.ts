@@ -16,7 +16,6 @@
 */
 
 import { GeometryUtils } from '../utils/geometry-utils';
-import { GeometryMaterial } from '../structs/material';
 import {
   Accessory,
   Connector,
@@ -34,23 +33,24 @@ import { SelectionService } from './selection.service';
 import { BufferGeometry, Mesh, Scene } from 'three';
 import { MappingService } from './mapping.service';
 import { ViewService } from './view.service';
-import { defaultView } from '../../views/default.view';
 import { ColorService } from './color.service';
+import { CameraService } from './camera.service';
+import { SettingsService } from './settings.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class HarnessService {
   private harness?: Harness;
   private harnessElementGeos: Map<string, BufferGeometry> = new Map();
 
   constructor(
     private readonly cacheService: CacheService,
+    private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
+    private readonly settingsService: SettingsService,
     private readonly viewService: ViewService
   ) {}
 
@@ -68,7 +68,10 @@ export class HarnessService {
         this.sceneService.getScene()
       );
       this.colorService.setDefaultColors(harness.id);
-      this.viewService.applyView(defaultView, harness.id);
+      this.viewService.applyCurrentView(harness.id);
+      if (this.settingsService.addHarnessResetCamera) {
+        this.cameraService.resetCamera();
+      }
     }
   }
 
@@ -100,7 +103,7 @@ export class HarnessService {
     }
 
     const position = GeometryUtils.centerGeometry(mergedHarnessGeo);
-    const mesh = new Mesh(mergedHarnessGeo, GeometryMaterial.harness);
+    const mesh = new Mesh(mergedHarnessGeo);
     mesh.position.copy(position);
     return mesh;
   }

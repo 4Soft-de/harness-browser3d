@@ -114,6 +114,9 @@
               </tr>
             </table>
           </div>
+          <button mat-raised-button color="accent" (click)="resetSelection()">
+            <mat-icon>restart_alt</mat-icon> Reset Selection
+          </button>
         </ng-container>
       </mat-card>
       <mat-card
@@ -184,7 +187,9 @@
         [selectedIds]="selectedIds$ | async"
         [colors]="colors$ | async"
         [settings]="settings"
+        [showStats]="stats"
       ></lib-harness-browser3d>
     </div>
   </div>
 </div>
+<div #stats class="stats"></div>

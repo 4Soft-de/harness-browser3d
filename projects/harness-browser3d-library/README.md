@@ -10,6 +10,7 @@ A high performance angular component for displaying 3D representations of bordne
   [selectedIds]="selectedIds"
   [colors]="colors"
   [settings]="settings"
+  [showStats]="htmlElement"
   (initialized)="addAPI($event)"
 ></lib-harness-browser3d>
 ```
@@ -27,6 +28,8 @@ class AppComponent {
   }
 }
 ```
+
+It is recommended to set the change detection strategy of the parent component to `OnPush`. It improves the performance when moving the camera.
 
 ### Add a Harness
 
@@ -73,11 +76,7 @@ In this example an `exampleProperty` property is added to the object `exampleId`
 
 ### Apply Views
 
-Pass the view and the target harness id into the `applyView` API function.
-
-### Dispose Views
-
-Views must be disposed before deletion to free allocated memory. Pass the view and the target harness id into the `disposeView` API function.
+Pass the view into the `applyView` API function. The previous view is disposed.
 
 ### Define custom Views
 
@@ -103,6 +102,13 @@ Built-in shader attributes are controlled by the viewer and can be used by custo
 
 - `vec3 pDefaultColor` is the default color of the corresponding harness element
 - `vec3 pColor` is the specified color as set in the `colors` input property on the angular component
+
+### Predefined Views
+
+Diff
+
+- property `diffState`
+- values can be modified, unmodified, added, removed
 
 # References
 

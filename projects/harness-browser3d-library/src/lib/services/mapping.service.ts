@@ -22,9 +22,7 @@ import { HarnessElementVertexMappings, VertexRange } from '../structs/range';
 import { ErrorUtils } from '../utils/error-utils';
 import { CacheService } from './cache.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class MappingService {
   private readonly harnessMappings: Map<string, HarnessElementVertexMappings> =
     new Map();
