@@ -3,6 +3,7 @@
 ## Installation
 
 - delete `package-lock.json`
+- delete `node-modules`
 - `npm install`
 
 ## Visual Studio Code

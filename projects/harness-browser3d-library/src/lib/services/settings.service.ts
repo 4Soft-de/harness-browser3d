@@ -16,25 +16,58 @@
 */
 
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Color } from 'three';
 import {
   GeometryModeAPIEnum,
   SettingsAPIStruct,
   SplineModeAPIEnum,
 } from '../../api/structs';
+import { CacheService } from './cache.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class SettingsService {
+@Injectable()
+export class SettingsService implements SettingsAPIStruct {
   public geometryMode = GeometryModeAPIEnum.default;
   public splineMode = SplineModeAPIEnum.unclamped;
   public pixelRatio = window.devicePixelRatio;
   public segmentCount = 15;
   public curveStepsFactor = 0.1;
+  public backgroundColor = new Color(0xcccccc);
+  public addHarnessResetCamera = true;
+  public zoomSelection = true;
 
-  constructor() {}
+  public updatedGeometrySettings = new Subject<void>();
+  public updatedCameraSettings = new Subject<void>();
 
-  public add(additionalSettings: SettingsAPIStruct) {
+  private updatedSettings: string[] = [];
+
+  constructor(private readonly cacheService: CacheService) {}
+
+  public set(additionalSettings: SettingsAPIStruct) {
     Object.assign(this, additionalSettings);
+    this.updatedSettings = Object.entries(additionalSettings).map(
+      (entry) => entry[0]
+    );
+  }
+
+  public apply() {
+    const geoSetting = this.updatedSettings.find(
+      (element) =>
+        element === 'geometryMode' ||
+        element === 'splineMode' ||
+        element === 'segmentCount' ||
+        element === 'curveStepsFactor'
+    );
+    const cameraSetting = this.updatedSettings.find(
+      (element) => element === 'pixelRatio' || element === 'backgroundColor'
+    );
+    if (geoSetting) {
+      this.updatedGeometrySettings.next();
+      this.cacheService.clear();
+    }
+    if (cameraSetting) {
+      this.updatedCameraSettings.next();
+    }
+    this.updatedSettings = [];
   }
 }

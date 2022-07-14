@@ -17,44 +17,46 @@
 
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
   Input,
   NgZone,
+  OnDestroy,
   Output,
   ViewChild,
 } from '@angular/core';
 import { Harness } from '../../api/alias';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
-import {
-  BoundingSphereAPIStruct,
-  SetColorAPIStruct,
-  SettingsAPIStruct,
-} from '../../api/structs';
+import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
 import { RenderService } from '../services/render.service';
 import { CameraService } from '../services/camera.service';
 import { SceneService } from '../services/scene.service';
 import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
-import { CacheService } from '../services/cache.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
+import Stats from 'stats.js';
 
 @Component({
   selector: 'lib-harness-browser3d',
   templateUrl: './harness-browser3d-library.component.html',
   styleUrls: ['./harness-browser3d-library.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
+export class HarnessBrowser3dLibraryComponent
+  implements AfterViewInit, OnDestroy
+{
   @ViewChild('harness3dBrowserCanvas')
   private canvasElement!: ElementRef<HTMLCanvasElement>;
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
+  private isInitialized = false;
+  private stats?: Stats;
 
   constructor(
     private readonly ngZone: NgZone,
     private readonly api: HarnessBrowser3dLibraryAPI,
-    private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly harnessService: HarnessService,
@@ -70,60 +72,84 @@ export class HarnessBrowser3dLibraryComponent implements AfterViewInit {
     this.cameraService.initControls(this.canvasElement.nativeElement);
     this.sceneService.setupScene();
     this.initialized.emit(this.api);
+    this.isInitialized = true;
     this.animate();
   }
 
+  ngOnDestroy(): void {
+    this.api.clear();
+  }
+
   private animateImplementation() {
-    requestAnimationFrame(() => this.animateImplementation());
+    this.stats?.begin();
     this.renderService.mainLoop();
+    this.stats?.end();
+    requestAnimationFrame(() => this.animateImplementation());
   }
 
   private animate() {
     this.ngZone.runOutsideAngular(() => this.animateImplementation());
   }
 
-  @Input()
-  set addHarness(harness: Harness | undefined) {
-    if (harness) {
-      this.harnessService.addHarness(harness);
+  private checkInput<Input>(
+    exec: (input: Input) => void,
+    input: Input | null | undefined
+  ) {
+    if (!this.isInitialized && input) {
+      console.warn('harness-browser3d is not initialized yet');
     }
+    if (input) {
+      exec(input);
+    }
+  }
+
+  @Input()
+  set addHarness(harness: Harness | null | undefined) {
+    this.checkInput(
+      this.harnessService.addHarness.bind(this.harnessService),
+      harness
+    );
   }
 
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
   set selectedIds(ids: string[] | null | undefined) {
-    this.selectionService.selectElements(ids ?? []);
+    this.checkInput(
+      this.selectionService.selectElements.bind(this.selectionService),
+      ids
+    );
   }
 
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
   set colors(colors: SetColorAPIStruct[] | null | undefined) {
-    const safeColors = colors ?? [];
-    if (safeColors.length) {
-      this.colorService.setColors(safeColors);
-    }
+    this.checkInput(
+      this.colorService.setColors.bind(this.colorService),
+      colors
+    );
   }
 
   @Input()
-  set settings(additionalSettings: SettingsAPIStruct | undefined) {
+  set settings(additionalSettings: SettingsAPIStruct | null | undefined) {
     if (additionalSettings) {
-      this.settingsService.add(additionalSettings);
-      this.api.clear();
-      this.cacheService.clear();
-      this.renderService.resizeRendererToCanvasSize();
-      this.sceneService.setupScene();
+      this.settingsService.set(additionalSettings);
+      if (this.isInitialized) {
+        this.settingsService.apply();
+      }
     }
   }
 
   @Input()
-  set boundingSphere(sphere: BoundingSphereAPIStruct) {
-    const centerElement = this.cacheService.elementCache.get(sphere.centerId);
-    if (centerElement && 'placement' in centerElement) {
-      this.selectionService.drawBoundingSphere(centerElement, sphere.radius);
-    } else {
-      console.log(`element '${sphere.centerId}' is not found`);
+  set showStats(parent: HTMLElement | null | undefined) {
+    if (parent && !this.stats) {
+      this.stats = new Stats();
+      this.stats.dom.style.position = 'inherit';
+      this.stats.dom.style.removeProperty('top');
+      this.stats.dom.style.removeProperty('left');
+      parent.appendChild(this.stats.dom);
+      this.stats.showPanel(0);
     }
   }
 }

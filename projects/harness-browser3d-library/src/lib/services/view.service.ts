@@ -17,22 +17,37 @@
 
 import { Injectable } from '@angular/core';
 import { Identifiable } from '../../api/alias';
+import { defaultView } from '../../views/default.view';
 import { View } from '../../views/view';
+import { dispose } from '../utils/dispose-utils';
 import { ErrorUtils } from '../utils/error-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ViewService {
+  private currentView = defaultView;
+
   constructor(
     private readonly cacheService: CacheService,
     private readonly mappingService: MappingService
   ) {}
 
-  public applyView(view: View, harnessId: string): void {
+  public applyView(view: View): void {
+    for (let entry of this.cacheService.harnessMeshCache) {
+      const harnessId = entry[0];
+      this.removeView(this.currentView, harnessId);
+      this.setView(view, harnessId);
+    }
+    this.currentView = view;
+  }
+
+  public applyCurrentView(harnessId: string): void {
+    this.setView(this.currentView, harnessId);
+  }
+
+  private setView(view: View, harnessId: string): void {
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
       mesh.material = view.material;
@@ -53,19 +68,14 @@ export class ViewService {
     }
   }
 
-  public disposeView(view: View, harnessId: string): void {
+  private removeView(view: View, harnessId: string): void {
     const mesh = this.cacheService.harnessMeshCache.get(harnessId);
     if (mesh) {
-      if ('length' in mesh.material) {
-        mesh.material.forEach((material) => material.dispose());
-        mesh.material = [];
-      } else if (mesh.material) {
-        mesh.material.dispose();
-      }
+      dispose(mesh.material);
       if (view.propertyKey) {
         mesh.geometry.deleteAttribute(view.propertyKey);
       }
-    } else {
+    } else if (view) {
       console.error(ErrorUtils.notFound(harnessId));
     }
   }
@@ -96,7 +106,7 @@ export class ViewService {
     object: any,
     harnessPropertyKey: string
   ): string | undefined {
-    if ('viewProperties' in object) {
+    if ('viewProperties' in object && object.viewProperties) {
       return object.viewProperties[harnessPropertyKey];
     } else return undefined;
   }

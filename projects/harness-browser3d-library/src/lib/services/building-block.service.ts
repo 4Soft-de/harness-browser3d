@@ -21,9 +21,7 @@ import { BuildingBlock } from '../../api/alias';
 import { ErrorUtils } from '../utils/error-utils';
 import { HarnessUtils } from '../utils/harness-utils';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class BuildingBlockService {
   private readonly buildingBlockMatrixCache: Map<string, Matrix4> = new Map();
 

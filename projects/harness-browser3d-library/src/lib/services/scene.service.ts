@@ -15,17 +15,28 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { DirectionalLight, HemisphereLight, Scene } from 'three';
+import { SettingsService } from './settings.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class SceneService {
+@Injectable()
+export class SceneService implements OnDestroy {
   private readonly scene: Scene;
+  private subscription: Subscription = new Subscription();
 
-  constructor() {
+  constructor(settingsService: SettingsService) {
     this.scene = new Scene();
+    this.subscription.add(
+      settingsService.updatedGeometrySettings.subscribe(() => {
+        this.clearScene();
+        this.setupScene();
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   public getScene() {

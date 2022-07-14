@@ -15,13 +15,13 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Camera, Scene, WebGLRenderer } from 'three';
 import {
   EffectComposer,
   Pass,
 } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { GeometryColors } from '../structs/colors';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
 import { CoordinateSystemService } from './coordinate-system.service';
@@ -37,22 +37,34 @@ class DefaultPass extends Pass {
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class RenderService {
+@Injectable()
+export class RenderService implements OnDestroy {
   private postProcessor?: EffectComposer;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
     private readonly coordinateSystemService: CoordinateSystemService,
     private readonly sceneService: SceneService,
     private readonly settingsService: SettingsService
-  ) {}
+  ) {
+    this.subscription.add(
+      this.settingsService.updatedCameraSettings.subscribe(() => {
+        this.resizeRendererToCanvasSize();
+        this.postProcessor?.renderer.setClearColor(
+          this.settingsService.backgroundColor
+        );
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   initRenderer(canvas: HTMLCanvasElement): void {
     const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
-    renderer.setClearColor(GeometryColors.clear);
+    renderer.setClearColor(this.settingsService.backgroundColor);
     renderer.autoClear = false;
     this.postProcessor = new EffectComposer(renderer);
     this.postProcessor.addPass(

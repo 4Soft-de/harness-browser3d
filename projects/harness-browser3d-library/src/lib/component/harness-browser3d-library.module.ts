@@ -16,11 +16,47 @@
 */
 
 import { NgModule } from '@angular/core';
+import { BuildingBlockService } from '../services/building-block.service';
+import { CacheService } from '../services/cache.service';
+import { CameraService } from '../services/camera.service';
+import { ColorService } from '../services/color.service';
+import { CoordinateSystemService } from '../services/coordinate-system.service';
+import { CurveService } from '../services/curve.service';
+import { DefaultGeometryCreationService } from '../services/default-geometries.service';
+import { GeometryService } from '../services/geometry.service';
+import { HarnessService } from '../services/harness.service';
+import { LoadingService } from '../services/loading.service';
+import { MappingService } from '../services/mapping.service';
+import { PositionService } from '../services/position.service';
+import { RenderService } from '../services/render.service';
+import { SceneService } from '../services/scene.service';
+import { SelectionService } from '../services/selection.service';
+import { SettingsService } from '../services/settings.service';
+import { ViewService } from '../services/view.service';
 import { HarnessBrowser3dLibraryComponent } from './harness-browser3d-library.component';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
   imports: [],
   exports: [HarnessBrowser3dLibraryComponent],
+  providers: [
+    BuildingBlockService,
+    CacheService,
+    CameraService,
+    ColorService,
+    CoordinateSystemService,
+    CurveService,
+    DefaultGeometryCreationService,
+    GeometryService,
+    HarnessService,
+    LoadingService,
+    MappingService,
+    PositionService,
+    RenderService,
+    SceneService,
+    SelectionService,
+    SettingsService,
+    ViewService,
+  ],
 })
 export class HarnessBrowser3dLibraryModule {}

@@ -23,11 +23,9 @@ export interface SettingsAPIStruct {
   segmentCount?: number;
   curveStepsFactor?: number;
   pixelRatio?: number;
-}
-
-export interface BoundingSphereAPIStruct {
-  centerId: string;
-  radius: number;
+  backgroundColor?: Color;
+  addHarnessResetCamera?: boolean;
+  zoomSelection?: boolean;
 }
 
 export interface SetColorAPIStruct {
