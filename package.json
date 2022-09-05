@@ -1,6 +1,6 @@
 {
   "name": "harness-browser3d",
-  "version": "0.2.1",
+  "version": "dev",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

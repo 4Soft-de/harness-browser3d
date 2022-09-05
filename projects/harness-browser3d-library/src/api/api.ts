@@ -24,9 +24,7 @@ import { SelectionService } from '../lib/services/selection.service';
 import { ViewService } from '../lib/services/view.service';
 import { View } from '../views/view';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class HarnessBrowser3dLibraryAPI {
   constructor(
     private readonly cameraService: CameraService,

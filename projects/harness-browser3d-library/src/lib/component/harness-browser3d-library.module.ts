@@ -24,6 +24,7 @@ import { CoordinateSystemService } from '../services/coordinate-system.service';
 import { CurveService } from '../services/curve.service';
 import { DefaultGeometryCreationService } from '../services/default-geometries.service';
 import { GeometryService } from '../services/geometry.service';
+import { HarnessBrowser3dLibraryAPI } from '../../api/api';
 import { HarnessService } from '../services/harness.service';
 import { LoadingService } from '../services/loading.service';
 import { MappingService } from '../services/mapping.service';
@@ -48,6 +49,7 @@ import { HarnessBrowser3dLibraryComponent } from './harness-browser3d-library.co
     CurveService,
     DefaultGeometryCreationService,
     GeometryService,
+    HarnessBrowser3dLibraryAPI,
     HarnessService,
     LoadingService,
     MappingService,
