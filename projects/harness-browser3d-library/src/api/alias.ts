@@ -17,22 +17,32 @@
 
 import { components } from '../generated/geometry';
 
-export type Graphics = components['schemas']['Graphics'];
+export type Graphic = components['schemas']['Graphic'];
 export type Point = components['schemas']['Point'];
-export type Placement = components['schemas']['Placement'];
-export type CenterCurve = components['schemas']['CenterCurve'];
+export type Rotation = components['schemas']['Rotation'];
 export type ViewProperties = components['schemas']['ViewProperties'];
-export type Identifiable = components['schemas']['Identifiable'];
-export type HarnessOccurrence = components['schemas']['HarnessOccurrence'];
-export type PlacedHarnessOccurrence =
-  components['schemas']['PlacedHarnessOccurrence'];
-export type Accessory = components['schemas']['Accessory'];
-export type Connector = components['schemas']['Connector'];
-export type FixingAssignment = components['schemas']['FixingAssignment'];
-export type Fixing = components['schemas']['Fixing'];
-export type ProtectionArea = components['schemas']['ProtectionArea'];
-export type Protection = components['schemas']['Protection'];
-export type Segment = components['schemas']['Segment'];
-export type BuildingBlock = components['schemas']['BuildingBlock'];
-export type Harness = components['schemas']['Harness'];
 export type Bordnet = components['schemas']['Bordnet'];
+export type Harness = components['schemas']['Harness'];
+export type BuildingBlock = components['schemas']['BuildingBlock'];
+export type Node = components['schemas']['Node'];
+export type Segment = components['schemas']['Segment'];
+export type Curve = components['schemas']['Curve'];
+export type Occurrence = components['schemas']['Occurrence'];
+export type Placement = components['schemas']['Placement'];
+export type OnPointPlacement = components['schemas']['OnPointPlacement'];
+export type OnWayPlacement = components['schemas']['OnWayPlacement'];
+export type Location = components['schemas']['Location'];
+export type NodeLocation = components['schemas']['NodeLocation'];
+export type SegmentLocation = components['schemas']['SegmentLocation'];
+
+export enum PartType {
+  Connector,
+  Protection,
+  Fixing,
+  Other,
+}
+
+export enum Anchor {
+  FromStartNode,
+  FromEndNode,
+}

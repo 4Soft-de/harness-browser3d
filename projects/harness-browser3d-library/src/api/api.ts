@@ -43,8 +43,8 @@ export class HarnessBrowser3dLibraryAPI {
     this.renderService.resizeRendererToCanvasSize();
   }
 
-  public resetColors(harnessId: string) {
-    this.colorService.resetColors(harnessId);
+  public resetColors() {
+    this.colorService.resetColors();
   }
 
   public clear() {

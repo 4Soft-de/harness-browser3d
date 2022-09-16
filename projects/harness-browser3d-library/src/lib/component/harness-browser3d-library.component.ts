@@ -124,7 +124,7 @@ export class HarnessBrowser3dLibraryComponent
   // load corresponding harness beforehand
   // all ids are in same harness
   @Input()
-  set colors(colors: SetColorAPIStruct[] | null | undefined) {
+  set colors(colors: SetColorAPIStruct | null | undefined) {
     this.checkInput(
       this.colorService.setColors.bind(this.colorService),
       colors

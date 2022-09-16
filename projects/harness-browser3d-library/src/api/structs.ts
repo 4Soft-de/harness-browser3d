@@ -29,6 +29,11 @@ export interface SettingsAPIStruct {
 }
 
 export interface SetColorAPIStruct {
+  harnessId: string;
+  colors: SetColorAPIEntry[];
+}
+
+export interface SetColorAPIEntry {
   harnessElementId: string;
   color: Color;
 }
