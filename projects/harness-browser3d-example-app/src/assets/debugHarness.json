@@ -1,0 +1,306 @@
+{
+  "harnesses": [
+    {
+      "id": "harness",
+      "occurrences": [
+        {
+          "id": "connector",
+          "partType": "Connector",
+          "partNumber": "connectorPartNumber",
+          "numberOfCavities": 1,
+          "placement": {
+            "locations": [
+              {
+                "nodeId": "nodeA"
+              }
+            ]
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "other",
+          "partType": "Other",
+          "partNumber": "otherPartNumber",
+          "placement": {
+            "locations": [
+              {
+                "nodeId": "nodeB"
+              }
+            ]
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "fixing",
+          "partType": "Fixing",
+          "partNumber": "fixingPartNumber",
+          "placement": {
+            "locations": [
+              {
+                "segmentId": "segmentA",
+                "anchor": "FromStartNode",
+                "segmentOffsetLength": 45
+              },
+              {
+                "segmentId": "segmentB",
+                "anchor": "FromEndNode",
+                "segmentOffsetLength": 45
+              }
+            ]
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "protection",
+          "partType": "Protection",
+          "partNumber": "protectionPartNumber",
+          "placement": {
+            "segmentPath": [
+              "segmentCircleA",
+              "segmentCircleB",
+              "segmentCircleC",
+              "segmentCircleD"
+            ],
+            "startLocation": {
+              "segmentId": "segmentCircleA",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 40
+            },
+            "endLocation": {
+              "segmentId": "segmentCircleD",
+              "anchor": "FromEndNode",
+              "segmentOffsetLength": 40
+            }
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "nodeA",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "nodeB",
+          "position": {
+            "x": -50,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "nodeC",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 100
+          },
+          "buildingBlockId": "defaultBuildingBlock",
+          "viewProperties": {
+            "debug": "true"
+          }
+        },
+        {
+          "id": "nodeD",
+          "position": {
+            "x": -50,
+            "y": 0,
+            "z": 100
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        }
+      ],
+      "segments": [
+        {
+          "id": "segmentA",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 10,
+                  "y": 0,
+                  "z": 45
+                },
+                {
+                  "x": -10,
+                  "y": 0,
+                  "z": 45
+                },
+                {
+                  "x": -50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "nodeA",
+          "endNodeId": "nodeB",
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "segmentB",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 100
+                },
+                {
+                  "x": 10,
+                  "y": 0,
+                  "z": 55
+                },
+                {
+                  "x": -10,
+                  "y": 0,
+                  "z": 55
+                },
+                {
+                  "x": -50,
+                  "y": 0,
+                  "z": 100
+                }
+              ]
+            }
+          ],
+          "startNodeId": "nodeC",
+          "endNodeId": "nodeD",
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "segmentCircleA",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": -50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "nodeA",
+          "endNodeId": "nodeB",
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "segmentCircleB",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": -50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": -50,
+                  "y": 0,
+                  "z": 100
+                }
+              ]
+            }
+          ],
+          "startNodeId": "nodeB",
+          "endNodeId": "nodeD",
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "segmentCircleC",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": -50,
+                  "y": 0,
+                  "z": 100
+                },
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 100
+                }
+              ]
+            }
+          ],
+          "startNodeId": "nodeD",
+          "endNodeId": "nodeC",
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "segmentCircleD",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 100
+                },
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "nodeC",
+          "endNodeId": "nodeA",
+          "buildingBlockId": "defaultBuildingBlock"
+        }
+      ],
+      "buildingBlocks": [
+        {
+          "id": "defaultBuildingBlock",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          }
+        }
+      ]
+    }
+  ]
+}
