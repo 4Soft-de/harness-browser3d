@@ -26,20 +26,24 @@ import {
   SetColorAPIStruct,
   SettingsAPIStruct,
   Harness,
-  Identifiable,
   Bordnet,
   defaultView,
   diffView,
+  Node,
+  Segment,
+  Occurrence,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
-import * as exampleHarness from '../assets/exampleHarness.json';
+import * as debugHarness from '../assets/debugHarness.json';
 import { debugView } from '../views/debug.view';
 import { ViewSelectionStruct } from '../structs';
 import { Subject } from 'rxjs';
 import { Color } from 'three';
+
+type HarnessElement = Node | Segment | Occurrence;
 
 @Component({
   selector: 'app-root',
@@ -52,14 +56,14 @@ export class AppComponent implements AfterViewInit {
   api?: HarnessBrowser3dLibraryAPI;
   data?: Harness;
   selectedIds$: Subject<string[] | undefined> = new Subject();
-  colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
+  colors$: Subject<SetColorAPIStruct | undefined> = new Subject();
   settings: SettingsAPIStruct = {
     backgroundColor: new Color('white'),
   };
 
   displayedColumns: string[] = ['actions', 'module'];
-  dataSource = new MatTableDataSource<Identifiable>();
-  selection: Identifiable[] = [];
+  dataSource = new MatTableDataSource<HarnessElement>();
+  selection: HarnessElement[] = [];
 
   selectableViews: ViewSelectionStruct[] = [
     new ViewSelectionStruct(defaultView, 'Default'),
@@ -74,7 +78,7 @@ export class AppComponent implements AfterViewInit {
   file: File | null = null;
 
   ngAfterViewInit(): void {
-    const bordnet: Bordnet = exampleHarness;
+    const bordnet = debugHarness as Bordnet;
     this.data = bordnet.harnesses[0];
     this.setTableData();
   }
@@ -111,17 +115,15 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    const geometryData: Identifiable[] = [
-      ...this.data.connectors,
-      ...this.data.accessories,
-      ...this.data.fixings,
-      ...this.data.protections,
+    const geometryData: HarnessElement[] = [
+      ...this.data.nodes,
       ...this.data.segments,
+      ...this.data.occurrences,
     ];
 
-    this.dataSource = new MatTableDataSource<Identifiable>(geometryData);
+    this.dataSource = new MatTableDataSource<HarnessElement>(geometryData);
     this.dataSource.filterPredicate = function (
-      module: Identifiable,
+      module: HarnessElement,
       filter: string
     ): boolean {
       return module.id.toLowerCase().includes(filter);
@@ -131,10 +133,10 @@ export class AppComponent implements AfterViewInit {
   clearScene() {
     this.data = undefined;
     this.api?.clear();
-    this.dataSource = new MatTableDataSource<Identifiable>();
+    this.dataSource = new MatTableDataSource<HarnessElement>();
   }
 
-  toggleRowHighlighting(row: Identifiable, event: MouseEvent) {
+  toggleRowHighlighting(row: HarnessElement, event: MouseEvent) {
     if ((event.target as Element).classList.contains('mat-mini-fab')) {
       return;
     }
@@ -182,15 +184,15 @@ export class AppComponent implements AfterViewInit {
     this.api = api;
   }
 
-  setToColor1(module: Identifiable) {
+  setToColor1(module: HarnessElement) {
     this.colorService.addToColorArray(this.colorService.color1Modules, module);
   }
 
-  setToColor2(module: Identifiable) {
+  setToColor2(module: HarnessElement) {
     this.colorService.addToColorArray(this.colorService.color2Modules, module);
   }
 
-  setToColor3(module: Identifiable) {
+  setToColor3(module: HarnessElement) {
     this.colorService.addToColorArray(this.colorService.color3Modules, module);
   }
 
@@ -199,7 +201,10 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    this.colors$.next(this.colorService.setColors());
+    this.colors$.next({
+      harnessId: this.data.id,
+      colors: this.colorService.setColors(),
+    });
   }
 
   resetColors() {
@@ -207,11 +212,14 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    this.api?.resetColors(this.data.id);
-    this.colors$.next(this.colorService.resetColors());
+    this.api?.resetColors();
+    this.colors$.next({
+      harnessId: this.data.id,
+      colors: this.colorService.resetColors(),
+    });
   }
 
-  removeColor(module: Identifiable) {
+  removeColor(module: HarnessElement) {
     this.colorService.removeColor(module);
 
     if (this.colorService.colorsAreEmpty()) {
