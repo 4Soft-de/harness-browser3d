@@ -16,20 +16,16 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Harness, Identifiable } from '../../api/alias';
 import { Mesh } from 'three';
+import { Harness } from '../../api/alias';
 import { dispose } from '../utils/dispose-utils';
 
 @Injectable()
 export class CacheService {
   public readonly harnessCache: Map<string, Harness> = new Map();
-  public readonly elementHarnessCache: Map<string, Harness> = new Map();
-  public readonly elementCache: Map<string, Identifiable> = new Map();
   public readonly harnessMeshCache: Map<string, Mesh> = new Map();
 
-  public clear() {
-    this.elementCache.clear();
-    this.elementHarnessCache.clear();
+  public clearHarnessMeshes() {
     this.harnessMeshCache.forEach(dispose);
     this.harnessMeshCache.clear();
   }

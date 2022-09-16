@@ -16,15 +16,7 @@
 */
 
 import { GeometryUtils } from '../utils/geometry-utils';
-import {
-  Accessory,
-  Connector,
-  Fixing,
-  Harness,
-  Identifiable,
-  Protection,
-  Segment,
-} from '../../api/alias';
+import { Harness } from '../../api/alias';
 import { Injectable } from '@angular/core';
 import { CacheService } from './cache.service';
 import { GeometryService } from './geometry.service';
@@ -60,7 +52,6 @@ export class HarnessService {
     this.harnessElementGeos = this.geometryService.processHarness(harness);
 
     if (!this.cacheService.harnessMeshCache.has(harness.id)) {
-      this.setHarnessInElements();
       this.selectionService.addGeos(this.harnessElementGeos);
       this.addHarnessMesh(
         harness.id,
@@ -72,22 +63,6 @@ export class HarnessService {
       if (this.settingsService.addHarnessResetCamera) {
         this.cameraService.resetCamera();
       }
-    }
-  }
-
-  private setHarness(identifiable: Identifiable) {
-    if (this.harness) {
-      this.cacheService.elementHarnessCache.set(identifiable.id, this.harness);
-    }
-  }
-
-  private setHarnessInElements() {
-    if (this.harness) {
-      this.harness.segments.forEach((s: Segment) => this.setHarness(s));
-      this.harness.protections.forEach((p: Protection) => this.setHarness(p));
-      this.harness.fixings.forEach((f: Fixing) => this.setHarness(f));
-      this.harness.connectors.forEach((c: Connector) => this.setHarness(c));
-      this.harness.accessories.forEach((a: Accessory) => this.setHarness(a));
     }
   }
 

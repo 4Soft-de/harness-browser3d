@@ -17,13 +17,11 @@
 
 import { Matrix4, Quaternion, Vector3 } from 'three';
 import {
-  Accessory,
-  Connector,
-  Fixing,
   Harness,
-  Placement,
+  Node,
+  Occurrence,
   Point,
-  Protection,
+  Rotation,
   Segment,
 } from '../../api/alias';
 import { CacheService } from '../services/cache.service';
@@ -31,37 +29,35 @@ import { CacheService } from '../services/cache.service';
 export class HarnessUtils {
   private static readonly PROTECTION_RADIUS_INCREASE = 1;
 
-  public static getHarnessElementIds(harness: Harness) {
+  public static getHarnessElementIds(harness: Harness): string[] {
     const elements: string[] = [];
-    harness.segments.forEach((s: Segment) => elements.push(s.id));
-    harness.protections.forEach((p: Protection) => elements.push(p.id));
-    harness.fixings.forEach((f: Fixing) => elements.push(f.id));
-    harness.connectors.forEach((c: Connector) => elements.push(c.id));
-    harness.accessories.forEach((a: Accessory) => elements.push(a.id));
+    harness.nodes.forEach((node: Node) => elements.push(node.id));
+    harness.segments.forEach((segment: Segment) => elements.push(segment.id));
+    harness.occurrences.forEach((occurrence: Occurrence) =>
+      elements.push(occurrence.id)
+    );
     return elements;
   }
 
-  public static computeRotationFromPlacement(placement: Placement): Quaternion {
-    const yV = this.convertPlacementToVector(placement.u).normalize();
-    const zV = this.convertPlacementToVector(placement.v).normalize();
-    const xV =
-      placement.w == null
-        ? yV.clone().cross(zV).normalize()
-        : this.convertPlacementToVector(placement.w).normalize();
+  public static computeQuaternionFromRotation(rotation: Rotation): Quaternion {
+    if (rotation.matrix.length != 9) {
+      console.error('input rotation matrix must have exactly 9 entries');
+      return new Quaternion();
+    }
 
     return new Quaternion().setFromRotationMatrix(
       new Matrix4().set(
-        yV.x,
-        zV.x,
-        xV.x,
+        rotation.matrix[0],
+        rotation.matrix[1],
+        rotation.matrix[2],
         0,
-        yV.y,
-        zV.y,
-        xV.y,
+        rotation.matrix[3],
+        rotation.matrix[4],
+        rotation.matrix[5],
         0,
-        yV.z,
-        zV.z,
-        xV.z,
+        rotation.matrix[6],
+        rotation.matrix[7],
+        rotation.matrix[8],
         0,
         0,
         0,
@@ -76,14 +72,14 @@ export class HarnessUtils {
     cacheService: CacheService
   ): Harness | undefined {
     if (ids.length) {
-      return cacheService.elementHarnessCache.get(ids[0]);
+      return cacheService.harnessCache.get(ids[0]);
     } else {
       return undefined;
     }
   }
 
-  public static convertPlacementToVector(location: Point): Vector3 {
-    return new Vector3(location.x, location.y, location.z);
+  public static convertPointToVector(point: Point): Vector3 {
+    return new Vector3(point.x, point.y, point.z);
   }
 
   public static computeRadiusFromCrossSectionArea(crossSectionArea: number) {

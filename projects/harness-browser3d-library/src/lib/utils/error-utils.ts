@@ -15,8 +15,6 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Identifiable } from '../../api/alias';
-
 export class ErrorUtils {
   public static isNull(name: string) {
     return `variable ${name} is null`;
@@ -34,7 +32,7 @@ export class ErrorUtils {
     return `function input ${input} is invalid`;
   }
 
-  public static notPlaced(element: Identifiable) {
+  public static notPlaced(element: any) {
     return `element ${element.id} is not placed`;
   }
 }

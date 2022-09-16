@@ -16,7 +16,7 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Identifiable } from '../../api/alias';
+import { Node, Segment, Occurrence } from '../../api/alias';
 import { defaultView } from '../../views/default.view';
 import { View } from '../../views/view';
 import { dispose } from '../utils/dispose-utils';
@@ -85,7 +85,7 @@ export class ViewService {
     harnessPropertyKey: string
   ): Map<string, string> {
     const properties: Map<string, string> = new Map();
-    const set = (harnessElement: Identifiable) => {
+    const set = (harnessElement: Node | Segment | Occurrence) => {
       const property = this.readProperty(harnessElement, harnessPropertyKey);
       if (property) {
         properties.set(harnessElement.id, property);
@@ -93,11 +93,9 @@ export class ViewService {
     };
     const harness = this.cacheService.harnessCache.get(harnessId);
     if (harness) {
+      harness.nodes.forEach(set);
       harness.segments.forEach(set);
-      harness.protections.forEach(set);
-      harness.fixings.forEach(set);
-      harness.connectors.forEach(set);
-      harness.accessories.forEach(set);
+      harness.occurrences.forEach(set);
     }
     return properties;
   }
