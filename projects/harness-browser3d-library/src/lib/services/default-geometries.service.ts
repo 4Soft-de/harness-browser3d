@@ -29,6 +29,16 @@ import { SettingsService } from './settings.service';
 export class DefaultGeometryCreationService {
   constructor(private readonly settingsService: SettingsService) {}
 
+  node() {
+    const node = new SphereBufferGeometry(
+      4,
+      this.settingsService.segmentCount,
+      this.settingsService.segmentCount
+    );
+    GeometryUtils.clean(node);
+    return node;
+  }
+
   connectorSizes() {
     const connectorSizes = [
       new BoxBufferGeometry(40, 10, 10, 1),

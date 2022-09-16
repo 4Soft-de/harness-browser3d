@@ -16,7 +16,7 @@
 */
 
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { HarnessOccurrence } from '../../api/alias';
+import { Node, Occurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import {
   BoxBufferGeometry,
@@ -69,31 +69,32 @@ export class GeometryUtils {
   }
 
   public static createGeo(
-    element: HarnessOccurrence,
+    element: Occurrence | Node,
     defaultGeo: BufferGeometry,
     settingsService: SettingsService,
     loadingService: LoadingService
-  ) {
-    let loadedGeo = undefined;
-    loadedGeo = loadingService.getGeometries().get(element.partNumber);
-    let geo: BufferGeometry;
+  ): BufferGeometry {
+    let loadedGeo =
+      'partNumber' in element
+        ? loadingService.getGeometries().get(element.partNumber)
+        : undefined;
     if (
       settingsService.geometryMode === GeometryModeAPIEnum.default ||
       loadedGeo === undefined
     ) {
-      geo = defaultGeo.clone();
+      return defaultGeo.clone();
     } else {
       loadedGeo.bufferGeometry.computeBoundingBox();
       const boundingBox = loadedGeo.bufferGeometry.boundingBox!;
-      geo = new BoxBufferGeometry(
+      const geo = new BoxBufferGeometry(
         boundingBox.max.x - boundingBox.min.x,
         boundingBox.max.y - boundingBox.min.y,
         boundingBox.max.z - boundingBox.min.z
       );
       GeometryUtils.clean(geo);
       geo.applyMatrix4(loadedGeo.offsetMatrix());
+      return geo;
     }
-    return geo;
   }
 
   public static centerGeometry(geo: BufferGeometry) {
