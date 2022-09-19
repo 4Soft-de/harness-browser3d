@@ -51,7 +51,7 @@
           "buildingBlockId": "defaultBuildingBlock"
         },
         {
-          "id": "protection",
+          "id": "protectionA",
           "partType": "Protection",
           "partNumber": "protectionPartNumber",
           "placement": {
@@ -69,6 +69,25 @@
             "endLocation": {
               "segmentId": "segmentCircleD",
               "anchor": "FromEndNode",
+              "segmentOffsetLength": 40
+            }
+          },
+          "buildingBlockId": "defaultBuildingBlock"
+        },
+        {
+          "id": "protectionB",
+          "partType": "Protection",
+          "partNumber": "protectionPartNumber",
+          "placement": {
+            "segmentPath": ["segmentA"],
+            "startLocation": {
+              "segmentId": "segmentA",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 10
+            },
+            "endLocation": {
+              "segmentId": "segmentA",
+              "anchor": "FromStartNode",
               "segmentOffsetLength": 40
             }
           },

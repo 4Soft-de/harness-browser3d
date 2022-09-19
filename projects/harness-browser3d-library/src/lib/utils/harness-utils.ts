@@ -17,12 +17,14 @@
 
 import { Matrix4, Quaternion, Vector3 } from 'three';
 import {
+  Anchor,
   Harness,
   Node,
   Occurrence,
   Point,
   Rotation,
   Segment,
+  SegmentLocation,
 } from '../../api/alias';
 import { CacheService } from '../services/cache.service';
 
@@ -82,11 +84,27 @@ export class HarnessUtils {
     return new Vector3(point.x, point.y, point.z);
   }
 
-  public static computeRadiusFromCrossSectionArea(crossSectionArea: number) {
+  public static computeRadiusFromCrossSectionArea(
+    crossSectionArea: number
+  ): number {
     return Math.sqrt(crossSectionArea / Math.PI);
   }
 
-  public static computeDefaultProtectionRadius(segmentRadius: number) {
+  public static computeDefaultProtectionRadius(segmentRadius: number): number {
     return segmentRadius + this.PROTECTION_RADIUS_INCREASE;
+  }
+
+  public static computeRatio(
+    location: SegmentLocation,
+    length: number
+  ): number | undefined {
+    const ratio = location.segmentOffsetLength / length;
+    if (ratio > 1 || ratio < 0) {
+      return undefined;
+    }
+    return Anchor[location.anchor as keyof typeof Anchor] ===
+      Anchor.FromStartNode
+      ? ratio
+      : 1 - ratio;
   }
 }

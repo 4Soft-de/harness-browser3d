@@ -21,11 +21,11 @@ import {
   Anchor,
   BuildingBlock,
   Harness,
-  Location,
   Node,
   Occurrence,
   PartType,
   Segment,
+  SegmentLocation,
 } from '../../api/alias';
 import { Injectable } from '@angular/core';
 import { CacheService } from './cache.service';
@@ -44,7 +44,10 @@ import {
   Vector3,
 } from 'three';
 import { DefaultGeometryCreationService } from './default-geometries.service';
-import { getNodeId, getSegmentLocations } from '../utils/navigation-utils';
+import {
+  getNodeId,
+  getOnPointSegmentLocations,
+} from '../utils/navigation-utils';
 import { isOnWayPlacement, isSegmentLocation } from '../../api/predicates';
 
 @Injectable()
@@ -100,7 +103,9 @@ export class GeometryService {
   private cacheSegment(segment: Segment): void {
     this.segments.set(segment.id, segment);
     const segmentCurve = this.curveService.createSegmentCurve(segment.curves);
-    this.curves.set(segment.id, segmentCurve);
+    if (segmentCurve) {
+      this.curves.set(segment.id, segmentCurve);
+    }
     if (!this.segmentDirections.has(segment.startNodeId)) {
       this.segmentDirections.set(
         segment.startNodeId,
@@ -116,7 +121,11 @@ export class GeometryService {
   }
 
   private computeSegmentDirection(invert: boolean, segment: Segment): Vector3 {
-    const direction = this.curves.get(segment.id)!.getTangent(invert ? 1 : 0);
+    const curve = this.curves.get(segment.id);
+    if (!curve) {
+      return new Vector3(0, 0, 0);
+    }
+    const direction = curve.getTangent(invert ? 1 : 0);
     const nodeA = this.nodes.get(
       invert ? segment.endNodeId : segment.startNodeId
     );
@@ -190,7 +199,11 @@ export class GeometryService {
 
   private processSegment(segment: Segment): BufferGeometry | undefined {
     const segmentCurve = this.curves.get(segment.id);
-    if (!segmentCurve) {
+    if (
+      !segmentCurve ||
+      !this.nodes.has(segment.startNodeId) ||
+      !this.nodes.has(segment.endNodeId)
+    ) {
       return undefined;
     }
 
@@ -204,7 +217,12 @@ export class GeometryService {
       segmentRadius
     );
 
-    this.buildingBlockService.applyBuildingBlock(segment.buildingBlockId, geo);
+    if (geo) {
+      this.buildingBlockService.applyBuildingBlock(
+        segment.buildingBlockId,
+        geo
+      );
+    }
 
     return geo;
   }
@@ -299,7 +317,7 @@ export class GeometryService {
         ? HarnessUtils.computeQuaternionFromRotation(fixing.rotation)
         : new Quaternion();
 
-    const geos = getSegmentLocations(fixing)
+    const geos = getOnPointSegmentLocations(fixing)
       .filter(
         (location) =>
           this.curves.has(location.segmentId) &&
@@ -339,13 +357,29 @@ export class GeometryService {
     protection: Occurrence
   ): BufferGeometry | undefined {
     const placement = protection.placement;
-    if (!isOnWayPlacement(placement)) {
+    if (
+      !isOnWayPlacement(placement) ||
+      !isSegmentLocation(placement.startLocation) ||
+      !isSegmentLocation(placement.endLocation) ||
+      placement.segmentPath.length === 0 ||
+      placement.segmentPath[0] !== placement.startLocation.segmentId ||
+      placement.segmentPath[placement.segmentPath.length - 1] !==
+        placement.endLocation.segmentId
+    ) {
       return undefined;
+    }
+
+    if (placement.startLocation.segmentId === placement.endLocation.segmentId) {
+      return this.cropCurve(
+        false,
+        placement.startLocation,
+        placement.endLocation
+      );
     }
 
     const geos: BufferGeometry[] = [];
 
-    const startGeo = this.handleProtectionEdge(placement.startLocation, false);
+    const startGeo = this.cropCurve(false, placement.startLocation);
     if (startGeo) {
       geos.push(startGeo);
     }
@@ -355,11 +389,14 @@ export class GeometryService {
       const segment = this.segments.get(segmentId);
       const curve = this.curves.get(segmentId);
       if (segment && curve) {
-        geos.push(this.createProtectionGeometry(curve, segment));
+        const geo = this.createProtectionGeometry(curve, segment);
+        if (geo) {
+          geos.push(geo);
+        }
       }
     }
 
-    const endGeo = this.handleProtectionEdge(placement.endLocation, true);
+    const endGeo = this.cropCurve(true, placement.endLocation);
     if (endGeo) {
       geos.push(endGeo);
     }
@@ -367,31 +404,41 @@ export class GeometryService {
     return GeometryUtils.mergeGeos(geos);
   }
 
-  private handleProtectionEdge(
-    location: Location,
-    invert: boolean
+  private cropCurve(
+    invert: boolean,
+    locationA: SegmentLocation,
+    locationB?: SegmentLocation
   ): BufferGeometry | undefined {
-    if (!isSegmentLocation(location)) {
-      return undefined;
+    if (!locationB) {
+      locationB = {
+        segmentId: locationA.segmentId,
+        anchor: invert
+          ? Anchor.FromStartNode.toString()
+          : Anchor.FromEndNode.toString(),
+        segmentOffsetLength: 0,
+      } as SegmentLocation;
     }
-    const segment = this.segments.get(location.segmentId);
-    if (!segment) {
-      return undefined;
-    }
-    const curve = this.curves.get(location.segmentId);
-    if (!curve) {
+
+    const segment = this.segments.get(locationA.segmentId);
+    const curve = this.curves.get(locationA.segmentId);
+
+    if (locationA.segmentId !== locationB.segmentId || !segment || !curve) {
       return undefined;
     }
 
-    let startRatio = invert
-      ? 0
-      : location.segmentOffsetLength / segment.virtualLength;
-    let endRatio = invert
-      ? location.segmentOffsetLength / segment.virtualLength
-      : 1;
-    if (Anchor[location.anchor as keyof typeof Anchor] === Anchor.FromEndNode) {
-      endRatio = 1 - endRatio;
+    const startRatio = HarnessUtils.computeRatio(
+      invert ? locationB : locationA,
+      segment.virtualLength
+    );
+    const endRatio = HarnessUtils.computeRatio(
+      invert ? locationA : locationB,
+      segment.virtualLength
+    );
+
+    if (!startRatio || !endRatio) {
+      return undefined;
     }
+
     const croppedCurve = this.curveService.cutCurve(
       startRatio,
       endRatio,
@@ -407,7 +454,12 @@ export class GeometryService {
       segment.virtualLength,
       HarnessUtils.computeDefaultProtectionRadius(segment.crossSectionArea)
     );
-    this.buildingBlockService.applyBuildingBlock(segment.buildingBlockId, geo);
+    if (geo) {
+      this.buildingBlockService.applyBuildingBlock(
+        segment.buildingBlockId,
+        geo
+      );
+    }
     return geo;
   }
 
