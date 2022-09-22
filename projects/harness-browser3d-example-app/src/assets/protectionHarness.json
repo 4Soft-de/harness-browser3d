@@ -1,0 +1,595 @@
+{
+  "harnesses": [
+    {
+      "id": "harness",
+      "nodes": [
+        {
+          "id": "simple_protection_node_A",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "simple_protection_node_B",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "simple_protection_node_C",
+          "position": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "simple_protection_node_D",
+          "position": {
+            "x": 150,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "end_inverted_curve_node_A",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_inverted_curve_node_B",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_inverted_curve_node_C",
+          "position": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_inverted_curve_node_D",
+          "position": {
+            "x": 150,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_reverse_segment_node_A",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_reverse_segment_node_B",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_reverse_segment_node_C",
+          "position": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_reverse_segment_node_D",
+          "position": {
+            "x": 150,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_node_A",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_node_B",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_node_C",
+          "position": {
+            "x": 100,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_node_D",
+          "position": {
+            "x": 150,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        }
+      ],
+      "segments": [
+        {
+          "id": "simple_protection_segment_A",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "simple_protection_node_A",
+          "endNodeId": "simple_protection_node_B",
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "simple_protection_segment_B",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "simple_protection_node_B",
+          "endNodeId": "simple_protection_node_C",
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "simple_protection_segment_C",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 150,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "simple_protection_node_C",
+          "endNodeId": "simple_protection_node_D",
+          "buildingBlockId": "simple_protection_building_block"
+        },
+        {
+          "id": "end_inverted_curve_segment_A",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_inverted_curve_node_A",
+          "endNodeId": "end_inverted_curve_node_B",
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_inverted_curve_segment_B",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_inverted_curve_node_B",
+          "endNodeId": "end_inverted_curve_node_C",
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_inverted_curve_segment_C",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 150,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_inverted_curve_node_C",
+          "endNodeId": "end_inverted_curve_node_D",
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_reverse_segment_segment_A",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_reverse_segment_node_A",
+          "endNodeId": "end_reverse_segment_node_B",
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_reverse_segment_segment_B",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_reverse_segment_node_B",
+          "endNodeId": "end_reverse_segment_node_C",
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_reverse_segment_segment_C",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 150,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_reverse_segment_node_D",
+          "endNodeId": "end_reverse_segment_node_C",
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_segment_A",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_invert_curve_reverse_segment_node_A",
+          "endNodeId": "end_invert_curve_reverse_segment_node_B",
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_segment_B",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 50,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_invert_curve_reverse_segment_node_B",
+          "endNodeId": "end_invert_curve_reverse_segment_node_C",
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_segment_C",
+          "virtualLength": 100,
+          "crossSectionArea": 10,
+          "curves": [
+            {
+              "degree": 1,
+              "controlPoints": [
+                {
+                  "x": 100,
+                  "y": 0,
+                  "z": 0
+                },
+                {
+                  "x": 150,
+                  "y": 0,
+                  "z": 0
+                }
+              ]
+            }
+          ],
+          "startNodeId": "end_invert_curve_reverse_segment_node_D",
+          "endNodeId": "end_invert_curve_reverse_segment_node_C",
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        }
+      ],
+      "occurrences": [
+        {
+          "id": "simple_protection",
+          "partType": "Protection",
+          "partNumber": "none",
+          "placement": {
+            "segmentPath": [
+              "simple_protection_segment_A",
+              "simple_protection_segment_B",
+              "simple_protection_segment_C"
+            ],
+            "startLocation": {
+              "segmentId": "simple_protection_segment_A",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            },
+            "endLocation": {
+              "segmentId": "simple_protection_segment_C",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            }
+          },
+          "buildingBlockId": "default_building_block"
+        },
+        {
+          "id": "end_inverted_curve_protection",
+          "partType": "Protection",
+          "partNumber": "none",
+          "placement": {
+            "segmentPath": [
+              "end_inverted_curve_segment_A",
+              "end_inverted_curve_segment_B",
+              "end_inverted_curve_segment_C"
+            ],
+            "startLocation": {
+              "segmentId": "end_inverted_curve_segment_A",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            },
+            "endLocation": {
+              "segmentId": "end_inverted_curve_segment_C",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            }
+          },
+          "buildingBlockId": "end_inverted_curve_building_block"
+        },
+        {
+          "id": "end_reverse_segment_protection",
+          "partType": "Protection",
+          "partNumber": "none",
+          "placement": {
+            "segmentPath": [
+              "end_reverse_segment_segment_A",
+              "end_reverse_segment_segment_B",
+              "end_reverse_segment_segment_C"
+            ],
+            "startLocation": {
+              "segmentId": "end_reverse_segment_segment_A",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            },
+            "endLocation": {
+              "segmentId": "end_reverse_segment_segment_C",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            }
+          },
+          "buildingBlockId": "end_reverse_segment_building_block"
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_protection",
+          "partType": "Protection",
+          "partNumber": "none",
+          "placement": {
+            "segmentPath": [
+              "end_invert_curve_reverse_segment_segment_A",
+              "end_invert_curve_reverse_segment_segment_B",
+              "end_invert_curve_reverse_segment_segment_C"
+            ],
+            "startLocation": {
+              "segmentId": "end_invert_curve_reverse_segment_segment_A",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            },
+            "endLocation": {
+              "segmentId": "end_invert_curve_reverse_segment_segment_C",
+              "anchor": "FromStartNode",
+              "segmentOffsetLength": 50
+            }
+          },
+          "buildingBlockId": "end_invert_curve_reverse_segment_building_block"
+        }
+      ],
+      "buildingBlocks": [
+        {
+          "id": "simple_protection_building_block",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          }
+        },
+        {
+          "id": "end_inverted_curve_building_block",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 50
+          },
+          "rotation": {
+            "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          }
+        },
+        {
+          "id": "end_reverse_segment_building_block",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 100
+          },
+          "rotation": {
+            "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          }
+        },
+        {
+          "id": "end_invert_curve_reverse_segment_building_block",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 150
+          },
+          "rotation": {
+            "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          }
+        }
+      ]
+    }
+  ]
+}
