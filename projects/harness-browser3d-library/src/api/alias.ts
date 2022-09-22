@@ -36,13 +36,13 @@ export type NodeLocation = components['schemas']['NodeLocation'];
 export type SegmentLocation = components['schemas']['SegmentLocation'];
 
 export enum PartType {
-  Connector,
-  Protection,
-  Fixing,
-  Other,
+  Connector = 'Connector',
+  Protection = 'Protection',
+  Fixing = 'Fixing',
+  Other = 'Other',
 }
 
 export enum Anchor {
-  FromStartNode,
-  FromEndNode,
+  FromStartNode = 'FromStartNode',
+  FromEndNode = 'FromEndNode',
 }

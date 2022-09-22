@@ -106,7 +106,7 @@ export class CurveService {
   public cutCurve(
     startRatio: number,
     endRatio: number,
-    curve: CurvePath<Vector3>
+    curve: Curve<Vector3>
   ): Curve<Vector3> {
     const points: Vector3[] = [];
     const stepSize = 0.1;
@@ -116,5 +116,11 @@ export class CurveService {
     }
     points.push(curve.getPoint(endRatio));
     return new CatmullRomCurve3(points);
+  }
+
+  public mergeCurves(curves: Curve<Vector3>[]): Curve<Vector3> {
+    const result = new CurvePath<Vector3>();
+    curves.forEach((curve) => result.add(curve));
+    return result;
   }
 }

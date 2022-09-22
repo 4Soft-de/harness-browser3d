@@ -15,7 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Matrix4, Quaternion, Vector3 } from 'three';
+import { Curve, Matrix4, Quaternion, Vector3 } from 'three';
 import {
   Anchor,
   Harness,
@@ -106,5 +106,34 @@ export class HarnessUtils {
       Anchor.FromStartNode
       ? ratio
       : 1 - ratio;
+  }
+
+  public static isCurveInverted(
+    startNode: Node,
+    endNode: Node,
+    curve: Curve<Vector3>
+  ): boolean {
+    const curveStart = curve.getPoint(0);
+    const startPosition = HarnessUtils.convertPointToVector(startNode.position);
+    const endPosition = HarnessUtils.convertPointToVector(endNode.position);
+    return (
+      startPosition.distanceTo(curveStart) > endPosition.distanceTo(curveStart)
+    );
+  }
+
+  public static computeSegmentDirection(
+    startNode: Node,
+    endNode: Node,
+    direction: Vector3
+  ): Vector3 {
+    const nodeAPosition = HarnessUtils.convertPointToVector(startNode.position);
+    const nodeBPosition = HarnessUtils.convertPointToVector(endNode.position);
+    if (
+      nodeAPosition.clone().add(direction).distanceTo(nodeBPosition) <
+      nodeAPosition.distanceTo(nodeBPosition)
+    ) {
+      direction.multiplyScalar(-1);
+    }
+    return direction;
   }
 }
