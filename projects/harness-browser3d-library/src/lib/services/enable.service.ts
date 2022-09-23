@@ -77,4 +77,8 @@ export class EnableService {
       );
     }
   }
+
+  public clear() {
+    this.enabledHarnessElementsCache.clear();
+  }
 }

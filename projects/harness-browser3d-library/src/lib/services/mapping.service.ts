@@ -105,4 +105,8 @@ export class MappingService {
       index = newIndex;
     }
   }
+
+  public clear() {
+    this.harnessMappings.clear();
+  }
 }

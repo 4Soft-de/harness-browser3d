@@ -38,7 +38,7 @@ export class HarnessService {
     private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
-    private readonly disableService: EnableService,
+    private readonly enableService: EnableService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
@@ -59,13 +59,20 @@ export class HarnessService {
         this.mergeGeosIntoHarness(harness),
         this.sceneService.getScene()
       );
-      this.disableService.enableAll(harness.id);
+      this.enableService.enableAll(harness.id);
       this.colorService.setDefaultColors(harness.id);
       this.viewService.applyCurrentView(harness.id);
       if (this.settingsService.addHarnessResetCamera) {
         this.cameraService.resetCamera();
       }
     }
+  }
+
+  public clearCaches() {
+    this.cacheService.clear();
+    this.enableService.clear();
+    this.mappingService.clear();
+    this.harnessElementGeos.clear();
   }
 
   private cacheHarnessElementsHarness(harness: Harness) {

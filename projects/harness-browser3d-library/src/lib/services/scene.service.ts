@@ -54,5 +54,6 @@ export class SceneService implements OnDestroy {
 
   public clearScene() {
     this.scene.remove.apply(this.scene, this.scene.children);
+    this.setupScene();
   }
 }
