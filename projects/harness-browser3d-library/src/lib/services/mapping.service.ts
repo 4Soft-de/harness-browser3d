@@ -36,11 +36,11 @@ export class MappingService {
   /**
    * converts map into attribute array
    */
-  public applyMapping(
+  public applyMapping<PROPERTY>(
     harnessId: string,
-    defaultValue: any,
-    values: Map<string, any>
-  ): any[] {
+    defaultValue: PROPERTY,
+    values: Map<string, PROPERTY>
+  ): PROPERTY[] {
     const harnessMesh = this.cacheService.harnessMeshCache.get(harnessId);
     const harnessMapping = this.harnessMappings.get(harnessId);
     if (harnessMesh && harnessMapping) {
@@ -51,7 +51,7 @@ export class MappingService {
         const range = entry[1];
         range.toArray().forEach((vertex) => {
           const value = values.get(id);
-          if (value) {
+          if (value !== undefined) {
             map.set(vertex, value);
           }
         });
@@ -63,20 +63,20 @@ export class MappingService {
     return [];
   }
 
-  private initializeMap(
+  private initializeMap<PROPERTY>(
     geo: BufferGeometry,
-    defaultValue: any
-  ): Map<number, any> {
+    defaultValue: PROPERTY
+  ): Map<number, PROPERTY> {
     const size = geo.attributes['position'].count;
-    const map: Map<number, any> = new Map();
+    const map: Map<number, PROPERTY> = new Map();
     for (let i = 0; i < size; i++) {
       map.set(i, defaultValue);
     }
     return map;
   }
 
-  private mapToArray(map: Map<number, any>): any[] {
-    const array: any[] = [];
+  private mapToArray<PROPERTY>(map: Map<number, PROPERTY>): PROPERTY[] {
+    const array: PROPERTY[] = [];
     map.forEach((value) => array.push(value));
     return array;
   }

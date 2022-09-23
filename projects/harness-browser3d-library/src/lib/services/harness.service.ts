@@ -28,16 +28,17 @@ import { ViewService } from './view.service';
 import { ColorService } from './color.service';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
+import { EnableService } from './enable.service';
 
 @Injectable()
 export class HarnessService {
-  private harness?: Harness;
   private harnessElementGeos: Map<string, BufferGeometry> = new Map();
 
   constructor(
     private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
+    private readonly disableService: EnableService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
@@ -47,17 +48,18 @@ export class HarnessService {
   ) {}
 
   addHarness(harness: Harness) {
-    this.harness = harness;
     this.cacheService.harnessCache.set(harness.id, harness);
+    this.cacheHarnessElementsHarness(harness);
     this.harnessElementGeos = this.geometryService.processHarness(harness);
 
     if (!this.cacheService.harnessMeshCache.has(harness.id)) {
       this.selectionService.addGeos(this.harnessElementGeos);
       this.addHarnessMesh(
         harness.id,
-        this.mergeGeosIntoHarness(),
+        this.mergeGeosIntoHarness(harness),
         this.sceneService.getScene()
       );
+      this.disableService.enableAll(harness.id);
       this.colorService.setDefaultColors(harness.id);
       this.viewService.applyCurrentView(harness.id);
       if (this.settingsService.addHarnessResetCamera) {
@@ -66,13 +68,31 @@ export class HarnessService {
     }
   }
 
-  private mergeGeosIntoHarness() {
+  private cacheHarnessElementsHarness(harness: Harness) {
+    harness.nodes.forEach((node) =>
+      this.cacheService.harnessElementIdHarnessIdCache.set(node.id, harness.id)
+    );
+    harness.segments.forEach((segment) =>
+      this.cacheService.harnessElementIdHarnessIdCache.set(
+        segment.id,
+        harness.id
+      )
+    );
+    harness.occurrences.forEach((occurrence) =>
+      this.cacheService.harnessElementIdHarnessIdCache.set(
+        occurrence.id,
+        harness.id
+      )
+    );
+  }
+
+  private mergeGeosIntoHarness(harness: Harness) {
     const harnessGeos: BufferGeometry[] = [];
     this.harnessElementGeos.forEach((geo) => harnessGeos.push(geo));
     const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
-    if (this.harness) {
+    if (harness) {
       this.mappingService.addHarnessElementVertexMappings(
-        this.harness,
+        harness,
         this.harnessElementGeos
       );
     }

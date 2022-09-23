@@ -29,17 +29,19 @@ function defaultViewVertexShader(): string {
   const declarations = `
       attribute vec3 pDefaultColor;
       attribute vec3 pColor;
+      attribute float pEnabled;
     `;
 
   const code = `
       vec3 emptyColor = vec3(0, 0, 0);
       vColor = pColor == emptyColor ? pDefaultColor : pColor;
+      gl_Position = pEnabled == 1.0 ? gl_Position : vec4(gl_Position.xyz, 0);
     `;
 
   let anchor = `#include <common>`;
   shader = shader.replace(anchor, anchor + declarations);
-  anchor = `#include <color_vertex>`;
-  shader = shader.replace(anchor, code);
+  anchor = `#include <clipping_planes_vertex>`;
+  shader = shader.replace(anchor, anchor + code);
 
   return shader;
 }

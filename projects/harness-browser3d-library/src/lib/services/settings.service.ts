@@ -63,7 +63,7 @@ export class SettingsService implements SettingsAPIStruct {
     );
     if (geoSetting) {
       this.updatedGeometrySettings.next();
-      this.cacheService.clearHarnessMeshes();
+      this.cacheService.clear();
     }
     if (cameraSetting) {
       this.updatedCameraSettings.next();

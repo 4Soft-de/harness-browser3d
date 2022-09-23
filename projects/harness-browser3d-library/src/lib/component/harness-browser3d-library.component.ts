@@ -37,6 +37,7 @@ import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
+import { EnableService } from '../services/enable.service';
 import Stats from 'stats.js';
 
 @Component({
@@ -59,6 +60,7 @@ export class HarnessBrowser3dLibraryComponent
     private readonly api: HarnessBrowser3dLibraryAPI,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
+    private readonly enableService: EnableService,
     private readonly harnessService: HarnessService,
     private readonly renderService: RenderService,
     private readonly sceneService: SceneService,
@@ -111,12 +113,31 @@ export class HarnessBrowser3dLibraryComponent
     );
   }
 
-  // load corresponding harness beforehand
-  // all ids are in same harness
+  // load corresponding harnesses beforehand
   @Input()
   set selectedIds(ids: string[] | null | undefined) {
     this.checkInput(
       this.selectionService.selectElements.bind(this.selectionService),
+      ids
+    );
+  }
+
+  // load corresponding harness beforehand
+  // all ids are in same harness
+  @Input()
+  set enableIds(ids: string[] | null | undefined) {
+    this.checkInput(
+      this.enableService.enableElements.bind(this.enableService),
+      ids
+    );
+  }
+
+  // load corresponding harness beforehand
+  // all ids are in same harness
+  @Input()
+  set disableIds(ids: string[] | null | undefined) {
+    this.checkInput(
+      this.enableService.disableElements.bind(this.enableService),
       ids
     );
   }

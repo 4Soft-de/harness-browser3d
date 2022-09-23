@@ -23,11 +23,15 @@ import { dispose } from '../utils/dispose-utils';
 @Injectable()
 export class CacheService {
   public readonly harnessCache: Map<string, Harness> = new Map();
+  public readonly harnessElementIdHarnessIdCache: Map<string, string> =
+    new Map();
   public readonly harnessMeshCache: Map<string, Mesh> = new Map();
 
-  public clearHarnessMeshes() {
+  public clear() {
     this.harnessMeshCache.forEach(dispose);
     this.harnessMeshCache.clear();
+    this.harnessCache.clear();
+    this.harnessElementIdHarnessIdCache.clear();
   }
 
   constructor() {}
