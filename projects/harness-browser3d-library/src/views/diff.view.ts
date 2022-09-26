@@ -19,27 +19,74 @@ import { Color, Int8BufferAttribute, ShaderLib } from 'three';
 import { GeometryMaterial } from '../lib/structs/material';
 import { View } from '../views/view';
 
+export const diffViewSettings = {
+  displayUnmodified: true,
+  displayAdded: true,
+  displayRemoved: true,
+  displayModifiedNew: true,
+  displayModifiedOld: true,
+};
+
+enum StateEnum {
+  hidden = 'hidden',
+  unmodified = 'unmodified',
+  added = 'added',
+  removed = 'removed',
+  modified_new = 'modified_new',
+  modified_old = 'modified_old',
+}
+
 class State {
   public readonly colorString: string;
   public readonly idString: string;
   constructor(
-    public readonly name: string,
+    public readonly stateEnum: StateEnum,
     public readonly id: number,
-    color: Color
+    colorName: string
   ) {
     this.idString = `float(${id})`;
+    const color = new Color(colorName);
     this.colorString = `vec4(${color.r}, ${color.g}, ${color.b}, ${1})`;
   }
 }
 
-const addedState = new State('added', 1, new Color('mediumseagreen'));
-const removedState = new State('removed', 2, new Color('red'));
-const modifiedState = new State('modified', 3, new Color('dodgerblue'));
-const unmodifiedState = new State('unmodified', 4, new Color('lightgrey'));
+const hiddenState = new State(StateEnum.hidden, 0, 'black');
+const unmodifiedState = new State(StateEnum.unmodified, 1, 'lightgrey');
+const addedState = new State(StateEnum.added, 2, 'mediumseagreen');
+const removedState = new State(StateEnum.removed, 3, 'red');
+const modifiedNewState = new State(StateEnum.modified_new, 4, 'dodgerblue');
+const modifiedOldState = new State(StateEnum.modified_old, 5, 'steelblue');
+
+function getState(property: string): State {
+  const hide = (hidden: boolean, state: State) => {
+    if (!hidden) {
+      return hiddenState;
+    } else {
+      return state;
+    }
+  };
+
+  switch (StateEnum[property as keyof typeof StateEnum]) {
+    case StateEnum.hidden:
+      return hiddenState;
+    case StateEnum.unmodified:
+      return hide(diffViewSettings.displayUnmodified, unmodifiedState);
+    case StateEnum.added:
+      return hide(diffViewSettings.displayAdded, addedState);
+    case StateEnum.removed:
+      return hide(diffViewSettings.displayRemoved, removedState);
+    case StateEnum.modified_new:
+      return hide(diffViewSettings.displayModifiedNew, modifiedNewState);
+    case StateEnum.modified_old:
+      return hide(diffViewSettings.displayModifiedOld, modifiedOldState);
+    default:
+      return hiddenState;
+  }
+}
 
 const diffViewPropertyKey = 'diffState';
 
-const diffViewDefaultValue = unmodifiedState.name;
+const diffViewDefaultValue = StateEnum.unmodified.toString();
 
 function diffViewVertexShader(): string {
   let shader = ShaderLib.lambert.vertexShader;
@@ -51,16 +98,18 @@ function diffViewVertexShader(): string {
 
   const code = `
     vec4 noneColor = vec4(0, 0, 0, 0);
+    vec4 unmodifiedColor = diffState == ${unmodifiedState.idString} ? ${unmodifiedState.colorString} : noneColor;
     vec4 addedColor = diffState == ${addedState.idString} ? ${addedState.colorString} : noneColor;
     vec4 removedColor = diffState == ${removedState.idString} ? ${removedState.colorString} : noneColor;
-    vec4 modifiedColor = diffState == ${modifiedState.idString} ? ${modifiedState.colorString} : noneColor;
-    vec4 unmodifiedColor = diffState == ${unmodifiedState.idString} ? ${unmodifiedState.colorString} : noneColor;
-    vStateColor = addedColor + removedColor + modifiedColor + unmodifiedColor;
+    vec4 modifiedNewColor = diffState == ${modifiedNewState.idString} ? ${modifiedNewState.colorString} : noneColor;
+    vec4 modifiedOldColor = diffState == ${modifiedOldState.idString} ? ${modifiedOldState.colorString} : noneColor;
+    vStateColor = unmodifiedColor + addedColor + removedColor + modifiedNewColor + modifiedOldColor;
+    gl_Position = diffState == ${hiddenState.idString} ? vec4(gl_Position.xyz, 0) : gl_Position;
   `;
 
   let anchor = `#include <common>`;
   shader = shader.replace(anchor, anchor + declarations);
-  anchor = `#include <color_vertex>`;
+  anchor = `#include <clipping_planes_vertex>`;
   shader = shader.replace(anchor, code);
 
   return shader;
@@ -95,26 +144,9 @@ function diffViewMaterial() {
 }
 
 const diffViewMapper = (properties: string[]) => {
-  const array = properties.map((property) => mapProperty(property));
+  const array = properties.map((property) => getState(property).id);
   return new Int8BufferAttribute(array, 1);
 };
-
-function mapProperty(property: string): number {
-  const getId = (property: string, state: State) => {
-    if (property === state.name) {
-      return state.id;
-    }
-    return undefined;
-  };
-  const ids = [addedState, removedState, modifiedState, unmodifiedState]
-    .map((state) => getId(property, state))
-    .filter((id) => id !== undefined);
-  if (ids.length && ids[0]) {
-    return ids[0];
-  } else {
-    return -1;
-  }
-}
 
 export const diffView = new View(
   diffViewPropertyKey,

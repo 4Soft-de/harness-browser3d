@@ -85,7 +85,7 @@
                   fxLayoutGap="2px"
                   *matCellDef="let module"
                 >
-                  <ng-container *ngIf="selectedView.name === 'Default'">
+                  <ng-container>
                     <mat-checkbox
                       [checked]="true"
                       (change)="enableElements(module, $event.checked)"
@@ -126,6 +126,38 @@
           <button mat-raised-button color="accent" (click)="resetSelection()">
             <mat-icon>restart_alt</mat-icon> Reset Selection
           </button>
+        </ng-container>
+        <ng-container *ngIf="selectedView.name === 'Diff'">
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayUnmodified($event.checked)"
+          >
+            Display unmodified harness elements
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayAdded($event.checked)"
+          >
+            Display added harness elements
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayRemoved($event.checked)"
+          >
+            Display removed harness elements
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayModifiedNew($event.checked)"
+          >
+            Display modified harness elements after the change
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayModifiedOld($event.checked)"
+          >
+            Display modified harness elements before the change
+          </mat-checkbox>
         </ng-container>
       </mat-card>
       <mat-card

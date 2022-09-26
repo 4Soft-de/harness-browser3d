@@ -28,6 +28,7 @@ import {
   SettingsAPIStruct,
   defaultView,
   diffView,
+  diffViewSettings,
   Node,
   Segment,
   Occurrence,
@@ -257,5 +258,30 @@ export class AppComponent implements AfterViewInit {
     if (this.colorService.colorsAreEmpty()) {
       this.resetColors();
     }
+  }
+
+  displayUnmodified(display: boolean) {
+    diffViewSettings.displayUnmodified = display;
+    this.api?.setView(diffView);
+  }
+
+  displayAdded(display: boolean) {
+    diffViewSettings.displayAdded = display;
+    this.api?.setView(diffView);
+  }
+
+  displayRemoved(display: boolean) {
+    diffViewSettings.displayRemoved = display;
+    this.api?.setView(diffView);
+  }
+
+  displayModifiedNew(display: boolean) {
+    diffViewSettings.displayModifiedNew = display;
+    this.api?.setView(diffView);
+  }
+
+  displayModifiedOld(display: boolean) {
+    diffViewSettings.displayModifiedOld = display;
+    this.api?.setView(diffView);
   }
 }
