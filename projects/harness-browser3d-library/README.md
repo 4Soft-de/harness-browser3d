@@ -41,13 +41,9 @@ Harness has been generated from `assets\geometry-api.yaml`.
 
 Select harness elements by inserting an array of harness element ids into the `selectedIds` property.
 
-All harness elements must belong to the same harness and the harness must have been added before.
-
 ### Set Colors
 
 Set arbitrary colors for harness elements by inserting an array of `SetColorAPIStruct` objects into the `colors` property. Include SetColorAPIStruct from `api\structs.ts`.
-
-All harness elements must belong to the same harness and the harness must have been added before.
 
 ### Apply Settings
 
@@ -76,7 +72,11 @@ In this example an `exampleProperty` property is added to the object `exampleId`
 
 ### Apply Views
 
-Pass the view into the `applyView` API function. The previous view is disposed.
+Pass the view into the `setView` API function. The previous view is disposed.
+
+### Refresh Views
+
+Views can have settings. Either set them before calling `setView` or call `refreshView`. Settings should not affect the shaders but only the mapping function because `refreshView` does not refresh the shaders for performance reasons.
 
 ### Define custom Views
 
@@ -102,13 +102,21 @@ Built-in shader attributes are controlled by the viewer and can be used by custo
 
 - `vec3 pDefaultColor` is the default color of the corresponding harness element
 - `vec3 pColor` is the specified color as set in the `colors` input property on the angular component
+- `float pEnabled` is whether the harness element is enabled
 
 ### Predefined Views
 
 Diff
 
 - property `diffState`
-- values can be modified, unmodified, added, removed
+- values can be hidden, unmodified, added, removed, modified_new, modified_old
+- hide certain states by setting the display booleans
+- example
+
+```ts
+diffView.displayRemoved = false;
+api.refreshView();
+```
 
 # References
 

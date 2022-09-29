@@ -1,7 +1,7 @@
 {
   "harnesses": [
     {
-      "id": "harness",
+      "id": "brokenHarness",
       "occurrences": [
         {
           "id": "part_type_does_not_exist",
@@ -10,7 +10,7 @@
           "placement": {
             "locations": [
               {
-                "nodeId": "correct_node"
+                "nodeId": "correct_node_A"
               }
             ]
           },
@@ -151,10 +151,10 @@
           "placement": {
             "segmentPath": ["correct_segment"],
             "startLocation": {
-              "nodeId": "correct_node"
+              "nodeId": "correct_node_A"
             },
             "endLocation": {
-              "nodeId": "correct_node"
+              "nodeId": "correct_node_A"
             }
           },
           "buildingBlockId": "correct_building_block"
@@ -166,7 +166,7 @@
           "placement": {
             "locations": [
               {
-                "nodeId": "correct_node"
+                "nodeId": "correct_node_A"
               }
             ]
           },
@@ -227,9 +227,18 @@
       ],
       "nodes": [
         {
-          "id": "correct_node",
+          "id": "correct_node_A",
           "position": {
             "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "correct_node_B",
+          "position": {
+            "x": 100,
             "y": 0,
             "z": 0
           },
@@ -267,16 +276,16 @@
               ]
             }
           ],
-          "startNodeId": "correct_node",
-          "endNodeId": "node_building_block_does_not_exist",
-          "buildingBlockId": "does_not_exist"
+          "startNodeId": "correct_node_A",
+          "endNodeId": "correct_node_B",
+          "buildingBlockId": "correct_building_block"
         },
         {
           "id": "segment_no_curves",
           "virtualLength": 100,
           "crossSectionArea": 10,
           "curves": [],
-          "startNodeId": "correct_node",
+          "startNodeId": "correct_node_A",
           "endNodeId": "node_broken_building_block",
           "buildingBlockId": "does_not_exist"
         },
@@ -290,7 +299,7 @@
               "controlPoints": []
             }
           ],
-          "startNodeId": "correct_node",
+          "startNodeId": "correct_node_A",
           "endNodeId": "node_broken_building_block",
           "buildingBlockId": "does_not_exist"
         },
@@ -315,7 +324,7 @@
               ]
             }
           ],
-          "startNodeId": "correct_node",
+          "startNodeId": "correct_node_A",
           "endNodeId": "node_broken_building_block",
           "buildingBlockId": "does_not_exist"
         },

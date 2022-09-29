@@ -59,4 +59,8 @@ export class HarnessBrowser3dLibraryAPI {
   public setView(view: View) {
     this.viewService.setView(view);
   }
+
+  public refreshView() {
+    this.viewService.refreshView();
+  }
 }

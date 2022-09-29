@@ -36,19 +36,33 @@ export class ViewService {
 
   public setView(view: View): void {
     this.removeView(this.currentView);
-    this.applyMapping(view);
+    this.applyMapping(view, true);
     this.currentView = view;
   }
 
-  public setCurrentView(harness: Harness): void {
-    this.readProperties(harness);
-    this.applyMapping(this.currentView);
+  public refreshView(): void {
+    const mesh = this.cacheService.getBordnetMesh();
+    if (mesh && this.currentView.propertyKey) {
+      mesh.geometry.deleteAttribute(this.currentView.propertyKey);
+      this.applyMapping(this.currentView, false);
+    }
   }
 
-  private applyMapping(view: View): void {
+  public setCurrentView(harness: Harness): void {
+    dispose(this.cacheService.getBordnetMesh()?.material);
+    this.readProperties(harness);
+    this.applyMapping(
+      this.currentView,
+      this.cacheService.getBordnetMesh()?.material !== this.currentView.material
+    );
+  }
+
+  private applyMapping(view: View, setMaterial: boolean): void {
     const mesh = this.cacheService.getBordnetMesh();
     if (mesh) {
-      mesh.material = view.material;
+      if (setMaterial) {
+        mesh.material = view.material;
+      }
       if (view.propertyKey) {
         const array = this.mappingService.applyMapping(
           view.defaultValue,
@@ -72,6 +86,7 @@ export class ViewService {
         mesh.geometry.deleteAttribute(view.propertyKey);
       }
     }
+    this.currentView = defaultView;
   }
 
   private readProperties(harness: Harness): void {

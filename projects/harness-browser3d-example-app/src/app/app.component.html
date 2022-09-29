@@ -40,7 +40,7 @@
       (change)="uploadHarness(fileInput.files)"
     />
     <mat-form-field>
-      <mat-label>Harness</mat-label>
+      <mat-label>Add Harness</mat-label>
       <mat-select [(value)]="selectedHarness">
         <mat-option *ngFor="let struct of selectableHarnesses" [value]="struct">
           {{ struct.name }}

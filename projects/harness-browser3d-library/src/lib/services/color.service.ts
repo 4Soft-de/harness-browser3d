@@ -18,8 +18,13 @@
 import { Injectable } from '@angular/core';
 import { Color, Float32BufferAttribute } from 'three';
 import { isOccurrence, isSegment } from '../../api/predicates';
-import { SetColorAPIStruct } from '../../api/structs';
-import { Node, Segment, Occurrence, Harness } from '../../public-api';
+import {
+  Node,
+  Segment,
+  Occurrence,
+  Harness,
+  SetColorAPIStruct,
+} from '../../public-api';
 import { GeometryColors } from '../structs/colors';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { CacheService } from './cache.service';
@@ -37,8 +42,8 @@ export class ColorService {
     private readonly mappingService: MappingService
   ) {}
 
-  public setColors(struct: SetColorAPIStruct): void {
-    this.applyColors(this.key, this.createMap(struct));
+  public setColors(colors: SetColorAPIStruct[]): void {
+    this.applyColors(this.key, this.createMap(colors));
   }
 
   public resetColors(): void {
@@ -84,11 +89,9 @@ export class ColorService {
     }
   }
 
-  private createMap(struct: SetColorAPIStruct): Map<string, Color> {
+  private createMap(colors: SetColorAPIStruct[]): Map<string, Color> {
     const map: Map<string, Color> = new Map();
-    struct.colors.forEach((entry) =>
-      map.set(entry.harnessElementId, entry.color)
-    );
+    colors.forEach((entry) => map.set(entry.harnessElementId, entry.color));
     return map;
   }
 

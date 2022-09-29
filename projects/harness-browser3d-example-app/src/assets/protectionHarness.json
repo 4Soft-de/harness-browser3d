@@ -1,7 +1,7 @@
 {
   "harnesses": [
     {
-      "id": "harness",
+      "id": "protectionHarness",
       "nodes": [
         {
           "id": "simple_protection_node_A",
@@ -472,7 +472,7 @@
               "segmentOffsetLength": 50
             }
           },
-          "buildingBlockId": "default_building_block"
+          "buildingBlockId": "simple_protection_building_block"
         },
         {
           "id": "end_inverted_curve_protection",

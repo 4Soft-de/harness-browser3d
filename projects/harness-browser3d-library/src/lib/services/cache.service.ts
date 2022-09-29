@@ -41,7 +41,6 @@ export class CacheService {
     const harnessGeos: BufferGeometry[] = [];
     if (this.bordnetMesh) {
       harnessGeos.push(GeometryUtils.clean(this.bordnetMesh.geometry));
-      dispose(this.bordnetMesh.material);
     }
     geos.forEach((geo) => harnessGeos.push(geo));
     const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);

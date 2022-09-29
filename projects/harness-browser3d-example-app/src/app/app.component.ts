@@ -55,7 +55,7 @@ export class AppComponent implements AfterViewInit {
   selectedIds$: Subject<string[]> = new Subject();
   disableIds$: Subject<string[]> = new Subject();
   enableIds$: Subject<string[]> = new Subject();
-  colors$: Subject<SetColorAPIStruct | undefined> = new Subject();
+  colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
   settings: SettingsAPIStruct = {
     backgroundColor: new Color('white'),
   };
@@ -69,6 +69,7 @@ export class AppComponent implements AfterViewInit {
     'Uploaded'
   );
   selectedHarnessInternal?: HarnessSelectionStruct;
+  addedHarnesses = 0;
 
   selectableViews: ViewSelectionStruct[] = [
     new ViewSelectionStruct(defaultView, 'Default'),
@@ -145,6 +146,7 @@ export class AppComponent implements AfterViewInit {
     this.selectedHarness = undefined;
     this.api?.clear();
     this.dataSource = new MatTableDataSource<HarnessElement>();
+    this.addedHarnesses = 0;
   }
 
   toggleRowHighlighting(row: HarnessElement, event: MouseEvent) {
@@ -195,9 +197,14 @@ export class AppComponent implements AfterViewInit {
   }
 
   set selectedHarness(selectedHarness: HarnessSelectionStruct | undefined) {
-    this.api?.clear();
     this.selectedHarnessInternal = selectedHarness;
+    this.selectedHarnessInternal?.harness?.buildingBlocks.forEach(
+      (buildingBlock) => {
+        buildingBlock.position.z += this.addedHarnesses * 100;
+      }
+    );
     this.setTableData();
+    this.addedHarnesses++;
   }
 
   get selectedHarness(): HarnessSelectionStruct | undefined {
@@ -234,10 +241,7 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    this.colors$.next({
-      harnessId: this.selectedHarness.harness.id,
-      colors: this.colorService.setColors(),
-    });
+    this.colors$.next(this.colorService.setColors());
   }
 
   resetColors() {
@@ -246,10 +250,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.api?.resetColors();
-    this.colors$.next({
-      harnessId: this.selectedHarness.harness.id,
-      colors: this.colorService.resetColors(),
-    });
+    this.colors$.next(this.colorService.resetColors());
   }
 
   removeColor(module: HarnessElement) {
@@ -262,26 +263,26 @@ export class AppComponent implements AfterViewInit {
 
   displayUnmodified(display: boolean) {
     diffViewSettings.displayUnmodified = display;
-    this.api?.setView(diffView);
+    this.api?.refreshView();
   }
 
   displayAdded(display: boolean) {
     diffViewSettings.displayAdded = display;
-    this.api?.setView(diffView);
+    this.api?.refreshView();
   }
 
   displayRemoved(display: boolean) {
     diffViewSettings.displayRemoved = display;
-    this.api?.setView(diffView);
+    this.api?.refreshView();
   }
 
   displayModifiedNew(display: boolean) {
     diffViewSettings.displayModifiedNew = display;
-    this.api?.setView(diffView);
+    this.api?.refreshView();
   }
 
   displayModifiedOld(display: boolean) {
     diffViewSettings.displayModifiedOld = display;
-    this.api?.setView(diffView);
+    this.api?.refreshView();
   }
 }

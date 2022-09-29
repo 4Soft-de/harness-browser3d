@@ -1,7 +1,7 @@
 {
   "harnesses": [
     {
-      "id": "harness",
+      "id": "debugHarness",
       "occurrences": [
         {
           "id": "connector",
