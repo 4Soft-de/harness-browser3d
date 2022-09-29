@@ -16,11 +16,47 @@
 */
 
 import {
+  Node,
   NodeLocation,
+  Occurrence,
   OnPointPlacement,
   OnWayPlacement,
+  Segment,
   SegmentLocation,
 } from './alias';
+
+export function isNode(object: any): object is Node {
+  const node = object as Node;
+  return (
+    node.id !== undefined &&
+    node.position !== undefined &&
+    node.buildingBlockId !== undefined
+  );
+}
+
+export function isSegment(object: any): object is Segment {
+  const segment = object as Segment;
+  return (
+    segment.id !== undefined &&
+    segment.virtualLength !== undefined &&
+    segment.crossSectionArea !== undefined &&
+    segment.curves !== undefined &&
+    segment.startNodeId !== undefined &&
+    segment.endNodeId !== undefined &&
+    segment.buildingBlockId !== undefined
+  );
+}
+
+export function isOccurrence(object: any): object is Occurrence {
+  const occurrence = object as Occurrence;
+  return (
+    occurrence.id !== undefined &&
+    occurrence.partType !== undefined &&
+    occurrence.partNumber !== undefined &&
+    occurrence.placement !== undefined &&
+    occurrence.buildingBlockId !== undefined
+  );
+}
 
 export function isOnPointPlacement(object: any): object is OnPointPlacement {
   const placement = object as OnPointPlacement;

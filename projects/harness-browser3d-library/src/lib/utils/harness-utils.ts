@@ -26,7 +26,6 @@ import {
   Segment,
   SegmentLocation,
 } from '../../api/alias';
-import { CacheService } from '../services/cache.service';
 
 export class HarnessUtils {
   private static readonly PROTECTION_RADIUS_INCREASE = 1;
@@ -67,17 +66,6 @@ export class HarnessUtils {
         1
       )
     );
-  }
-
-  public static getHarness(
-    ids: string[],
-    cacheService: CacheService
-  ): Harness | undefined {
-    if (ids.length) {
-      return cacheService.harnessCache.get(ids[0]);
-    } else {
-      return undefined;
-    }
   }
 
   public static convertPointToVector(point: Point): Vector3 {

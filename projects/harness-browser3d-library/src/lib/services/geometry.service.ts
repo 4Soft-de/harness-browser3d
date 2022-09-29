@@ -28,7 +28,6 @@ import {
   SegmentLocation,
 } from '../../api/alias';
 import { Injectable } from '@angular/core';
-import { CacheService } from './cache.service';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { BuildingBlockService } from './building-block.service';
 import { PositionService } from './position.service';
@@ -64,7 +63,6 @@ export class GeometryService {
 
   constructor(
     private readonly buildingBlockService: BuildingBlockService,
-    private readonly cacheService: CacheService,
     private readonly curveService: CurveService,
     private readonly defaultGeometryCreationService: DefaultGeometryCreationService,
     private readonly loadingService: LoadingService,
@@ -79,11 +77,6 @@ export class GeometryService {
   }
 
   public processHarness(harness: Harness): Map<string, BufferGeometry> {
-    if (this.cacheService.harnessMeshCache.has(harness.id)) {
-      console.info(`harness ${harness.id} is already loaded`);
-      return new Map();
-    }
-
     harness.nodes.forEach((node) => this.nodes.set(node.id, node));
     harness.segments.forEach(this.cacheSegment.bind(this));
 

@@ -35,8 +35,7 @@ export class DefaultGeometryCreationService {
       this.settingsService.segmentCount,
       this.settingsService.segmentCount
     );
-    GeometryUtils.clean(node);
-    return node;
+    return GeometryUtils.clean(node);
   }
 
   connectorSizes() {
@@ -45,8 +44,7 @@ export class DefaultGeometryCreationService {
       new BoxBufferGeometry(30, 10, 10, 1),
       new BoxBufferGeometry(20, 10, 10, 1),
     ];
-    connectorSizes.forEach((connector) => GeometryUtils.clean(connector));
-    return connectorSizes;
+    return connectorSizes.map((connector) => GeometryUtils.clean(connector));
   }
 
   accessory() {
@@ -56,8 +54,7 @@ export class DefaultGeometryCreationService {
       20,
       this.settingsService.segmentCount
     ).rotateX(MathUtils.degToRad(90));
-    GeometryUtils.clean(accessory);
-    return accessory;
+    return GeometryUtils.clean(accessory);
   }
 
   fixing() {
@@ -66,7 +63,6 @@ export class DefaultGeometryCreationService {
       this.settingsService.segmentCount,
       this.settingsService.segmentCount
     );
-    GeometryUtils.clean(fixing);
-    return fixing;
+    return GeometryUtils.clean(fixing);
   }
 }

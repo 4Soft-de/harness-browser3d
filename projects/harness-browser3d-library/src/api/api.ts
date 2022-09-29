@@ -57,6 +57,6 @@ export class HarnessBrowser3dLibraryAPI {
   }
 
   public setView(view: View) {
-    this.viewService.applyView(view);
+    this.viewService.setView(view);
   }
 }
