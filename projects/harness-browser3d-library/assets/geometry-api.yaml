@@ -138,8 +138,6 @@ components:
       type: object
       required:
         - id
-        - position
-        - rotation
       properties:
         id:
           type: string
@@ -168,8 +166,6 @@ components:
       type: object
       required:
         - id
-        - virtualLength
-        - crossSectionArea
         - curves
         - startNodeId
         - endNodeId
@@ -219,8 +215,6 @@ components:
       required:
         - id
         - partType
-        - partNumber
-        - placement
         - buildingBlockId
       properties:
         id:

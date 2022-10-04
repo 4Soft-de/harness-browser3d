@@ -26,41 +26,37 @@ import { Curve as InputCurve } from '../../api/alias';
 export class CurveService {
   constructor(private readonly settingsService: SettingsService) {}
 
-  public createSegmentCurve(
-    curves: InputCurve[]
-  ): CurvePath<Vector3> | undefined {
+  public createSegmentCurve(curves: InputCurve[]): CurvePath<Vector3> {
     const segmentCurve = new CurvePath<Vector3>();
-    curves
-      .filter((curve) => curve.controlPoints.length > 0)
-      .forEach((curve) => {
-        const controlPoints: Vector4[] = [];
-        const numberOfControlPoints = curve.controlPoints.length;
-        const degree = curve.degree;
-        const knotVector =
-          this.settingsService.splineMode === SplineModeAPIEnum.unclamped
-            ? this.unclampedKnots(numberOfControlPoints, degree)
-            : this.clampedKnots(numberOfControlPoints, degree);
+    curves.forEach((curve) => {
+      const controlPoints: Vector4[] = [];
+      const numberOfControlPoints = curve.controlPoints.length;
+      const degree = curve.degree;
+      const knotVector =
+        this.settingsService.splineMode === SplineModeAPIEnum.unclamped
+          ? this.unclampedKnots(numberOfControlPoints, degree)
+          : this.clampedKnots(numberOfControlPoints, degree);
 
-        curve.controlPoints.forEach((cp: { x: any; y: any; z: any }) => {
-          controlPoints.push(new Vector4(cp.x, cp.y, cp.z, 1));
-        });
-
-        /*
-         * caution
-         * startKnot and endKnot are hardcoded into getTangent
-         */
-        segmentCurve.add(
-          new NURBSCurve(
-            degree,
-            knotVector,
-            controlPoints,
-            degree,
-            controlPoints.length
-          )
-        );
+      curve.controlPoints.forEach((cp: { x: any; y: any; z: any }) => {
+        controlPoints.push(new Vector4(cp.x, cp.y, cp.z, 1));
       });
 
-    return segmentCurve.curves.length === 0 ? undefined : segmentCurve;
+      /*
+       * caution
+       * startKnot and endKnot are hardcoded into getTangent
+       */
+      segmentCurve.add(
+        new NURBSCurve(
+          degree,
+          knotVector,
+          controlPoints,
+          degree,
+          controlPoints.length
+        )
+      );
+    });
+
+    return segmentCurve;
   }
 
   private unclampedKnots(

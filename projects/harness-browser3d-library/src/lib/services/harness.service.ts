@@ -29,6 +29,7 @@ import { SettingsService } from './settings.service';
 import { EnableService } from './enable.service';
 import { CacheService } from './cache.service';
 import { Subscription } from 'rxjs';
+import { PreprocessService } from './preprocess.service';
 
 @Injectable()
 export class HarnessService implements OnDestroy {
@@ -42,6 +43,7 @@ export class HarnessService implements OnDestroy {
     private readonly enableService: EnableService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
+    private readonly preprocessService: PreprocessService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
@@ -63,15 +65,17 @@ export class HarnessService implements OnDestroy {
       console.warn(`harness ${harness.id} has already been loaded`);
       return;
     }
-    this.loadedHarnesses.add(harness.id);
-    const harnessElementGeos = this.geometryService.processHarness(harness);
+    const preprocessedHarness = this.preprocessService.preprocess(harness);
+    this.loadedHarnesses.add(preprocessedHarness.id);
+    const harnessElementGeos =
+      this.geometryService.processHarness(preprocessedHarness);
     this.createHarnessElementMappings(harnessElementGeos);
     this.cacheService.addGeos(harnessElementGeos);
-    this.colorService.initializeDefaultColors(harness);
+    this.colorService.initializeDefaultColors(preprocessedHarness);
     this.selectionService.addGeos(harnessElementGeos);
     this.sceneService.replaceMesh(this.cacheService.getBordnetMesh());
-    this.enableService.enableHarness(harness);
-    this.viewService.setCurrentView(harness);
+    this.enableService.enableHarness(preprocessedHarness);
+    this.viewService.setCurrentView(preprocessedHarness);
     if (this.settingsService.addHarnessResetCamera) {
       this.cameraService.resetCamera();
     }

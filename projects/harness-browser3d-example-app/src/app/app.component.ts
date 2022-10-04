@@ -200,7 +200,9 @@ export class AppComponent implements AfterViewInit {
     this.selectedHarnessInternal = selectedHarness;
     this.selectedHarnessInternal?.harness?.buildingBlocks.forEach(
       (buildingBlock) => {
-        buildingBlock.position.z += this.addedHarnesses * 100;
+        if (buildingBlock.position) {
+          buildingBlock.position.z += this.addedHarnesses * 100;
+        }
       }
     );
     this.setTableData();

@@ -88,7 +88,7 @@ export class GeometryUtils {
     loadingService: LoadingService
   ): BufferGeometry {
     let loadedGeo =
-      'partNumber' in element
+      'partNumber' in element && element.partNumber
         ? loadingService.getGeometries().get(element.partNumber)
         : undefined;
     if (

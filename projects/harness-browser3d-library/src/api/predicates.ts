@@ -38,8 +38,6 @@ export function isSegment(object: any): object is Segment {
   const segment = object as Segment;
   return (
     segment.id !== undefined &&
-    segment.virtualLength !== undefined &&
-    segment.crossSectionArea !== undefined &&
     segment.curves !== undefined &&
     segment.startNodeId !== undefined &&
     segment.endNodeId !== undefined &&
@@ -52,8 +50,6 @@ export function isOccurrence(object: any): object is Occurrence {
   return (
     occurrence.id !== undefined &&
     occurrence.partType !== undefined &&
-    occurrence.partNumber !== undefined &&
-    occurrence.placement !== undefined &&
     occurrence.buildingBlockId !== undefined
   );
 }
