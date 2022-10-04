@@ -17,6 +17,12 @@
           "buildingBlockId": "correct_building_block"
         },
         {
+          "id": "connector_properties_not_set",
+          "partType": "Connector",
+          "partNumber": "part_number",
+          "buildingBlockId": "correct_building_block"
+        },
+        {
           "id": "connector_node_does_not_exist",
           "partType": "Connector",
           "partNumber": "part_number",
@@ -66,6 +72,12 @@
               "nodeId": "does_not_exist"
             }
           },
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "protection_properties_not_set",
+          "partType": "Protection",
+          "partNumber": "part_number",
           "buildingBlockId": "correct_building_block"
         },
         {
@@ -170,6 +182,67 @@
               }
             ]
           },
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "fixing_properties_not_set",
+          "partType": "Fixing",
+          "partNumber": "part_number",
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "fixing_on_point_placement",
+          "partType": "Fixing",
+          "partNumber": "part_number",
+          "placement": {
+            "locations": [
+              {
+                "nodeId": "correct_node_A"
+              }
+            ]
+          },
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "fixing_node_locations",
+          "partType": "Fixing",
+          "partNumber": "fixingPartNumber",
+          "placement": {
+            "locations": [
+              {
+                "nodeId": "correct_node_A"
+              },
+              {
+                "nodeId": "correct_node_A"
+              }
+            ]
+          },
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "fixing_segments_do_not_exist",
+          "partType": "Fixing",
+          "partNumber": "fixingPartNumber",
+          "placement": {
+            "locations": [
+              {
+                "segmentId": "does_not_exist",
+                "anchor": "FromStartNode",
+                "segmentOffsetLength": 45
+              },
+              {
+                "segmentId": "does_not_exist",
+                "anchor": "FromEndNode",
+                "segmentOffsetLength": 45
+              }
+            ]
+          },
+          "buildingBlockId": "correct_building_block"
+        },
+        {
+          "id": "other_properties_not_set",
+          "partType": "Other",
+          "partNumber": "part_number",
           "buildingBlockId": "correct_building_block"
         },
         {
@@ -281,6 +354,13 @@
           "buildingBlockId": "correct_building_block"
         },
         {
+          "id": "segment_properties_not_set",
+          "curves": [],
+          "startNodeId": "correct_node_A",
+          "endNodeId": "correct_node_B",
+          "buildingBlockId": "correct_building_block"
+        },
+        {
           "id": "segment_no_curves",
           "virtualLength": 100,
           "crossSectionArea": 10,
@@ -365,6 +445,9 @@
           "rotation": {
             "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1]
           }
+        },
+        {
+          "id": "building_block_properties_not_set"
         }
       ]
     }
