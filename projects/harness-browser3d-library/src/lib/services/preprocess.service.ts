@@ -40,10 +40,11 @@ export class PreprocessService {
   }
 
   private preprocessBuildingBlock(buildingBlock: BuildingBlock): boolean {
-    const defined =
-      this.defined(buildingBlock, 'id', 'buildingBlock') &&
-      this.defined(buildingBlock, 'position', 'buildingBlock') &&
-      this.defined(buildingBlock, 'rotation', 'buildingBlock');
+    const defined = this.defined(
+      buildingBlock,
+      ['id', 'position', 'rotation'],
+      'buildingBlock'
+    );
     if (defined) {
       this.buildingBlocks.add(buildingBlock.id);
     }
@@ -51,10 +52,11 @@ export class PreprocessService {
   }
 
   private preprocessNode(node: Node): boolean {
-    const defined =
-      this.defined(node, 'id', 'node') &&
-      this.defined(node, 'position', 'node') &&
-      this.defined(node, 'buildingBlockId', 'node');
+    const defined = this.defined(
+      node,
+      ['id', 'position', 'buildingBlockId'],
+      'node'
+    );
     if (!defined) {
       return false;
     }
@@ -71,14 +73,19 @@ export class PreprocessService {
   }
 
   private preprocessSegment(segment: Segment): boolean {
-    const defined =
-      this.defined(segment, 'id', 'segment') &&
-      this.defined(segment, 'virtualLength', 'segment') &&
-      this.defined(segment, 'crossSectionArea', 'segment') &&
-      this.defined(segment, 'curves', 'segment') &&
-      this.defined(segment, 'startNodeId', 'segment') &&
-      this.defined(segment, 'endNodeId', 'segment') &&
-      this.defined(segment, 'buildingBlockId', 'segment');
+    const defined = this.defined(
+      segment,
+      [
+        'id',
+        'virtualLength',
+        'crossSectionArea',
+        'curves',
+        'startNodeId',
+        'endNodeId',
+        'buildingBlockId',
+      ],
+      'segment'
+    );
     if (!defined) {
       return false;
     }
@@ -128,12 +135,11 @@ export class PreprocessService {
   }
 
   private preprocessOccurrence(occurrence: Occurrence): boolean {
-    const defined =
-      this.defined(occurrence, 'id', 'occurrence') &&
-      this.defined(occurrence, 'partType', 'occurrence') &&
-      this.defined(occurrence, 'partNumber', 'occurrence') &&
-      this.defined(occurrence, 'placement', 'occurrence') &&
-      this.defined(occurrence, 'buildingBlockId', 'occurrence');
+    const defined = this.defined(
+      occurrence,
+      ['id', 'partType', 'partNumber', 'placement', 'buildingBlockId'],
+      'occurrence'
+    );
     if (!defined) {
       return false;
     }
@@ -236,17 +242,17 @@ export class PreprocessService {
     );
   }
 
-  private defined(
-    object: { id: string },
-    key: string,
-    prefix: string
-  ): boolean {
-    const defined =
-      Object.keys(object).find((current) => current == key) !== undefined;
-    if (!defined) {
-      console.warn(`${prefix} ${object.id} does not have ${key}`);
-    }
-    return defined;
+  private defined(object: any, keys: string[], prefix: string): boolean {
+    return keys
+      .map((key) => {
+        const property = object[key];
+        const defined = property !== undefined && property !== null;
+        if (!defined) {
+          console.warn(`${prefix} ${object.id} does not have ${key}`);
+        }
+        return defined;
+      })
+      .reduce((pre, next) => pre && next, true);
   }
 
   private correctBuildingBlock(

@@ -250,11 +250,11 @@ export class GeometryService {
       case GeometryModeAPIEnum.loaded:
         rotation =
           connector.rotation !== undefined
-            ? HarnessUtils.computeQuaternionFromRotation(connector.rotation)
+            ? HarnessUtils.computeQuaternionFromRotation(connector.rotation!)
             : new Quaternion();
         const offset =
           connector.positionOffset !== undefined
-            ? HarnessUtils.convertPointToVector(connector.positionOffset)
+            ? HarnessUtils.convertPointToVector(connector.positionOffset!)
             : new Vector3(0, 0, 0);
         position.add(offset);
         break;
@@ -279,7 +279,7 @@ export class GeometryService {
   private processFixing(fixing: Occurrence): BufferGeometry {
     const rotation =
       fixing.rotation !== undefined
-        ? HarnessUtils.computeQuaternionFromRotation(fixing.rotation)
+        ? HarnessUtils.computeQuaternionFromRotation(fixing.rotation!)
         : new Quaternion();
 
     const geos = getOnPointSegmentLocations(fixing).map((location) =>
@@ -468,12 +468,12 @@ export class GeometryService {
   private processOther(other: Occurrence): BufferGeometry {
     const rotation =
       other.rotation !== undefined
-        ? HarnessUtils.computeQuaternionFromRotation(other.rotation)
+        ? HarnessUtils.computeQuaternionFromRotation(other.rotation!)
         : new Quaternion();
     const node = this.nodes.get(getNodeId(other)!)!;
     const offset =
       other.positionOffset !== undefined
-        ? HarnessUtils.convertPointToVector(other.positionOffset)
+        ? HarnessUtils.convertPointToVector(other.positionOffset!)
         : new Vector3(0, 0, 0);
     const position = HarnessUtils.convertPointToVector(node.position).add(
       offset
