@@ -16,13 +16,17 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Color, Float32BufferAttribute, Mesh } from 'three';
-import { Harness, Identifiable } from '../../api/alias';
-import { SetColorAPIStruct } from '../../api/structs';
+import { Color, Float32BufferAttribute } from 'three';
+import { isOccurrence, isSegment } from '../../api/predicates';
+import {
+  Node,
+  Segment,
+  Occurrence,
+  Harness,
+  SetColorAPIStruct,
+} from '../../public-api';
 import { GeometryColors } from '../structs/colors';
-import { ErrorUtils } from '../utils/error-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { HarnessUtils } from '../utils/harness-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
 
@@ -31,102 +35,67 @@ export class ColorService {
   private readonly key = 'pColor';
   private readonly defaultKey = 'pDefaultColor';
 
+  private readonly defaultColors = new Map<string, Color>();
+
   constructor(
     private readonly cacheService: CacheService,
     private readonly mappingService: MappingService
   ) {}
 
   public setColors(colors: SetColorAPIStruct[]): void {
-    const harness = HarnessUtils.getHarness(
-      colors.map((color) => color.harnessElementId),
-      this.cacheService
-    );
-    let mesh = undefined;
-    if (harness) {
-      mesh = this.cacheService.harnessMeshCache.get(harness.id);
-    }
-    if (harness && mesh) {
-      this.applyColors(harness.id, this.key, this.createMap(colors), mesh);
-    } else {
-      console.error(ErrorUtils.notFound('harness'));
-    }
+    this.applyColors(this.key, this.createMap(colors));
   }
 
-  public resetColors(harnessId: string) {
-    const harness = this.cacheService.harnessCache.get(harnessId);
-    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
-    if (harness && mesh) {
-      const colors = this.createEmptyColorMap(harness);
-      this.applyColors(harnessId, this.key, colors, mesh);
-    } else {
-      console.error(ErrorUtils.notFound(harnessId));
-    }
+  public resetColors(): void {
+    this.applyColors(this.key, new Map<string, Color>());
   }
 
-  public setDefaultColors(harnessId: string) {
-    const harness = this.cacheService.harnessCache.get(harnessId);
-    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
-    if (harness && mesh) {
-      const colors = this.createDefaultColorMap(harness);
-      this.applyColors(harnessId, this.defaultKey, colors, mesh);
-    } else {
-      console.error(ErrorUtils.notFound(harnessId));
-    }
-  }
-
-  private applyColors(
-    harnessId: string,
-    key: string,
-    colors: Map<string, Color>,
-    mesh: Mesh
-  ) {
-    const array: number[] = [];
-    this.mappingService
-      .applyMapping(harnessId, GeometryColors.empty, colors)
-      .forEach((color) => array.push(color.r, color.g, color.b));
-    GeometryUtils.applyGeoAttribute(
-      mesh.geometry,
-      key,
-      new Float32BufferAttribute(array, 3)
-    );
-  }
-
-  private createMap(array: SetColorAPIStruct[]): Map<string, Color> {
-    const map: Map<string, Color> = new Map();
-    array.forEach((struct) => map.set(struct.harnessElementId, struct.color));
-    return map;
-  }
-
-  private createEmptyColorMap(harness: Harness): Map<string, Color> {
-    const map: Map<string, Color> = new Map();
-    const add = (identifiable: Identifiable) => {
-      map.set(identifiable.id, GeometryColors.empty);
+  public initializeDefaultColors(harness: Harness): void {
+    const set = (harnessElement: Node | Segment | Occurrence) => {
+      this.defaultColors.set(
+        harnessElement.id,
+        this.getDefaultColor(harnessElement)
+      );
     };
-    harness.segments.forEach(add);
-    harness.protections.forEach(add);
-    harness.fixings.forEach(add);
-    harness.connectors.forEach(add);
-    harness.accessories.forEach(add);
+    harness.nodes.forEach(set);
+    harness.segments.forEach(set);
+    harness.occurrences.forEach(set);
+    this.applyColors(this.defaultKey, this.defaultColors);
+  }
+
+  private getDefaultColor(harnessElement: Node | Segment | Occurrence): Color {
+    let color = GeometryColors.node;
+    if (isSegment(harnessElement)) {
+      color = GeometryColors.segment;
+    }
+    if (isOccurrence(harnessElement)) {
+      color = GeometryColors.getColor(harnessElement.partType);
+    }
+    return color;
+  }
+
+  private applyColors(key: string, colors: Map<string, Color>) {
+    const geo = this.cacheService.getBordnetGeo();
+    if (geo) {
+      const array: number[] = [];
+      this.mappingService
+        .applyMapping(GeometryColors.empty, colors)
+        .forEach((color) => array.push(color.r, color.g, color.b));
+      GeometryUtils.applyGeoAttribute(
+        geo,
+        key,
+        new Float32BufferAttribute(array, 3)
+      );
+    }
+  }
+
+  private createMap(colors: SetColorAPIStruct[]): Map<string, Color> {
+    const map: Map<string, Color> = new Map();
+    colors.forEach((entry) => map.set(entry.harnessElementId, entry.color));
     return map;
   }
 
-  private createDefaultColorMap(harness: Harness): Map<string, Color> {
-    const map: Map<string, Color> = new Map();
-    harness.segments.forEach((segment) =>
-      map.set(segment.id, GeometryColors.segment)
-    );
-    harness.protections.forEach((protection) =>
-      map.set(protection.id, GeometryColors.protection)
-    );
-    harness.fixings.forEach((fixing) =>
-      map.set(fixing.id, GeometryColors.fixing)
-    );
-    harness.connectors.forEach((connector) =>
-      map.set(connector.id, GeometryColors.connector)
-    );
-    harness.accessories.forEach((accessory) =>
-      map.set(accessory.id, GeometryColors.accessory)
-    );
-    return map;
+  public clear(): void {
+    this.defaultColors.clear();
   }
 }

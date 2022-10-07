@@ -27,23 +27,14 @@ export class BuildingBlockService {
 
   constructor() {}
 
-  public fillBuildingBlockMap(buildingBlock: BuildingBlock | null) {
-    if (!buildingBlock) {
-      console.warn(ErrorUtils.isNull('buildingBlock'));
-      return;
-    }
-
+  public fillBuildingBlockMap(buildingBlock: BuildingBlock) {
     let position = new Vector3();
     let rotation = new Quaternion();
 
-    if (buildingBlock.placement) {
-      position = HarnessUtils.convertPlacementToVector(
-        buildingBlock.placement.location
-      );
-      rotation = HarnessUtils.computeRotationFromPlacement(
-        buildingBlock.placement
-      );
-    }
+    position = HarnessUtils.convertPointToVector(buildingBlock.position!);
+    rotation = HarnessUtils.computeQuaternionFromRotation(
+      buildingBlock.rotation!
+    );
 
     const matrix = new Matrix4().compose(
       position,
@@ -51,17 +42,15 @@ export class BuildingBlockService {
       new Vector3(1, 1, 1)
     );
 
-    buildingBlock.entities.forEach((entity) =>
-      this.buildingBlockMatrixCache.set(entity, matrix)
-    );
+    this.buildingBlockMatrixCache.set(buildingBlock.id, matrix);
   }
 
-  public applyBuildingBlock(id: string, geo: BufferGeometry) {
-    const buildingBlock = this.buildingBlockMatrixCache.get(id);
+  public applyBuildingBlock(buildingBlockId: string, geo: BufferGeometry) {
+    const buildingBlock = this.buildingBlockMatrixCache.get(buildingBlockId);
     if (buildingBlock) {
       geo.applyMatrix4(buildingBlock);
     } else {
-      console.warn(ErrorUtils.notFound(id));
+      console.warn(ErrorUtils.notFound(buildingBlockId));
     }
   }
 }

@@ -1,3 +1,18 @@
+#  Copyright (C) 2022 4Soft GmbH
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Lesser General Public License as
+#  published by the Free Software Foundation, either version 2.1 of the
+#  License, or (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Lesser Public License for more details.
+#
+#  You should have received a copy of the GNU General Lesser Public
+#  License along with this program. If not, see
+#  http://www.gnu.org/licenses/lgpl-2.1.html.
+
 openapi: 3.0.3
 
 info:
@@ -33,21 +48,19 @@ paths:
 
 components:
   schemas:
-    Graphics:
+    Graphic:
       type: object
-      description: Graphics
       required:
-        - data
         - partNumber
+        - data
       properties:
-        data:
-          type: string
         partNumber:
+          type: string
+        data:
           type: string
 
     Point:
       type: object
-      description: Point
       required:
         - x
         - y
@@ -56,282 +69,31 @@ components:
         x:
           type: number
           format: double
-          example: 0.0
         y:
           type: number
           format: double
-          example: 0.0
         z:
           type: number
           format: double
-          example: 0.0
 
-    Placement:
+    Rotation:
       type: object
-      description: Placement
       required:
-        - location
-        - u
-        - v
-        - w
+        - matrix
       properties:
-        location:
-          $ref: "#/components/schemas/Point"
-        u:
-          $ref: "#/components/schemas/Point"
-        v:
-          $ref: "#/components/schemas/Point"
-        w:
-          $ref: "#/components/schemas/Point"
-
-    CenterCurve:
-      type: object
-      description: Center curve
-      required:
-        - controlPoints
-        - degree
-      properties:
-        controlPoints:
+        matrix:
           type: array
           items:
-            $ref: "#/components/schemas/Point"
-        degree:
-          type: integer
+            type: number
+            format: double
 
     ViewProperties:
       type: object
       additionalProperties:
         type: string
 
-    Identifiable:
-      type: object
-      description: Entity id
-      required:
-        - id
-        - name
-      discriminator:
-        propertyName: objectType
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-
-    HarnessOccurrence:
-      type: object
-      description: harness occurrence
-      required:
-        - partNumber
-      discriminator:
-        propertyName: objectType
-      properties:
-        partNumber:
-          type: string
-        viewProperties:
-          $ref: "#/components/schemas/ViewProperties"
-      allOf:
-        - $ref: "#/components/schemas/Identifiable"
-
-    PlacedHarnessOccurrence:
-      type: object
-      description: Placed harness occurrence
-      required:
-        - placement
-      discriminator:
-        propertyName: objectType
-      properties:
-        placement:
-          $ref: "#/components/schemas/Placement"
-      allOf:
-        - $ref: "#/components/schemas/HarnessOccurrence"
-
-    Accessory:
-      type: object
-      description: Accessory occurrence
-      allOf:
-        - $ref: "#/components/schemas/PlacedHarnessOccurrence"
-
-    Connector:
-      type: object
-      description: Connector occurrnece
-      required:
-        - geometryPoint
-        - numberOfCavities
-        - segmentDirection
-      properties:
-        geometryPoint:
-          $ref: "#/components/schemas/Point"
-        numberOfCavities:
-          type: integer
-        nodeId:
-          type: string
-        segmentDirection:
-          $ref: "#/components/schemas/Point"
-      allOf:
-        - $ref: "#/components/schemas/PlacedHarnessOccurrence"
-
-    FixingAssignment:
-      type: object
-      description: Fixing assignment
-      required:
-        - location
-        - segmentId
-      properties:
-        location:
-          type: number
-          format: double
-          example: 0.0
-        segmentId:
-          type: string
-
-    Fixing:
-      type: object
-      description: Fixing occurrence.
-      required:
-        - fixingAssignments
-      properties:
-        fixingAssignments:
-          type: array
-          items:
-            $ref: "#/components/schemas/FixingAssignment"
-      allOf:
-        - $ref: "#/components/schemas/PlacedHarnessOccurrence"
-
-    ProtectionArea:
-      type: object
-      description: Protection area.
-      required:
-        - endLocation
-        - length
-        - segmentId
-        - startLocation
-      properties:
-        endLocation:
-          type: number
-          format: double
-          example: 0.0
-        length:
-          type: number
-          format: double
-          example: 0.0
-        segmentId:
-          type: string
-        startLocation:
-          type: number
-          format: double
-          example: 0.0
-
-    Protection:
-      type: object
-      description: Protection occurrence.
-      required:
-        - protectionAreas
-      properties:
-        protectionAreas:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProtectionArea"
-      allOf:
-        - $ref: "#/components/schemas/HarnessOccurrence"
-
-    Segment:
-      type: object
-      description: Segment
-      required:
-        - centerCurves
-        - crossSectionArea
-        - endPointId
-        - endPointLocation
-        - startPointId
-        - startPointLocation
-        - virtualLength
-      properties:
-        centerCurves:
-          type: array
-          items:
-            $ref: "#/components/schemas/CenterCurve"
-        crossSectionArea:
-          type: number
-          format: double
-          example: 0.0
-        endPointId:
-          type: string
-        endPointLocation:
-          $ref: "#/components/schemas/Point"
-        startPointId:
-          type: string
-        startPointLocation:
-          $ref: "#/components/schemas/Point"
-        virtualLength:
-          type: number
-          format: double
-          example: 0.0
-        viewProperties:
-          $ref: "#/components/schemas/ViewProperties"
-      allOf:
-        - $ref: "#/components/schemas/Identifiable"
-
-    BuildingBlock:
-      type: object
-      description: Building block
-      required:
-        - entities
-      properties:
-        placement:
-          $ref: "#/components/schemas/Placement"
-        entities:
-          type: array
-          items:
-            type: string
-      allOf:
-        - $ref: "#/components/schemas/Identifiable"
-
-    Harness:
-      type: object
-      description: Harness
-      required:
-        - accessories
-        - fixings
-        - connectors
-        - protections
-        - segments
-        - geometries
-        - buildingBlocks
-      properties:
-        accessories:
-          type: array
-          items:
-            $ref: "#/components/schemas/Accessory"
-        fixings:
-          type: array
-          items:
-            $ref: "#/components/schemas/Fixing"
-        connectors:
-          type: array
-          items:
-            $ref: "#/components/schemas/Connector"
-        protections:
-          type: array
-          items:
-            $ref: "#/components/schemas/Protection"
-        segments:
-          type: array
-          items:
-            $ref: "#/components/schemas/Segment"
-        geometries:
-          type: array
-          items:
-            $ref: "#/components/schemas/Graphics"
-        buildingBlocks:
-          type: array
-          items:
-            $ref: "#/components/schemas/BuildingBlock"
-      allOf:
-        - $ref: "#/components/schemas/HarnessOccurrence"
-
     Bordnet:
       type: object
-      description: Bordnet
       required:
         - harnesses
       properties:
@@ -339,3 +101,224 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Harness"
+
+    Harness:
+      type: object
+      required:
+        - id
+        - occurrences
+        - nodes
+        - segments
+        - buildingBlocks
+      properties:
+        id:
+          type: string
+        occurrences:
+          type: array
+          items:
+            $ref: "#/components/schemas/Occurrence"
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Node"
+        segments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Segment"
+        buildingBlocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/BuildingBlock"
+        graphics:
+          type: array
+          items:
+            $ref: "#/components/schemas/Graphic"
+
+    BuildingBlock:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        position:
+          $ref: "#/components/schemas/Point"
+        rotation:
+          $ref: "#/components/schemas/Rotation"
+
+    Node:
+      type: object
+      required:
+        - id
+        - position
+        - buildingBlockId
+      properties:
+        id:
+          type: string
+        position:
+          $ref: "#/components/schemas/Point"
+        buildingBlockId:
+          type: string
+        viewProperties:
+          $ref: "#/components/schemas/ViewProperties"
+
+    Segment:
+      type: object
+      required:
+        - id
+        - curves
+        - startNodeId
+        - endNodeId
+        - buildingBlockId
+      properties:
+        id:
+          type: string
+        virtualLength:
+          type: number
+          format: double
+        crossSectionArea:
+          type: number
+          format: double
+        curves:
+          type: array
+          items:
+            $ref: "#/components/schemas/Curve"
+        startNodeId:
+          type: string
+        endNodeId:
+          type: string
+        buildingBlockId:
+          type: string
+        viewProperties:
+          $ref: "#/components/schemas/ViewProperties"
+
+    Curve:
+      type: object
+      required:
+        - degree
+        - controlPoints
+      properties:
+        degree:
+          type: integer
+        controlPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Point"
+        knots:
+          type: array
+          items:
+            type: number
+            format: double
+
+    Occurrence:
+      type: object
+      required:
+        - id
+        - partType
+        - buildingBlockId
+      properties:
+        id:
+          type: string
+        partType:
+          $ref: "#/components/schemas/PartType"
+        partNumber:
+          type: string
+        numberOfCavities:
+          type: integer
+        placement:
+          $ref: "#/components/schemas/Placement"
+        positionOffset:
+          $ref: "#/components/schemas/Point"
+        rotation:
+          $ref: "#/components/schemas/Rotation"
+        buildingBlockId:
+          type: string
+        viewProperties:
+          $ref: "#/components/schemas/ViewProperties"
+
+    PartType:
+      type: string
+      enum:
+        - "Connector"
+        - "Protection"
+        - "Fixing"
+        - "Other"
+
+    Placement:
+      type: object
+      discriminator:
+        propertyName: placementType
+      properties:
+        id:
+          type: string
+
+    OnPointPlacement:
+      type: object
+      required:
+        - locations
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+      allOf:
+        - $ref: "#/components/schemas/Placement"
+
+    OnWayPlacement:
+      type: object
+      required:
+        - segmentPath
+        - startLocation
+        - endLocation
+      properties:
+        segmentPath:
+          type: array
+          items:
+            type: string
+        startLocation:
+          $ref: "#/components/schemas/Location"
+        endLocation:
+          $ref: "#/components/schemas/Location"
+      allOf:
+        - $ref: "#/components/schemas/Placement"
+
+    Location:
+      type: object
+      discriminator:
+        propertyName: locationType
+      properties:
+        id:
+          type: string
+
+    NodeLocation:
+      type: object
+      required:
+        - nodeId
+      properties:
+        nodeId:
+          type: string
+      allOf:
+        - $ref: "#/components/schemas/Location"
+
+    SegmentLocation:
+      type: object
+      required:
+        - segmentId
+        - anchor
+        - segmentOffsetLength
+      properties:
+        segmentId:
+          type: string
+        anchor:
+          $ref: "#/components/schemas/Anchor"
+        segmentOffsetLength:
+          type: number
+          format: double
+      allOf:
+        - $ref: "#/components/schemas/Location"
+
+    Anchor:
+      type: string
+      enum:
+        - "FromStartNode"
+        - "FromEndNode"

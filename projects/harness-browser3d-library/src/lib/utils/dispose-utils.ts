@@ -17,18 +17,20 @@
 
 import { Material, Mesh, Texture } from 'three';
 
-export function dispose(object: Mesh | Material | Material[] | Texture) {
-  if ('isMesh' in object) {
-    object.geometry.dispose();
-    dispose(object.material);
-  }
-  if ('isMaterial' in object) {
-    object.dispose();
-  }
-  if ('length' in object) {
-    object.forEach(dispose);
-  }
-  if ('isTexture' in object) {
-    object.dispose();
+export function dispose(object?: Mesh | Material | Material[] | Texture) {
+  if (object) {
+    if ('isMesh' in object) {
+      object.geometry.dispose();
+      dispose(object.material);
+    }
+    if ('isMaterial' in object) {
+      object.dispose();
+    }
+    if ('length' in object) {
+      object.forEach(dispose);
+    }
+    if ('isTexture' in object) {
+      object.dispose();
+    }
   }
 }

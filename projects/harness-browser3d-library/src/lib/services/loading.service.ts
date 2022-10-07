@@ -18,7 +18,7 @@
 import { Injectable } from '@angular/core';
 import { BufferGeometry, Mesh, Scene } from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { Graphics } from '../../api/alias';
+import { Graphic } from '../../api/alias';
 import { LoadedGeometry } from '../structs/loaded-geometries';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class LoadingService {
     return this.geometries;
   }
 
-  public parseGeometryData(geometries: Graphics[]) {
+  public parseGeometryData(geometries: Graphic[]) {
     if (process.env['NODE_ENV'] !== 'production') {
       import('three/examples/jsm/loaders/VRMLLoader').then((module) => {
         let emptyIterator = true;

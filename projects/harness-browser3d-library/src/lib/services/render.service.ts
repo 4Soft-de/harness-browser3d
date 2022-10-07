@@ -25,7 +25,9 @@ import {
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
 import { CoordinateSystemService } from './coordinate-system.service';
+import { LightsService } from './lights.service';
 import { SceneService } from './scene.service';
+import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 
 class DefaultPass extends Pass {
@@ -45,7 +47,9 @@ export class RenderService implements OnDestroy {
   constructor(
     private readonly cameraService: CameraService,
     private readonly coordinateSystemService: CoordinateSystemService,
+    private readonly lightsService: LightsService,
     private readonly sceneService: SceneService,
+    private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
     this.subscription.add(
@@ -111,6 +115,7 @@ export class RenderService implements OnDestroy {
     if (controls) {
       controls.update();
       this.coordinateSystemService.animate(controls.target);
+      this.lightsService.animate(controls.target);
     } else {
       console.error(ErrorUtils.isUndefined('controls'));
     }
@@ -118,6 +123,8 @@ export class RenderService implements OnDestroy {
     if (this.postProcessor?.renderer) {
       this.postProcessor.renderer.clear();
       this.postProcessor.render();
+      this.postProcessor.renderer.clearDepth();
+      this.selectionService.render(this.postProcessor.renderer);
       this.coordinateSystemService.render(this.postProcessor.renderer);
     } else {
       console.error(ErrorUtils.isUndefined('renderer or composer'));

@@ -32,11 +32,11 @@ import { HarnessBrowser3dLibraryAPI } from '../../api/api';
 import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
 import { RenderService } from '../services/render.service';
 import { CameraService } from '../services/camera.service';
-import { SceneService } from '../services/scene.service';
 import { HarnessService } from '../services/harness.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
+import { EnableService } from '../services/enable.service';
 import Stats from 'stats.js';
 
 @Component({
@@ -59,9 +59,9 @@ export class HarnessBrowser3dLibraryComponent
     private readonly api: HarnessBrowser3dLibraryAPI,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
+    private readonly enableService: EnableService,
     private readonly harnessService: HarnessService,
     private readonly renderService: RenderService,
-    private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {}
@@ -70,7 +70,6 @@ export class HarnessBrowser3dLibraryComponent
     this.renderService.initRenderer(this.canvasElement.nativeElement);
     this.renderService.resizeRendererToCanvasSize();
     this.cameraService.initControls(this.canvasElement.nativeElement);
-    this.sceneService.setupScene();
     this.initialized.emit(this.api);
     this.isInitialized = true;
     this.animate();
@@ -111,8 +110,6 @@ export class HarnessBrowser3dLibraryComponent
     );
   }
 
-  // load corresponding harness beforehand
-  // all ids are in same harness
   @Input()
   set selectedIds(ids: string[] | null | undefined) {
     this.checkInput(
@@ -121,8 +118,22 @@ export class HarnessBrowser3dLibraryComponent
     );
   }
 
-  // load corresponding harness beforehand
-  // all ids are in same harness
+  @Input()
+  set enableIds(ids: string[] | null | undefined) {
+    this.checkInput(
+      this.enableService.enableElements.bind(this.enableService),
+      ids
+    );
+  }
+
+  @Input()
+  set disableIds(ids: string[] | null | undefined) {
+    this.checkInput(
+      this.enableService.disableElements.bind(this.enableService),
+      ids
+    );
+  }
+
   @Input()
   set colors(colors: SetColorAPIStruct[] | null | undefined) {
     this.checkInput(

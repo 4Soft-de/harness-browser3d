@@ -23,7 +23,6 @@ import {
   SettingsAPIStruct,
   SplineModeAPIEnum,
 } from '../../api/structs';
-import { CacheService } from './cache.service';
 
 @Injectable()
 export class SettingsService implements SettingsAPIStruct {
@@ -40,8 +39,6 @@ export class SettingsService implements SettingsAPIStruct {
   public updatedCameraSettings = new Subject<void>();
 
   private updatedSettings: string[] = [];
-
-  constructor(private readonly cacheService: CacheService) {}
 
   public set(additionalSettings: SettingsAPIStruct) {
     Object.assign(this, additionalSettings);
@@ -63,7 +60,6 @@ export class SettingsService implements SettingsAPIStruct {
     );
     if (geoSetting) {
       this.updatedGeometrySettings.next();
-      this.cacheService.clear();
     }
     if (cameraSetting) {
       this.updatedCameraSettings.next();

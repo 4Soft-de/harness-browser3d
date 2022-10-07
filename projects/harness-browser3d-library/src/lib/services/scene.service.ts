@@ -17,7 +17,9 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DirectionalLight, HemisphereLight, Scene } from 'three';
+import { Scene } from 'three';
+import { CacheService } from './cache.service';
+import { LightsService } from './lights.service';
 import { SettingsService } from './settings.service';
 
 @Injectable()
@@ -25,12 +27,16 @@ export class SceneService implements OnDestroy {
   private readonly scene: Scene;
   private subscription: Subscription = new Subscription();
 
-  constructor(settingsService: SettingsService) {
+  constructor(
+    private readonly cacheService: CacheService,
+    lightsService: LightsService,
+    settingsService: SettingsService
+  ) {
     this.scene = new Scene();
+    lightsService.addLights(this.scene);
     this.subscription.add(
       settingsService.updatedGeometrySettings.subscribe(() => {
-        this.clearScene();
-        this.setupScene();
+        this.removeMesh();
       })
     );
   }
@@ -43,16 +49,18 @@ export class SceneService implements OnDestroy {
     return this.scene;
   }
 
-  public setupScene() {
-    const directionalLight = new DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(1, 0, 1).normalize();
-    this.scene.add(directionalLight);
-
-    const hemisphereLight = new HemisphereLight(0xffffff, 0xcccccc, 0.3);
-    this.scene.add(hemisphereLight);
+  public replaceMesh() {
+    const mesh = this.cacheService.getBordnetMesh();
+    if (mesh) {
+      this.removeMesh();
+      this.scene.add(mesh);
+    }
   }
 
-  public clearScene() {
-    this.scene.remove.apply(this.scene, this.scene.children);
+  public removeMesh() {
+    const mesh = this.scene.getObjectByName(this.cacheService.bordnetMeshName);
+    if (mesh) {
+      this.scene.remove(mesh);
+    }
   }
 }

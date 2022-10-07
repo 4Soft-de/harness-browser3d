@@ -16,13 +16,28 @@
 */
 
 import { Color } from 'three';
+import { PartType } from '../../api/alias';
 
 export class GeometryColors {
+  public static readonly node = new Color('grey');
   public static readonly segment = new Color('grey');
   public static readonly connector = new Color('yellow');
-  public static readonly accessory = new Color('green');
+  public static readonly other = new Color('green');
   public static readonly fixing = new Color('blue');
   public static readonly protection = new Color(0x3b3b3b);
   public static readonly notFound = new Color('black');
   public static readonly empty = new Color(0, 0, 0);
+
+  public static getColor(type: string) {
+    switch (PartType[type as keyof typeof PartType]) {
+      case PartType.Connector:
+        return GeometryColors.connector;
+      case PartType.Protection:
+        return GeometryColors.protection;
+      case PartType.Fixing:
+        return GeometryColors.fixing;
+      case PartType.Other:
+        return GeometryColors.other;
+    }
+  }
 }

@@ -18,6 +18,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
 } from '@angular/core';
 import {
@@ -25,21 +26,22 @@ import {
   HarnessBrowser3dLibraryAPI,
   SetColorAPIStruct,
   SettingsAPIStruct,
-  Harness,
-  Identifiable,
-  Bordnet,
   defaultView,
   diffView,
+  diffViewSettings,
+  Node,
+  Segment,
+  Occurrence,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
-import * as exampleHarness from '../assets/exampleHarness.json';
-import { debugView } from '../views/debug.view';
-import { ViewSelectionStruct } from '../structs';
+import { HarnessSelectionStruct, ViewSelectionStruct } from '../structs';
 import { Subject } from 'rxjs';
 import { Color } from 'three';
+
+type HarnessElement = Node | Segment | Occurrence;
 
 @Component({
   selector: 'app-root',
@@ -50,33 +52,51 @@ import { Color } from 'three';
 export class AppComponent implements AfterViewInit {
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
-  data?: Harness;
-  selectedIds$: Subject<string[] | undefined> = new Subject();
+  selectedIds$: Subject<string[]> = new Subject();
+  disableIds$: Subject<string[]> = new Subject();
+  enableIds$: Subject<string[]> = new Subject();
   colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
   settings: SettingsAPIStruct = {
     backgroundColor: new Color('white'),
   };
 
   displayedColumns: string[] = ['actions', 'module'];
-  dataSource = new MatTableDataSource<Identifiable>();
-  selection: Identifiable[] = [];
+  dataSource = new MatTableDataSource<HarnessElement>();
+  selection: HarnessElement[] = [];
+
+  selectableHarnesses: HarnessSelectionStruct[];
+  uploadedHarness: HarnessSelectionStruct = new HarnessSelectionStruct(
+    'Uploaded'
+  );
+  selectedHarnessInternal?: HarnessSelectionStruct;
+  addedHarnesses = 0;
 
   selectableViews: ViewSelectionStruct[] = [
     new ViewSelectionStruct(defaultView, 'Default'),
-    new ViewSelectionStruct(debugView, 'Debug'),
     new ViewSelectionStruct(diffView, 'Diff'),
   ];
   selectedViewInternal: ViewSelectionStruct = this.selectableViews[0];
 
-  colorService = new ColorService();
-  dataService = new DataService();
-
   file: File | null = null;
 
+  constructor(
+    public readonly colorService: ColorService,
+    public readonly dataService: DataService,
+    private readonly changeDetectorRef: ChangeDetectorRef
+  ) {
+    this.selectableHarnesses = [
+      new HarnessSelectionStruct('Debug', dataService.getDebugHarness()),
+      new HarnessSelectionStruct('Broken', dataService.getBrokenHarness()),
+      new HarnessSelectionStruct(
+        'Protection',
+        dataService.getProtectionHarness()
+      ),
+      this.uploadedHarness,
+    ];
+  }
+
   ngAfterViewInit(): void {
-    const bordnet: Bordnet = exampleHarness;
-    this.data = bordnet.harnesses[0];
-    this.setTableData();
+    this.selectedHarness = this.selectableHarnesses[0];
   }
 
   applyFilter(event: Event) {
@@ -84,44 +104,38 @@ export class AppComponent implements AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  copyHarness() {
-    if (this.data == undefined) {
-      return;
-    }
-
-    this.data = this.dataService.copyHarness(this.data);
-  }
-
-  async addHarness(files: FileList | null) {
+  async uploadHarness(files: FileList | null) {
     if (files) {
       const file = files.item(0);
       if (file) {
         try {
-          this.data = await this.dataService.parseData(file);
-          this.setTableData();
+          await this.dataService.parseData(file).then((harness) => {
+            this.uploadedHarness.harness = harness;
+            this.selectedHarness = this.uploadedHarness;
+            this.changeDetectorRef.detectChanges();
+          });
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
     }
   }
 
   private setTableData() {
-    if (this.data == null) {
+    if (!this.selectedHarness?.harness) {
+      this.dataSource = new MatTableDataSource<HarnessElement>([]);
       return;
     }
 
-    const geometryData: Identifiable[] = [
-      ...this.data.connectors,
-      ...this.data.accessories,
-      ...this.data.fixings,
-      ...this.data.protections,
-      ...this.data.segments,
+    const geometryData: HarnessElement[] = [
+      ...this.selectedHarness.harness.nodes,
+      ...this.selectedHarness.harness.segments,
+      ...this.selectedHarness.harness.occurrences,
     ];
 
-    this.dataSource = new MatTableDataSource<Identifiable>(geometryData);
+    this.dataSource = new MatTableDataSource<HarnessElement>(geometryData);
     this.dataSource.filterPredicate = function (
-      module: Identifiable,
+      module: HarnessElement,
       filter: string
     ): boolean {
       return module.id.toLowerCase().includes(filter);
@@ -129,13 +143,19 @@ export class AppComponent implements AfterViewInit {
   }
 
   clearScene() {
-    this.data = undefined;
+    this.selectedHarness = undefined;
+    this.resetSelection();
     this.api?.clear();
-    this.dataSource = new MatTableDataSource<Identifiable>();
+    this.dataSource = new MatTableDataSource<HarnessElement>();
+    this.addedHarnesses = 0;
   }
 
-  toggleRowHighlighting(row: Identifiable, event: MouseEvent) {
-    if ((event.target as Element).classList.contains('mat-mini-fab')) {
+  toggleRowHighlighting(row: HarnessElement, event: MouseEvent) {
+    const target = event.target as Element;
+    if (
+      target.classList.contains('mat-mini-fab') ||
+      target.classList.contains('mat-checkbox-inner-container')
+    ) {
       return;
     }
     const index = this.selection.indexOf(row);
@@ -148,7 +168,15 @@ export class AppComponent implements AfterViewInit {
     if (this.selection.length > 0) {
       this.selectedIds$.next(this.selection.map((module) => module.id));
     } else {
-      this.selectedIds$.next(undefined);
+      this.selectedIds$.next([]);
+    }
+  }
+
+  enableElements(harnessElement: HarnessElement, enabled: boolean) {
+    if (enabled) {
+      this.enableIds$.next([harnessElement.id]);
+    } else {
+      this.disableIds$.next([harnessElement.id]);
     }
   }
 
@@ -169,6 +197,24 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  set selectedHarness(selectedHarness: HarnessSelectionStruct | undefined) {
+    this.selectedHarnessInternal = selectedHarness;
+    this.selectedHarnessInternal?.harness?.buildingBlocks.forEach(
+      (buildingBlock) => {
+        if (!buildingBlock.position) {
+          buildingBlock.position = { x: 0, y: 0, z: 0 };
+        }
+        buildingBlock.position.z += this.addedHarnesses * 100;
+      }
+    );
+    this.setTableData();
+    this.addedHarnesses++;
+  }
+
+  get selectedHarness(): HarnessSelectionStruct | undefined {
+    return this.selectedHarnessInternal;
+  }
+
   set selectedView(selectedView: ViewSelectionStruct) {
     this.api?.setView(selectedView.view);
     this.selectedViewInternal = selectedView;
@@ -182,20 +228,20 @@ export class AppComponent implements AfterViewInit {
     this.api = api;
   }
 
-  setToColor1(module: Identifiable) {
+  setToColor1(module: HarnessElement) {
     this.colorService.addToColorArray(this.colorService.color1Modules, module);
   }
 
-  setToColor2(module: Identifiable) {
+  setToColor2(module: HarnessElement) {
     this.colorService.addToColorArray(this.colorService.color2Modules, module);
   }
 
-  setToColor3(module: Identifiable) {
+  setToColor3(module: HarnessElement) {
     this.colorService.addToColorArray(this.colorService.color3Modules, module);
   }
 
   setColors() {
-    if (!this.data) {
+    if (!this.selectedHarness?.harness) {
       return;
     }
 
@@ -203,19 +249,44 @@ export class AppComponent implements AfterViewInit {
   }
 
   resetColors() {
-    if (!this.data) {
+    if (!this.selectedHarness?.harness) {
       return;
     }
 
-    this.api?.resetColors(this.data.id);
+    this.api?.resetColors();
     this.colors$.next(this.colorService.resetColors());
   }
 
-  removeColor(module: Identifiable) {
+  removeColor(module: HarnessElement) {
     this.colorService.removeColor(module);
 
     if (this.colorService.colorsAreEmpty()) {
       this.resetColors();
     }
+  }
+
+  displayUnmodified(display: boolean) {
+    diffViewSettings.displayUnmodified = display;
+    this.api?.refreshView();
+  }
+
+  displayAdded(display: boolean) {
+    diffViewSettings.displayAdded = display;
+    this.api?.refreshView();
+  }
+
+  displayRemoved(display: boolean) {
+    diffViewSettings.displayRemoved = display;
+    this.api?.refreshView();
+  }
+
+  displayModifiedNew(display: boolean) {
+    diffViewSettings.displayModifiedNew = display;
+    this.api?.refreshView();
+  }
+
+  displayModifiedOld(display: boolean) {
+    diffViewSettings.displayModifiedOld = display;
+    this.api?.refreshView();
   }
 }

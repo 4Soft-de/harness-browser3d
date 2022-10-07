@@ -31,7 +31,7 @@ export class CameraService {
   private camera: PerspectiveCamera;
   private controls?: OrbitControls;
 
-  constructor(private cacheService: CacheService) {
+  constructor(private readonly cacheService: CacheService) {
     this.camera = new PerspectiveCamera(70, 1, 0.1, 10000);
     this.camera.up.set(0, 0, 1);
     this.camera.updateProjectionMatrix();
@@ -51,13 +51,10 @@ export class CameraService {
   }
 
   public resetCamera() {
-    const sphere = this.cacheService.harnessMeshCache.size
-      ? this.computeSceneBoundingSphere()
-      : new Sphere(new Vector3(0, 0, 0), 1);
-    this.focusCameraOnSphere(
-      sphere,
-      this.cameraSettings.resetCameraDistanceFactor
-    );
+    const mesh = this.cacheService.getBordnetMesh();
+    if (mesh) {
+      this.focusCameraOnMesh(mesh);
+    }
   }
 
   public focusCameraOnMesh(mesh: Mesh) {
@@ -70,15 +67,6 @@ export class CameraService {
     } else {
       console.error('no bounding box computed');
     }
-  }
-
-  private computeSceneBoundingSphere() {
-    const boxes: Box3[] = [];
-    this.cacheService.harnessMeshCache.forEach((mesh) =>
-      boxes.push(new Box3().setFromObject(mesh))
-    );
-    const vectors = boxes.flatMap((box) => [box.min, box.max]);
-    return new Sphere().setFromPoints(vectors);
   }
 
   private computeBoundingSphere(mesh: Mesh) {

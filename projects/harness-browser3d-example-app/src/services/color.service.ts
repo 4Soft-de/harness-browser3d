@@ -16,8 +16,10 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Identifiable } from 'harness-browser3d-library';
+import { Node, Segment, Occurrence } from 'harness-browser3d-library';
 import { Color } from 'three';
+
+type HarnessElement = Node | Segment | Occurrence;
 
 @Injectable({
   providedIn: 'root',
@@ -27,9 +29,9 @@ export class ColorService {
   color2 = new Color('green');
   color3 = new Color('red');
 
-  color1Modules: Identifiable[] = [];
-  color2Modules: Identifiable[] = [];
-  color3Modules: Identifiable[] = [];
+  color1Modules: HarnessElement[] = [];
+  color2Modules: HarnessElement[] = [];
+  color3Modules: HarnessElement[] = [];
 
   colorsAreEmpty() {
     const length =
@@ -39,7 +41,7 @@ export class ColorService {
     return length == 0;
   }
 
-  addToColorArray(array: Identifiable[], module: Identifiable) {
+  addToColorArray(array: HarnessElement[], module: HarnessElement) {
     if (array.includes(module)) {
       return;
     }
@@ -58,15 +60,15 @@ export class ColorService {
     });
   }
 
-  removeColor(module: Identifiable) {
+  removeColor(module: HarnessElement) {
     ColorService.checkIfExistsAndDelete(this.color1Modules, module) ||
       ColorService.checkIfExistsAndDelete(this.color2Modules, module) ||
       ColorService.checkIfExistsAndDelete(this.color3Modules, module);
   }
 
   private static checkIfExistsAndDelete(
-    array: Identifiable[],
-    module: Identifiable
+    array: HarnessElement[],
+    module: HarnessElement
   ): boolean {
     const index = array.indexOf(module);
     if (index > -1) {
@@ -97,7 +99,7 @@ export class ColorService {
     return [];
   }
 
-  private static convertToApiColorArray(module: Identifiable, color: Color) {
+  private static convertToApiColorArray(module: HarnessElement, color: Color) {
     return {
       harnessElementId: module.id,
       color: color,
