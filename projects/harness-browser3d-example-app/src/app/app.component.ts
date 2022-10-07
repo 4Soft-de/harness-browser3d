@@ -144,6 +144,7 @@ export class AppComponent implements AfterViewInit {
 
   clearScene() {
     this.selectedHarness = undefined;
+    this.resetSelection();
     this.api?.clear();
     this.dataSource = new MatTableDataSource<HarnessElement>();
     this.addedHarnesses = 0;
@@ -200,9 +201,10 @@ export class AppComponent implements AfterViewInit {
     this.selectedHarnessInternal = selectedHarness;
     this.selectedHarnessInternal?.harness?.buildingBlocks.forEach(
       (buildingBlock) => {
-        if (buildingBlock.position) {
-          buildingBlock.position.z += this.addedHarnesses * 100;
+        if (!buildingBlock.position) {
+          buildingBlock.position = { x: 0, y: 0, z: 0 };
         }
+        buildingBlock.position.z += this.addedHarnesses * 100;
       }
     );
     this.setTableData();

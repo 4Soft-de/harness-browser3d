@@ -143,10 +143,8 @@ components:
           type: string
         position:
           $ref: "#/components/schemas/Point"
-          nullable: true
         rotation:
           $ref: "#/components/schemas/Rotation"
-          nullable: true
 
     Node:
       type: object
@@ -163,7 +161,6 @@ components:
           type: string
         viewProperties:
           $ref: "#/components/schemas/ViewProperties"
-          nullable: true
 
     Segment:
       type: object
@@ -179,11 +176,9 @@ components:
         virtualLength:
           type: number
           format: double
-          nullable: true
         crossSectionArea:
           type: number
           format: double
-          nullable: true
         curves:
           type: array
           items:
@@ -196,7 +191,6 @@ components:
           type: string
         viewProperties:
           $ref: "#/components/schemas/ViewProperties"
-          nullable: true
 
     Curve:
       type: object
@@ -229,24 +223,18 @@ components:
           $ref: "#/components/schemas/PartType"
         partNumber:
           type: string
-          nullable: true
         numberOfCavities:
           type: integer
-          nullable: true
         placement:
           $ref: "#/components/schemas/Placement"
-          nullable: true
         positionOffset:
           $ref: "#/components/schemas/Point"
-          nullable: true
         rotation:
           $ref: "#/components/schemas/Rotation"
-          nullable: true
         buildingBlockId:
           type: string
         viewProperties:
           $ref: "#/components/schemas/ViewProperties"
-          nullable: true
 
     PartType:
       type: string
@@ -263,7 +251,6 @@ components:
       properties:
         id:
           type: string
-          nullable: true
 
     OnPointPlacement:
       type: object
@@ -302,7 +289,6 @@ components:
       properties:
         id:
           type: string
-          nullable: true
 
     NodeLocation:
       type: object

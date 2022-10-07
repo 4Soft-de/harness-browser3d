@@ -78,8 +78,13 @@ export class HarnessUtils {
     return Math.sqrt(crossSectionArea / Math.PI);
   }
 
-  public static computeDefaultProtectionRadius(segmentRadius: number): number {
-    return segmentRadius + this.PROTECTION_RADIUS_INCREASE;
+  public static computeDefaultProtectionRadius(
+    crossSectionArea: number
+  ): number {
+    return (
+      this.computeRadiusFromCrossSectionArea(crossSectionArea) +
+      this.PROTECTION_RADIUS_INCREASE
+    );
   }
 
   public static computeRatio(

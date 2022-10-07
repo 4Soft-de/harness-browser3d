@@ -106,7 +106,7 @@
               "segmentOffsetLength": 40
             }
           },
-          "buildingBlockId": "correct_building_block"
+          "buildingBlockId": "building_block_properties_not_set"
         },
         {
           "id": "protection_empty_segment_path",

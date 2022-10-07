@@ -24,7 +24,7 @@ export class PreprocessService {
   public preprocess(harness: Harness): Harness {
     const result = {
       id: harness.id,
-      buildingBlocks: harness.buildingBlocks.filter(
+      buildingBlocks: harness.buildingBlocks.map(
         this.preprocessBuildingBlock.bind(this)
       ),
       nodes: harness.nodes.filter(this.preprocessNode.bind(this)),
@@ -39,16 +39,20 @@ export class PreprocessService {
     return result;
   }
 
-  private preprocessBuildingBlock(buildingBlock: BuildingBlock): boolean {
-    const defined = this.defined(
-      buildingBlock,
-      ['id', 'position', 'rotation'],
-      'buildingBlock'
-    );
-    if (defined) {
+  private preprocessBuildingBlock(buildingBlock: BuildingBlock): BuildingBlock {
+    const idDefined = this.defined(buildingBlock, 'id', 'buildingBlock');
+    if (idDefined) {
       this.buildingBlocks.add(buildingBlock.id);
     }
-    return defined;
+    return {
+      id: buildingBlock.id,
+      position: this.defined(buildingBlock, 'position', 'buildingBlock')
+        ? buildingBlock.position
+        : { x: 0, y: 0, z: 0 },
+      rotation: this.defined(buildingBlock, 'rotation', 'buildingBlock')
+        ? buildingBlock.rotation
+        : { matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1] },
+    };
   }
 
   private preprocessNode(node: Node): boolean {
@@ -135,12 +139,18 @@ export class PreprocessService {
   }
 
   private preprocessOccurrence(occurrence: Occurrence): boolean {
-    const defined = this.defined(
-      occurrence,
-      ['id', 'partType', 'partNumber', 'placement', 'buildingBlockId'],
-      'occurrence'
-    );
-    if (!defined) {
+    const correct =
+      this.defined(
+        occurrence,
+        ['id', 'partType', 'partNumber', 'placement', 'buildingBlockId'],
+        'occurrence'
+      ) &&
+      this.correctBuildingBlock(
+        occurrence.id,
+        occurrence.buildingBlockId,
+        'occurrence'
+      );
+    if (!correct) {
       return false;
     }
 
@@ -242,7 +252,12 @@ export class PreprocessService {
     );
   }
 
-  private defined(object: any, keys: string[], prefix: string): boolean {
+  private defined(
+    object: any,
+    key: string[] | string,
+    prefix: string
+  ): boolean {
+    const keys = typeof key === 'string' ? [key] : key;
     return keys
       .map((key) => {
         const property = object[key];

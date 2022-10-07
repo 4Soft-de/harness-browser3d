@@ -47,6 +47,9 @@ export class GeometryUtils {
   }
 
   public static mergeGeos(geos: BufferGeometry[]): BufferGeometry {
+    if (!geos.length) {
+      return new BufferGeometry();
+    }
     const geo = mergeBufferGeometries(geos);
     if (geo) {
       return geo;
