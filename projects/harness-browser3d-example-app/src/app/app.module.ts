@@ -51,6 +51,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatToolbarModule,
     MatSlideToggleModule,
     MatSelectModule,
+    MatCheckboxModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

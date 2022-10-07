@@ -17,7 +17,7 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DirectionalLight, HemisphereLight, Scene } from 'three';
+import { DirectionalLight, HemisphereLight, Mesh, Scene } from 'three';
 import { SettingsService } from './settings.service';
 
 @Injectable()
@@ -52,7 +52,18 @@ export class SceneService implements OnDestroy {
     this.scene.add(hemisphereLight);
   }
 
+  public replaceMesh(mesh?: Mesh) {
+    if (mesh) {
+      const oldMesh = this.scene.getObjectByName(mesh.name);
+      if (oldMesh) {
+        this.scene.remove(oldMesh);
+      }
+      this.scene.add(mesh);
+    }
+  }
+
   public clearScene() {
     this.scene.remove.apply(this.scene, this.scene.children);
+    this.setupScene();
   }
 }

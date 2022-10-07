@@ -35,7 +35,7 @@ export class PositionService {
     position: Vector3,
     rotation: Quaternion,
     geo: BufferGeometry
-  ) {
+  ): void {
     const matrix = new Matrix4().compose(
       position,
       rotation,
@@ -48,7 +48,10 @@ export class PositionService {
     curve: Curve<Vector3>,
     length: number,
     radius: number
-  ) {
+  ): BufferGeometry | undefined {
+    if (length <= 0 || radius <= 0) {
+      return undefined;
+    }
     const geo = new TubeBufferGeometry(
       curve,
       Math.ceil(length * this.settingsService.curveStepsFactor),
@@ -56,7 +59,6 @@ export class PositionService {
       this.settingsService.segmentCount,
       false
     );
-    GeometryUtils.clean(geo);
-    return geo;
+    return GeometryUtils.clean(geo);
   }
 }

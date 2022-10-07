@@ -17,66 +17,47 @@
 
 import { Injectable } from '@angular/core';
 import { BufferGeometry } from 'three';
-import { Harness } from '../../api/alias';
-import { HarnessElementVertexMappings, VertexRange } from '../structs/range';
-import { ErrorUtils } from '../utils/error-utils';
+import { VertexRange } from '../structs/range';
 import { CacheService } from './cache.service';
 
 @Injectable()
 export class MappingService {
-  private readonly harnessMappings: Map<string, HarnessElementVertexMappings> =
-    new Map();
+  private mappingsCache = new Map<string, VertexRange>();
 
   constructor(private readonly cacheService: CacheService) {}
-
-  public getHarnessMapping(harness: Harness) {
-    return this.harnessMappings.get(harness.id);
-  }
 
   /**
    * converts map into attribute array
    */
-  public applyMapping(
-    harnessId: string,
-    defaultValue: any,
-    values: Map<string, any>
-  ): any[] {
-    const harnessMesh = this.cacheService.harnessMeshCache.get(harnessId);
-    const harnessMapping = this.harnessMappings.get(harnessId);
-    if (harnessMesh && harnessMapping) {
-      const harnessGeo = harnessMesh.geometry;
-      const map = this.initializeMap(harnessGeo, defaultValue);
-      for (const entry of harnessMapping.harnessElementsToVertices) {
-        const id = entry[0];
-        const range = entry[1];
-        range.toArray().forEach((vertex) => {
-          const value = values.get(id);
-          if (value) {
-            map.set(vertex, value);
-          }
-        });
-      }
-      return this.mapToArray(map);
-    } else {
-      console.error(ErrorUtils.notFound(harnessId));
-    }
-    return [];
+  public applyMapping<PROPERTY>(
+    defaultValue: PROPERTY,
+    values: Map<string, PROPERTY>
+  ): PROPERTY[] {
+    const map = this.initializeMap(defaultValue);
+    values.forEach((value, key) => {
+      const range = this.mappingsCache.get(key);
+      range?.toArray().forEach((vertex) => {
+        if (value !== undefined) {
+          map.set(vertex, value);
+        }
+      });
+    });
+    return this.mapToArray(map);
   }
 
-  private initializeMap(
-    geo: BufferGeometry,
-    defaultValue: any
-  ): Map<number, any> {
-    const size = geo.attributes['position'].count;
-    const map: Map<number, any> = new Map();
+  private initializeMap<PROPERTY>(
+    defaultValue: PROPERTY
+  ): Map<number, PROPERTY> {
+    const size = this.cacheService.getVerticesCount();
+    const map: Map<number, PROPERTY> = new Map();
     for (let i = 0; i < size; i++) {
       map.set(i, defaultValue);
     }
     return map;
   }
 
-  private mapToArray(map: Map<number, any>): any[] {
-    const array: any[] = [];
+  private mapToArray<PROPERTY>(map: Map<number, PROPERTY>): PROPERTY[] {
+    const array: PROPERTY[] = [];
     map.forEach((value) => array.push(value));
     return array;
   }
@@ -88,21 +69,19 @@ export class MappingService {
    * The mapping is filled according to this information.
    */
   public addHarnessElementVertexMappings(
-    harness: Harness,
     harnessElementGeos: Map<string, BufferGeometry>
   ): void {
-    const mapping = new HarnessElementVertexMappings();
-    this.harnessMappings.set(harness.id, mapping);
-    let index = 0;
+    let index = this.cacheService.getVerticesCount();
     for (let entry of harnessElementGeos) {
       const id = entry[0];
       const geo = entry[1];
       const newIndex = index + geo.attributes['position'].count;
-      mapping.harnessElementsToVertices.set(
-        id,
-        new VertexRange(index, newIndex - 1)
-      );
+      this.mappingsCache.set(id, new VertexRange(index, newIndex - 1));
       index = newIndex;
     }
+  }
+
+  public clear() {
+    this.mappingsCache.clear();
   }
 }

@@ -17,20 +17,17 @@
 
 import { HarnessUtils } from '../utils/harness-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { ErrorUtils } from '../utils/error-utils';
 import {
-  Accessory,
+  Anchor,
   BuildingBlock,
-  Connector,
-  Fixing,
-  FixingAssignment,
   Harness,
-  Protection,
-  ProtectionArea,
+  Node,
+  Occurrence,
+  PartType,
   Segment,
+  SegmentLocation,
 } from '../../api/alias';
 import { Injectable } from '@angular/core';
-import { CacheService } from './cache.service';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { BuildingBlockService } from './building-block.service';
 import { PositionService } from './position.service';
@@ -40,62 +37,219 @@ import { SettingsService } from './settings.service';
 import {
   BoxBufferGeometry,
   BufferGeometry,
-  CatmullRomCurve3,
+  Curve,
   Quaternion,
-  TubeBufferGeometry,
   Vector3,
 } from 'three';
 import { DefaultGeometryCreationService } from './default-geometries.service';
+import {
+  getNodeId,
+  getOnPointSegmentLocations,
+} from '../utils/navigation-utils';
+import { isOnWayPlacement, isSegmentLocation } from '../../api/predicates';
+import { InvertedCurve } from '../structs/inverted-curve';
 
 @Injectable()
 export class GeometryService {
+  private readonly defaultNodes: BufferGeometry;
   private readonly defaultConnectors: BufferGeometry[];
-  private readonly defaultAccessories: BufferGeometry;
+  private readonly defaultOthers: BufferGeometry;
   private readonly defaultFixings: BufferGeometry;
+
+  private readonly nodes: Map<string, Node> = new Map();
+  private readonly segments: Map<string, Segment> = new Map();
+  private readonly curves: Map<string, Curve<Vector3>> = new Map();
+  private readonly segmentDirections: Map<string, Vector3> = new Map();
 
   constructor(
     private readonly buildingBlockService: BuildingBlockService,
-    private readonly cacheService: CacheService,
     private readonly curveService: CurveService,
     private readonly defaultGeometryCreationService: DefaultGeometryCreationService,
     private readonly loadingService: LoadingService,
     private readonly positionService: PositionService,
     private readonly settingsService: SettingsService
   ) {
+    this.defaultNodes = this.defaultGeometryCreationService.node();
     this.defaultConnectors =
       this.defaultGeometryCreationService.connectorSizes();
-    this.defaultAccessories = this.defaultGeometryCreationService.accessory();
+    this.defaultOthers = this.defaultGeometryCreationService.accessory();
     this.defaultFixings = this.defaultGeometryCreationService.fixing();
   }
 
-  private processConnector(
-    connector: Connector,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    if (!connector.placement || !connector.geometryPoint) {
-      console.warn(ErrorUtils.notPlaced(connector));
-      return;
+  public processHarness(harness: Harness): Map<string, BufferGeometry> {
+    harness.nodes.forEach((node) => this.nodes.set(node.id, node));
+    harness.segments.forEach(this.cacheSegment.bind(this));
+
+    this.handleBlocks(harness);
+    this.loadGeometries(harness);
+
+    const geos = this.positionGeometries(harness);
+
+    this.nodes.clear();
+    this.segments.clear();
+    this.curves.clear();
+    this.segmentDirections.clear();
+
+    return geos;
+  }
+
+  private cacheSegment(segment: Segment): void {
+    this.segments.set(segment.id, segment);
+    let segmentCurve: Curve<Vector3> | undefined =
+      this.curveService.createSegmentCurve(segment.curves);
+    const startNode = this.nodes.get(segment.startNodeId);
+    const endNode = this.nodes.get(segment.endNodeId);
+
+    if (!segmentCurve || !startNode || !endNode) {
+      return undefined;
     }
 
+    if (HarnessUtils.isCurveInverted(startNode, endNode, segmentCurve)) {
+      segmentCurve = new InvertedCurve(segmentCurve);
+    }
+    this.curves.set(segment.id, segmentCurve);
+
+    if (!this.segmentDirections.has(segment.startNodeId)) {
+      const segmentDirection = HarnessUtils.computeSegmentDirection(
+        startNode,
+        endNode,
+        segmentCurve.getTangent(0)
+      );
+      this.segmentDirections.set(segment.startNodeId, segmentDirection);
+    }
+
+    if (!this.segmentDirections.has(segment.endNodeId)) {
+      const segmentDirection = HarnessUtils.computeSegmentDirection(
+        endNode,
+        startNode,
+        segmentCurve.getTangent(1)
+      );
+      this.segmentDirections.set(segment.endNodeId, segmentDirection);
+    }
+  }
+
+  private handleBlocks(harness: Harness): void {
+    harness.buildingBlocks.forEach((bb: BuildingBlock) =>
+      this.buildingBlockService.fillBuildingBlockMap(bb)
+    );
+  }
+
+  private loadGeometries(harness: Harness): void {
+    if (
+      this.settingsService.geometryMode === GeometryModeAPIEnum.loaded &&
+      harness.graphics
+    ) {
+      this.loadingService.parseGeometryData(harness.graphics);
+    }
+  }
+
+  private positionGeometries(harness: Harness): Map<string, BufferGeometry> {
+    const harnessElementGeos: Map<string, BufferGeometry> = new Map();
+    harness.nodes.forEach((node) => {
+      harnessElementGeos.set(node.id, this.processNode(node));
+    });
+    harness.segments.forEach((segment) => {
+      const geo = this.processSegment(segment);
+      if (geo) {
+        harnessElementGeos.set(segment.id, geo);
+      }
+    });
+    harness.occurrences.forEach((occurrence) => {
+      const geo = this.processOccurrence(occurrence);
+      if (geo) {
+        harnessElementGeos.set(occurrence.id, geo);
+      }
+    });
+    return harnessElementGeos;
+  }
+
+  private processNode(node: Node): BufferGeometry {
+    const position = HarnessUtils.convertPointToVector(node.position);
+
+    const geo = GeometryUtils.createGeo(
+      node,
+      this.defaultNodes,
+      this.settingsService,
+      this.loadingService
+    );
+
+    this.positionService.positionGeometry(position, new Quaternion(), geo);
+    this.buildingBlockService.applyBuildingBlock(node.buildingBlockId, geo);
+
+    return geo;
+  }
+
+  private processSegment(segment: Segment): BufferGeometry | undefined {
+    const segmentCurve = this.curves.get(segment.id);
+    if (
+      !segmentCurve ||
+      !this.nodes.has(segment.startNodeId) ||
+      !this.nodes.has(segment.endNodeId)
+    ) {
+      return undefined;
+    }
+
+    const segmentRadius = HarnessUtils.computeRadiusFromCrossSectionArea(
+      segment.crossSectionArea
+    );
+
+    const geo = this.positionService.positionTubeGeometry(
+      segmentCurve,
+      segment.virtualLength,
+      segmentRadius
+    );
+
+    if (geo) {
+      this.buildingBlockService.applyBuildingBlock(
+        segment.buildingBlockId,
+        geo
+      );
+    }
+
+    return geo;
+  }
+
+  private processOccurrence(
+    occurrence: Occurrence
+  ): BufferGeometry | undefined {
+    switch (PartType[occurrence.partType as keyof typeof PartType]) {
+      case PartType.Connector:
+        return this.processConnector(occurrence);
+      case PartType.Protection:
+        return this.processProtection(occurrence);
+      case PartType.Fixing:
+        return this.processFixing(occurrence);
+      case PartType.Other:
+        return this.processOther(occurrence);
+      default:
+        return undefined;
+    }
+  }
+
+  private processConnector(connector: Occurrence): BufferGeometry | undefined {
     let index = 0;
     if (connector.numberOfCavities) {
       index = Math.min(Math.floor(connector.numberOfCavities / 10), 2);
     }
 
+    const node = this.getNode(connector);
+    if (!node) {
+      return undefined;
+    }
+    const position = HarnessUtils.convertPointToVector(node.position);
+
     let rotation: Quaternion;
-    let position: Vector3;
 
     switch (this.settingsService.geometryMode) {
       case GeometryModeAPIEnum.default:
         const depth = (this.defaultConnectors[index] as BoxBufferGeometry)
           .parameters.depth;
 
-        position = HarnessUtils.convertPlacementToVector(
-          connector.geometryPoint
-        );
+        const segmentDirection = this.segmentDirections.get(node.id);
+
         const zV =
-          connector.segmentDirection !== null
-            ? HarnessUtils.convertPlacementToVector(connector.segmentDirection)
+          segmentDirection !== undefined
+            ? HarnessUtils.convertPointToVector(segmentDirection)
             : new Vector3(0, 0, 0);
 
         rotation = new Quaternion().setFromUnitVectors(
@@ -111,281 +265,301 @@ export class GeometryService {
         position.add(junctionPoint);
         break;
       case GeometryModeAPIEnum.loaded:
-        rotation = HarnessUtils.computeRotationFromPlacement(
-          connector.placement
-        );
-        position = HarnessUtils.convertPlacementToVector(
-          connector.placement.location
-        );
+        rotation =
+          connector.rotation !== undefined
+            ? HarnessUtils.computeQuaternionFromRotation(connector.rotation)
+            : new Quaternion();
+        const offset =
+          connector.positionOffset !== undefined
+            ? HarnessUtils.convertPointToVector(connector.positionOffset)
+            : new Vector3(0, 0, 0);
+        position.add(offset);
         break;
     }
 
-    const defaultGeo = this.defaultConnectors[index];
-    const geos = GeometryUtils.createGeo(
+    const geo = GeometryUtils.createGeo(
       connector,
-      defaultGeo,
+      this.defaultConnectors[index],
       this.settingsService,
       this.loadingService
     );
-    this.positionService.positionGeometry(position, rotation, geos);
-    this.buildingBlockService.applyBuildingBlock(connector.id, geos);
 
-    harnessElementGeos.set(connector.id, geos);
-    this.cacheService.elementCache.set(connector.id, connector);
+    this.positionService.positionGeometry(position, rotation, geo);
+    this.buildingBlockService.applyBuildingBlock(
+      connector.buildingBlockId,
+      geo
+    );
+
+    return geo;
   }
 
-  private processAccessory(
-    accessory: Accessory,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    if (!accessory.placement || !accessory.placement.location) {
-      console.warn(ErrorUtils.notPlaced(accessory));
-      return;
-    }
+  private processFixing(fixing: Occurrence): BufferGeometry | undefined {
+    const rotation =
+      fixing.rotation !== undefined
+        ? HarnessUtils.computeQuaternionFromRotation(fixing.rotation)
+        : new Quaternion();
 
-    const rotation = HarnessUtils.computeRotationFromPlacement(
-      accessory.placement
-    );
-    const position = HarnessUtils.convertPlacementToVector(
-      accessory.placement.location
-    );
-
-    const geos = GeometryUtils.createGeo(
-      accessory,
-      this.defaultAccessories,
-      this.settingsService,
-      this.loadingService
-    );
-    this.positionService.positionGeometry(position, rotation, geos);
-    this.buildingBlockService.applyBuildingBlock(accessory.id, geos);
-
-    harnessElementGeos.set(accessory.id, geos);
-    this.cacheService.elementCache.set(accessory.id, accessory);
-  }
-
-  private processFixingAssignment(
-    assignment: FixingAssignment,
-    fixing: Fixing,
-    rotation: Quaternion,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    let position: Vector3 | null = null;
-    if (this.settingsService.geometryMode) {
-      const cacheElem = harnessElementGeos.get(assignment.segmentId);
-      if (cacheElem) {
-        position = (cacheElem as TubeBufferGeometry).parameters.path.getPoint(
-          assignment.location
+    const geos = getOnPointSegmentLocations(fixing)
+      .filter(
+        (location) =>
+          this.curves.has(location.segmentId) &&
+          this.segments.has(location.segmentId)
+      )
+      .map((location) => {
+        let ratio =
+          location.segmentOffsetLength /
+          this.segments.get(location.segmentId)!.virtualLength;
+        if (
+          Anchor[location.anchor as keyof typeof Anchor] === Anchor.FromEndNode
+        ) {
+          ratio = 1 - ratio;
+        }
+        const geo = GeometryUtils.createGeo(
+          fixing,
+          this.defaultFixings,
+          this.settingsService,
+          this.loadingService
         );
-      }
-    } else {
-      if (fixing.placement) {
-        position = HarnessUtils.convertPlacementToVector(
-          fixing.placement.location
+        this.positionService.positionGeometry(
+          this.curves.get(location.segmentId)!.getPoint(ratio),
+          rotation,
+          geo
         );
-      }
-    }
+        this.buildingBlockService.applyBuildingBlock(
+          fixing.buildingBlockId,
+          geo
+        );
+        return geo;
+      });
 
-    if (position) {
-      const geos = GeometryUtils.createGeo(
-        fixing,
-        this.defaultFixings,
-        this.settingsService,
-        this.loadingService
-      );
-      this.positionService.positionGeometry(position, rotation, geos);
-      this.buildingBlockService.applyBuildingBlock(fixing.id, geos);
-      harnessElementGeos.set(fixing.id, geos);
-      return geos;
-    } else {
-      console.warn(`fixing assignment on ${fixing.id}, no position computed`);
-      return null;
-    }
-  }
-
-  private processFixing(
-    fixing: Fixing,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    if (!fixing.placement) {
-      console.warn(ErrorUtils.notPlaced(fixing));
-      return;
-    }
-    if (
-      fixing.fixingAssignments == null ||
-      fixing.fixingAssignments.length == 0
-    ) {
-      console.error(`${fixing.id} has no fixing assignments`);
-      return;
-    }
-
-    const rotation = HarnessUtils.computeRotationFromPlacement(
-      fixing.placement
-    );
-
-    if (this.settingsService.geometryMode) {
-      const assignmentGeos: BufferGeometry[] = [];
-      fixing.fixingAssignments
-        .map((assignment) =>
-          this.processFixingAssignment(
-            assignment,
-            fixing,
-            rotation,
-            harnessElementGeos
-          )
-        )
-        .forEach((assignment) => {
-          if (assignment) {
-            assignmentGeos.push(assignment);
-          }
-        });
-      harnessElementGeos.set(
-        fixing.id,
-        GeometryUtils.mergeGeos(assignmentGeos)
-      );
-    } else {
-      this.processFixingAssignment(
-        fixing.fixingAssignments[0],
-        fixing,
-        rotation,
-        harnessElementGeos
-      );
-    }
-
-    this.cacheService.elementCache.set(fixing.id, fixing);
-  }
-
-  private processSegment(
-    segment: Segment,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    if (!segment.centerCurves) {
-      console.error(`${segment.id} has no center curves`);
-      return;
-    }
-
-    const segmentCurve = this.curveService.createSegmentCurve(
-      segment.centerCurves
-    );
-    const segmentRadius = HarnessUtils.computeRadiusFromCrossSectionArea(
-      segment.crossSectionArea
-    );
-
-    const geos = this.positionService.positionTubeGeometry(
-      segmentCurve,
-      segment.virtualLength,
-      segmentRadius
-    );
-    this.buildingBlockService.applyBuildingBlock(segment.id, geos);
-
-    harnessElementGeos.set(segment.id, geos);
-    this.cacheService.elementCache.set(segment.id, segment);
+    return GeometryUtils.mergeGeos(geos);
   }
 
   private processProtection(
-    protection: Protection | null,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    if (!protection) {
-      console.warn(ErrorUtils.isNull('protection'));
-      return;
-    }
-    if (!protection.protectionAreas) {
-      console.error(`${protection.id} has no protection areas`);
-      return;
-    }
-
-    this.cacheService.elementCache.set(protection.id, protection);
-    protection.protectionAreas.forEach((area: any) =>
-      this.processSingleProtectionArea(area, protection.id, harnessElementGeos)
-    );
-  }
-
-  private processSingleProtectionArea(
-    protectionArea: ProtectionArea,
-    protectionId: string,
-    harnessElementGeos: Map<string, BufferGeometry>
-  ) {
-    const segmentGeos = harnessElementGeos.get(protectionArea.segmentId);
-    if (!segmentGeos) {
-      console.warn(ErrorUtils.notFound(protectionArea.segmentId));
-      return;
-    }
-    const segmentGeo = segmentGeos as TubeBufferGeometry;
-
-    const points: Vector3[] = [];
-    const stepSize = 1 / protectionArea.length;
-    points.push(
-      segmentGeo.parameters.path.getPoint(protectionArea.startLocation)
-    );
-    for (
-      let i = protectionArea.startLocation + stepSize;
-      i < protectionArea.endLocation;
-      i += stepSize
+    protection: Occurrence
+  ): BufferGeometry | undefined {
+    const placement = protection.placement;
+    if (
+      !isOnWayPlacement(placement) ||
+      !isSegmentLocation(placement.startLocation) ||
+      !isSegmentLocation(placement.endLocation) ||
+      placement.segmentPath.length === 0 ||
+      placement.segmentPath[0] !== placement.startLocation.segmentId ||
+      placement.segmentPath[placement.segmentPath.length - 1] !==
+        placement.endLocation.segmentId
     ) {
-      points.push(segmentGeo.parameters.path.getPoint(i));
+      return undefined;
     }
-    points.push(
-      segmentGeo.parameters.path.getPoint(protectionArea.endLocation)
-    );
 
-    const protectionPath = new CatmullRomCurve3(points);
-    const protectionRadius = HarnessUtils.computeDefaultProtectionRadius(
-      segmentGeo.parameters.radius
-    );
-
-    const geos = this.positionService.positionTubeGeometry(
-      protectionPath,
-      protectionArea.length,
-      protectionRadius
-    );
-    this.buildingBlockService.applyBuildingBlock(
-      protectionArea.segmentId,
-      geos
-    );
-
-    harnessElementGeos.set(protectionId, geos);
-  }
-
-  public processHarness(harness: Harness) {
-    if (this.cacheService.harnessMeshCache.has(harness.id)) {
-      console.info(`harness ${harness.id} is already loaded`);
-      return new Map();
-    }
-    this.handleBlocks(harness);
-    this.loadGeometries(harness);
-    return this.positionGeometries(harness);
-  }
-
-  private handleBlocks(harness: Harness) {
-    harness.buildingBlocks.forEach((bb: BuildingBlock) => {
-      this.buildingBlockService.fillBuildingBlockMap(bb);
-      this.cacheService.elementCache.set(bb.id, bb);
-    });
-  }
-
-  private loadGeometries(harness: Harness) {
-    if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
-      this.loadingService.parseGeometryData(harness.geometries);
+    if (placement.startLocation.segmentId === placement.endLocation.segmentId) {
+      return this.processSingleSegmentProtection(
+        placement.startLocation,
+        placement.endLocation,
+        protection.buildingBlockId
+      );
+    } else {
+      return this.processMultipleSegmentProtection(
+        placement.startLocation,
+        placement.endLocation,
+        placement.segmentPath,
+        protection.buildingBlockId
+      );
     }
   }
 
-  private positionGeometries(harness: Harness) {
-    const harnessElementGeos: Map<string, BufferGeometry> = new Map();
-    harness.segments.forEach((s: Segment) =>
-      this.processSegment(s, harnessElementGeos)
+  private processSingleSegmentProtection(
+    startLocation: SegmentLocation,
+    endLocation: SegmentLocation,
+    buildingBlockId: string
+  ): BufferGeometry | undefined {
+    const segment = this.segments.get(startLocation.segmentId);
+    const curve = this.cropCurve(startLocation, endLocation);
+    if (!segment || !curve) {
+      return undefined;
+    }
+    return this.createProtectionGeometry(
+      curve,
+      segment.virtualLength,
+      segment.crossSectionArea,
+      buildingBlockId
     );
-    harness.protections.forEach((p: Protection) =>
-      this.processProtection(p, harnessElementGeos)
+  }
+
+  private processMultipleSegmentProtection(
+    startLocation: SegmentLocation,
+    endLocation: SegmentLocation,
+    segmentPath: string[],
+    buildingBlockId: string
+  ) {
+    const startSegment = this.segments.get(startLocation.segmentId);
+    const endSegment = this.segments.get(endLocation.segmentId);
+    if (!startSegment || !endSegment) {
+      return undefined;
+    }
+
+    let length = startSegment.virtualLength + endSegment.virtualLength;
+    let radius = Math.max(
+      startSegment.crossSectionArea,
+      endSegment.crossSectionArea
     );
-    harness.fixings.forEach((f: Fixing) =>
-      this.processFixing(f, harnessElementGeos)
+
+    const curves: Curve<Vector3>[] = [];
+
+    const startCurve = this.handleProtectionEdge(
+      false,
+      startLocation,
+      segmentPath
     );
-    harness.connectors.forEach((c: Connector) =>
-      this.processConnector(c, harnessElementGeos)
+    if (startCurve) {
+      curves.push(startCurve);
+    }
+
+    for (let i = 1; i < segmentPath.length - 1; i++) {
+      const segmentId = segmentPath[i];
+      const curve = this.curves.get(segmentId);
+      const segment = this.segments.get(segmentId);
+      if (curve && segment) {
+        curves.push(curve);
+        length += segment.virtualLength;
+        radius = Math.max(radius, segment.crossSectionArea);
+      }
+    }
+
+    const endCurve = this.handleProtectionEdge(true, endLocation, segmentPath);
+    if (endCurve) {
+      curves.push(endCurve);
+    }
+
+    if (curves.length === 0) {
+      return undefined;
+    }
+
+    return this.createProtectionGeometry(
+      this.curveService.mergeCurves(curves),
+      length,
+      radius,
+      buildingBlockId
     );
-    harness.accessories.forEach((a: Accessory) =>
-      this.processAccessory(a, harnessElementGeos)
+  }
+
+  private handleProtectionEdge(
+    invert: boolean,
+    location: SegmentLocation,
+    segmentPath: string[]
+  ): Curve<Vector3> | undefined {
+    const segment = this.segments.get(location.segmentId);
+    const otherSegment = this.segments.get(
+      segmentPath[invert ? segmentPath.length - 2 : 1]
     );
-    return harnessElementGeos;
+    if (!segment || !otherSegment) {
+      return undefined;
+    }
+
+    const anchor =
+      segment.endNodeId === otherSegment.startNodeId
+        ? Anchor.FromEndNode
+        : Anchor.FromStartNode;
+    const invertedAnchor =
+      segment.startNodeId === otherSegment.endNodeId
+        ? Anchor.FromStartNode
+        : Anchor.FromEndNode;
+
+    const croppedLocation = {
+      segmentId: segment.id,
+      anchor: (invert ? invertedAnchor : anchor).toString(),
+      segmentOffsetLength: 0,
+    } as SegmentLocation;
+    return this.cropCurve(
+      invert ? croppedLocation : location,
+      invert ? location : croppedLocation
+    );
+  }
+
+  private cropCurve(
+    startLocation: SegmentLocation,
+    endLocation: SegmentLocation
+  ): Curve<Vector3> | undefined {
+    const segment = this.segments.get(startLocation.segmentId);
+    const curve = this.curves.get(startLocation.segmentId);
+
+    if (
+      startLocation.segmentId !== endLocation.segmentId ||
+      !segment ||
+      !curve
+    ) {
+      return undefined;
+    }
+
+    const startRatio = HarnessUtils.computeRatio(
+      startLocation,
+      segment.virtualLength
+    );
+
+    const endRatio = HarnessUtils.computeRatio(
+      endLocation,
+      segment.virtualLength
+    );
+
+    if (startRatio === undefined || endRatio === undefined) {
+      return undefined;
+    }
+
+    return this.curveService.cutCurve(startRatio, endRatio, curve);
+  }
+
+  private createProtectionGeometry(
+    curve: Curve<Vector3>,
+    length: number,
+    radius: number,
+    buildingBlockId: string
+  ): BufferGeometry | undefined {
+    const geo = this.positionService.positionTubeGeometry(
+      curve,
+      length,
+      HarnessUtils.computeDefaultProtectionRadius(radius)
+    );
+    if (geo) {
+      this.buildingBlockService.applyBuildingBlock(buildingBlockId, geo);
+    }
+    return geo;
+  }
+
+  private processOther(other: Occurrence): BufferGeometry | undefined {
+    const rotation =
+      other.rotation !== undefined
+        ? HarnessUtils.computeQuaternionFromRotation(other.rotation)
+        : new Quaternion();
+
+    const node = this.getNode(other);
+    if (!node) {
+      return undefined;
+    }
+
+    const offset =
+      other.positionOffset !== undefined
+        ? HarnessUtils.convertPointToVector(other.positionOffset)
+        : new Vector3(0, 0, 0);
+    const position = HarnessUtils.convertPointToVector(node.position).add(
+      offset
+    );
+
+    const geo = GeometryUtils.createGeo(
+      other,
+      this.defaultOthers,
+      this.settingsService,
+      this.loadingService
+    );
+    this.positionService.positionGeometry(position, rotation, geo);
+    this.buildingBlockService.applyBuildingBlock(other.buildingBlockId, geo);
+
+    return geo;
+  }
+
+  private getNode(occurrence: Occurrence): Node | undefined {
+    const nodeId = getNodeId(occurrence);
+    if (!nodeId) {
+      return undefined;
+    }
+    return this.nodes.get(nodeId);
   }
 }

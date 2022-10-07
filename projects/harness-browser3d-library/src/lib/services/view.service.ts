@@ -16,11 +16,10 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Identifiable } from '../../api/alias';
+import { Node, Segment, Occurrence, Harness } from '../../api/alias';
 import { defaultView } from '../../views/default.view';
 import { View } from '../../views/view';
 import { dispose } from '../utils/dispose-utils';
-import { ErrorUtils } from '../utils/error-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { CacheService } from './cache.service';
 import { MappingService } from './mapping.service';
@@ -28,34 +27,47 @@ import { MappingService } from './mapping.service';
 @Injectable()
 export class ViewService {
   private currentView = defaultView;
+  private propertiesCache = new Map<string, Map<string, string>>();
 
   constructor(
     private readonly cacheService: CacheService,
     private readonly mappingService: MappingService
   ) {}
 
-  public applyView(view: View): void {
-    for (let entry of this.cacheService.harnessMeshCache) {
-      const harnessId = entry[0];
-      this.removeView(this.currentView, harnessId);
-      this.setView(view, harnessId);
-    }
+  public setView(view: View): void {
+    this.removeView(this.currentView);
+    this.applyMapping(view, true);
     this.currentView = view;
   }
 
-  public applyCurrentView(harnessId: string): void {
-    this.setView(this.currentView, harnessId);
+  public refreshView(): void {
+    const mesh = this.cacheService.getBordnetMesh();
+    if (mesh && this.currentView.propertyKey) {
+      mesh.geometry.deleteAttribute(this.currentView.propertyKey);
+      this.applyMapping(this.currentView, false);
+    }
   }
 
-  private setView(view: View, harnessId: string): void {
-    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
+  public setCurrentView(harness: Harness): void {
+    dispose(this.cacheService.getBordnetMesh()?.material);
+    this.readProperties(harness);
+    this.applyMapping(
+      this.currentView,
+      this.cacheService.getBordnetMesh()?.material !== this.currentView.material
+    );
+  }
+
+  private applyMapping(view: View, setMaterial: boolean): void {
+    const mesh = this.cacheService.getBordnetMesh();
     if (mesh) {
-      mesh.material = view.material;
+      if (setMaterial) {
+        mesh.material = view.material;
+      }
       if (view.propertyKey) {
         const array = this.mappingService.applyMapping(
-          harnessId,
           view.defaultValue,
-          this.readProperties(harnessId, view.propertyKey)
+          this.propertiesCache.get(view.propertyKey) ??
+            new Map<string, string>()
         );
         GeometryUtils.applyGeoAttribute(
           mesh.geometry,
@@ -63,51 +75,41 @@ export class ViewService {
           view.mapper(array)
         );
       }
-    } else {
-      console.error(ErrorUtils.notFound(harnessId));
     }
   }
 
-  private removeView(view: View, harnessId: string): void {
-    const mesh = this.cacheService.harnessMeshCache.get(harnessId);
+  private removeView(view: View): void {
+    const mesh = this.cacheService.getBordnetMesh();
     if (mesh) {
       dispose(mesh.material);
       if (view.propertyKey) {
         mesh.geometry.deleteAttribute(view.propertyKey);
       }
-    } else if (view) {
-      console.error(ErrorUtils.notFound(harnessId));
+    }
+    this.currentView = defaultView;
+  }
+
+  private readProperties(harness: Harness): void {
+    harness.nodes.forEach(this.setProperty.bind(this));
+    harness.segments.forEach(this.setProperty.bind(this));
+    harness.occurrences.forEach(this.setProperty.bind(this));
+  }
+
+  private setProperty(harnessElement: Node | Segment | Occurrence) {
+    if (harnessElement.viewProperties) {
+      Object.entries(harnessElement.viewProperties).forEach((entry) => {
+        const key = entry[0];
+        const value = entry[1];
+        if (!this.propertiesCache.has(key)) {
+          this.propertiesCache.set(key, new Map<string, string>());
+        }
+        this.propertiesCache.get(key)!.set(harnessElement.id, value);
+      });
     }
   }
 
-  private readProperties(
-    harnessId: string,
-    harnessPropertyKey: string
-  ): Map<string, string> {
-    const properties: Map<string, string> = new Map();
-    const set = (harnessElement: Identifiable) => {
-      const property = this.readProperty(harnessElement, harnessPropertyKey);
-      if (property) {
-        properties.set(harnessElement.id, property);
-      }
-    };
-    const harness = this.cacheService.harnessCache.get(harnessId);
-    if (harness) {
-      harness.segments.forEach(set);
-      harness.protections.forEach(set);
-      harness.fixings.forEach(set);
-      harness.connectors.forEach(set);
-      harness.accessories.forEach(set);
-    }
-    return properties;
-  }
-
-  private readProperty(
-    object: any,
-    harnessPropertyKey: string
-  ): string | undefined {
-    if ('viewProperties' in object && object.viewProperties) {
-      return object.viewProperties[harnessPropertyKey];
-    } else return undefined;
+  public clear(): void {
+    this.currentView = defaultView;
+    this.propertiesCache.clear();
   }
 }

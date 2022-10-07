@@ -15,101 +15,81 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { GeometryUtils } from '../utils/geometry-utils';
-import {
-  Accessory,
-  Connector,
-  Fixing,
-  Harness,
-  Identifiable,
-  Protection,
-  Segment,
-} from '../../api/alias';
-import { Injectable } from '@angular/core';
-import { CacheService } from './cache.service';
+import { Harness } from '../../api/alias';
+import { Injectable, OnDestroy } from '@angular/core';
 import { GeometryService } from './geometry.service';
 import { SceneService } from './scene.service';
 import { SelectionService } from './selection.service';
-import { BufferGeometry, Mesh, Scene } from 'three';
+import { BufferGeometry } from 'three';
 import { MappingService } from './mapping.service';
 import { ViewService } from './view.service';
 import { ColorService } from './color.service';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
+import { EnableService } from './enable.service';
+import { CacheService } from './cache.service';
+import { Subscription } from 'rxjs';
 
 @Injectable()
-export class HarnessService {
-  private harness?: Harness;
-  private harnessElementGeos: Map<string, BufferGeometry> = new Map();
+export class HarnessService implements OnDestroy {
+  private loadedHarnesses = new Set<string>();
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
+    private readonly enableService: EnableService,
     private readonly geometryService: GeometryService,
     private readonly mappingService: MappingService,
     private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
     private readonly viewService: ViewService
-  ) {}
+  ) {
+    this.subscription.add(
+      settingsService.updatedGeometrySettings.subscribe(() => {
+        this.clearCaches();
+      })
+    );
+  }
 
-  addHarness(harness: Harness) {
-    this.harness = harness;
-    this.cacheService.harnessCache.set(harness.id, harness);
-    this.harnessElementGeos = this.geometryService.processHarness(harness);
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
-    if (!this.cacheService.harnessMeshCache.has(harness.id)) {
-      this.setHarnessInElements();
-      this.selectionService.addGeos(this.harnessElementGeos);
-      this.addHarnessMesh(
-        harness.id,
-        this.mergeGeosIntoHarness(),
-        this.sceneService.getScene()
-      );
-      this.colorService.setDefaultColors(harness.id);
-      this.viewService.applyCurrentView(harness.id);
-      if (this.settingsService.addHarnessResetCamera) {
-        this.cameraService.resetCamera();
-      }
+  addHarness(harness: Harness): void {
+    if (this.loadedHarnesses.has(harness.id)) {
+      console.warn(`harness ${harness.id} has already been loaded`);
+      return;
+    }
+    this.loadedHarnesses.add(harness.id);
+    const harnessElementGeos = this.geometryService.processHarness(harness);
+    this.createHarnessElementMappings(harnessElementGeos);
+    this.cacheService.addGeos(harnessElementGeos);
+    this.colorService.initializeDefaultColors(harness);
+    this.selectionService.addGeos(harnessElementGeos);
+    this.sceneService.replaceMesh(this.cacheService.getBordnetMesh());
+    this.enableService.enableHarness(harness);
+    this.viewService.setCurrentView(harness);
+    if (this.settingsService.addHarnessResetCamera) {
+      this.cameraService.resetCamera();
     }
   }
 
-  private setHarness(identifiable: Identifiable) {
-    if (this.harness) {
-      this.cacheService.elementHarnessCache.set(identifiable.id, this.harness);
-    }
+  public clearCaches(): void {
+    this.colorService.clear();
+    this.enableService.clear();
+    this.cacheService.clear();
+    this.mappingService.clear();
+    this.loadedHarnesses.clear();
   }
 
-  private setHarnessInElements() {
-    if (this.harness) {
-      this.harness.segments.forEach((s: Segment) => this.setHarness(s));
-      this.harness.protections.forEach((p: Protection) => this.setHarness(p));
-      this.harness.fixings.forEach((f: Fixing) => this.setHarness(f));
-      this.harness.connectors.forEach((c: Connector) => this.setHarness(c));
-      this.harness.accessories.forEach((a: Accessory) => this.setHarness(a));
-    }
-  }
-
-  private mergeGeosIntoHarness() {
+  private createHarnessElementMappings(
+    harnessElementGeos: Map<string, BufferGeometry>
+  ): void {
     const harnessGeos: BufferGeometry[] = [];
-    this.harnessElementGeos.forEach((geo) => harnessGeos.push(geo));
-    const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
-    if (this.harness) {
-      this.mappingService.addHarnessElementVertexMappings(
-        this.harness,
-        this.harnessElementGeos
-      );
-    }
-
-    const position = GeometryUtils.centerGeometry(mergedHarnessGeo);
-    const mesh = new Mesh(mergedHarnessGeo);
-    mesh.position.copy(position);
-    return mesh;
-  }
-
-  private addHarnessMesh(harnessId: string, mesh: Mesh, scene: Scene) {
-    this.cacheService.harnessMeshCache.set(harnessId, mesh);
-    scene.add(mesh);
+    harnessElementGeos.forEach((geo) => harnessGeos.push(geo));
+    this.mappingService.addHarnessElementVertexMappings(harnessElementGeos);
   }
 }

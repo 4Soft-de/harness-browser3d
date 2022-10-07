@@ -26,8 +26,3 @@ export class VertexRange {
     return array;
   }
 }
-
-export class HarnessElementVertexMappings {
-  public readonly harnessElementsToVertices: Map<string, VertexRange> =
-    new Map();
-}

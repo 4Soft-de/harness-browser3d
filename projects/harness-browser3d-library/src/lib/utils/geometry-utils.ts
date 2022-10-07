@@ -16,7 +16,7 @@
 */
 
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { HarnessOccurrence } from '../../api/alias';
+import { Node, Occurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import {
   BoxBufferGeometry,
@@ -46,7 +46,7 @@ export class GeometryUtils {
     harnessGeo.setAttribute(name, bufferAttribute);
   }
 
-  public static mergeGeos(geos: BufferGeometry[]) {
+  public static mergeGeos(geos: BufferGeometry[]): BufferGeometry {
     const geo = mergeBufferGeometries(geos);
     if (geo) {
       return geo;
@@ -56,44 +56,57 @@ export class GeometryUtils {
     }
   }
 
-  public static clean(geo: BufferGeometry) {
-    const baseGeo = geo.toNonIndexed();
-    baseGeo.deleteAttribute('uv');
-    const boxGeo = baseGeo as BoxBufferGeometry;
-    boxGeo.parameters = (geo as BoxBufferGeometry).parameters;
-    const sphere = baseGeo as SphereBufferGeometry;
-    sphere.parameters = (geo as SphereBufferGeometry).parameters;
-    const tube = baseGeo as TubeBufferGeometry;
-    tube.parameters = (geo as TubeBufferGeometry).parameters;
-    return baseGeo;
+  public static clean(geo: BufferGeometry): BufferGeometry {
+    const position = geo.attributes['position'];
+    const normal = geo.attributes['normal'];
+    //const cleanedGeo = geo.toNonIndexed();
+    const cleanedGeo = geo.clone();
+    cleanedGeo.attributes = {
+      position: position,
+      normal: normal,
+    };
+    GeometryUtils.setParameters(geo, cleanedGeo);
+    return cleanedGeo;
+  }
+
+  private static setParameters(
+    baseGeo: BufferGeometry,
+    cleanedGeo: BufferGeometry
+  ): void {
+    const box = cleanedGeo as BoxBufferGeometry;
+    box.parameters = (baseGeo as BoxBufferGeometry).parameters;
+    const sphere = cleanedGeo as SphereBufferGeometry;
+    sphere.parameters = (baseGeo as SphereBufferGeometry).parameters;
+    const tube = cleanedGeo as TubeBufferGeometry;
+    tube.parameters = (baseGeo as TubeBufferGeometry).parameters;
   }
 
   public static createGeo(
-    element: HarnessOccurrence,
+    element: Occurrence | Node,
     defaultGeo: BufferGeometry,
     settingsService: SettingsService,
     loadingService: LoadingService
-  ) {
-    let loadedGeo = undefined;
-    loadedGeo = loadingService.getGeometries().get(element.partNumber);
-    let geo: BufferGeometry;
+  ): BufferGeometry {
+    let loadedGeo =
+      'partNumber' in element
+        ? loadingService.getGeometries().get(element.partNumber)
+        : undefined;
     if (
       settingsService.geometryMode === GeometryModeAPIEnum.default ||
       loadedGeo === undefined
     ) {
-      geo = defaultGeo.clone();
+      return defaultGeo.clone();
     } else {
       loadedGeo.bufferGeometry.computeBoundingBox();
       const boundingBox = loadedGeo.bufferGeometry.boundingBox!;
-      geo = new BoxBufferGeometry(
+      const geo = new BoxBufferGeometry(
         boundingBox.max.x - boundingBox.min.x,
         boundingBox.max.y - boundingBox.min.y,
         boundingBox.max.z - boundingBox.min.z
       );
-      GeometryUtils.clean(geo);
       geo.applyMatrix4(loadedGeo.offsetMatrix());
+      return GeometryUtils.clean(geo);
     }
-    return geo;
   }
 
   public static centerGeometry(geo: BufferGeometry) {

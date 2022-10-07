@@ -16,7 +16,10 @@
 */
 
 import { Injectable } from '@angular/core';
-import { Harness } from 'harness-browser3d-library';
+import { Bordnet } from 'harness-browser3d-library';
+import * as debugHarness from '../assets/debugHarness.json';
+import * as brokenHarness from '../assets/brokenHarness.json';
+import * as protectionHarness from '../assets/protectionHarness.json';
 
 @Injectable({
   providedIn: 'root',
@@ -24,36 +27,19 @@ import { Harness } from 'harness-browser3d-library';
 export class DataService {
   index: number = 0;
 
-  copyHarness(data: Harness) {
-    if (data == undefined) {
-      return;
-    }
+  getDebugHarness() {
+    const bordnet = debugHarness as Bordnet;
+    return bordnet.harnesses[0];
+  }
 
-    this.index++;
-    function point(x: number, y: number, z: number) {
-      return {
-        x: x,
-        y: y,
-        z: z,
-      };
-    }
+  getBrokenHarness() {
+    const bordnet = brokenHarness as Bordnet;
+    return bordnet.harnesses[0];
+  }
 
-    const duplicateData = { ...data };
-    duplicateData.id = duplicateData.id + this.index;
-    const newBlock = { ...duplicateData.buildingBlocks[0] };
-    newBlock.placement = {
-      location: {
-        x: 0,
-        y: 0,
-        z: this.index * 400,
-      },
-      u: point(1, 0, 0),
-      v: point(0, 1, 0),
-      w: point(0, 0, 1),
-    };
-    duplicateData.buildingBlocks = [newBlock];
-
-    return duplicateData;
+  getProtectionHarness() {
+    const bordnet = protectionHarness as Bordnet;
+    return bordnet.harnesses[0];
   }
 
   async parseData(file: File) {

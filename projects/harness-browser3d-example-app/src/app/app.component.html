@@ -30,18 +30,23 @@
       <mat-icon>delete</mat-icon> Clear Scene
     </button>
     <button mat-raised-button color="accent" (click)="fileInput.click()">
-      <mat-icon>add</mat-icon> {{ file ? file.name : "Select Harness" }}
+      <mat-icon>add</mat-icon> {{ file ? file.name : "Upload Harness" }}
     </button>
     <input
       hidden
       type="file"
       #fileInput
       accept=".json"
-      (change)="addHarness(fileInput.files)"
+      (change)="uploadHarness(fileInput.files)"
     />
-    <button mat-raised-button color="accent" (click)="copyHarness()">
-      <mat-icon>content_copy</mat-icon> Duplicate Harness
-    </button>
+    <mat-form-field>
+      <mat-label>Add Harness</mat-label>
+      <mat-select [(value)]="selectedHarness">
+        <mat-option *ngFor="let struct of selectableHarnesses" [value]="struct">
+          {{ struct.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field>
       <mat-label>View</mat-label>
       <mat-select [(value)]="selectedView">
@@ -80,7 +85,11 @@
                   fxLayoutGap="2px"
                   *matCellDef="let module"
                 >
-                  <ng-container *ngIf="selectedView.name === 'Default'">
+                  <ng-container>
+                    <mat-checkbox
+                      [checked]="true"
+                      (change)="enableElements(module, $event.checked)"
+                    ></mat-checkbox>
                     <button
                       mat-mini-fab
                       class="my-fab color1"
@@ -117,6 +126,38 @@
           <button mat-raised-button color="accent" (click)="resetSelection()">
             <mat-icon>restart_alt</mat-icon> Reset Selection
           </button>
+        </ng-container>
+        <ng-container *ngIf="selectedView.name === 'Diff'">
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayUnmodified($event.checked)"
+          >
+            Display unmodified harness elements
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayAdded($event.checked)"
+          >
+            Display added harness elements
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayRemoved($event.checked)"
+          >
+            Display removed harness elements
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayModifiedNew($event.checked)"
+          >
+            Display modified harness elements after the change
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="true"
+            (change)="displayModifiedOld($event.checked)"
+          >
+            Display modified harness elements before the change
+          </mat-checkbox>
         </ng-container>
       </mat-card>
       <mat-card
@@ -183,8 +224,10 @@
       <lib-harness-browser3d
         class="browser_panel"
         (initialized)="addAPI($event)"
-        [addHarness]="data"
+        [addHarness]="selectedHarness?.harness"
         [selectedIds]="selectedIds$ | async"
+        [disableIds]="disableIds$ | async"
+        [enableIds]="enableIds$ | async"
         [colors]="colors$ | async"
         [settings]="settings"
         [showStats]="stats"
