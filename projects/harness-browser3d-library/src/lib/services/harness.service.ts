@@ -51,7 +51,7 @@ export class HarnessService implements OnDestroy {
   ) {
     this.subscription.add(
       settingsService.updatedGeometrySettings.subscribe(() => {
-        this.clearCaches();
+        this.clear();
       })
     );
   }
@@ -73,7 +73,7 @@ export class HarnessService implements OnDestroy {
     this.cacheService.addGeos(harnessElementGeos);
     this.colorService.initializeDefaultColors(preprocessedHarness);
     this.selectionService.addGeos(harnessElementGeos);
-    this.sceneService.replaceMesh(this.cacheService.getBordnetMesh());
+    this.sceneService.replaceMesh();
     this.enableService.enableHarness(preprocessedHarness);
     this.viewService.setCurrentView(preprocessedHarness);
     if (this.settingsService.addHarnessResetCamera) {
@@ -81,7 +81,10 @@ export class HarnessService implements OnDestroy {
     }
   }
 
-  public clearCaches(): void {
+  public clear(): void {
+    this.sceneService.removeMesh();
+    this.selectionService.clearGeos();
+    this.selectionService.resetMesh();
     this.colorService.clear();
     this.enableService.clear();
     this.cacheService.clear();

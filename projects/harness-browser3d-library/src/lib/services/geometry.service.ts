@@ -370,7 +370,7 @@ export class GeometryService {
     const endSegment = this.segments.get(endLocation.segmentId)!;
 
     let length = startSegment.virtualLength! + endSegment.virtualLength!;
-    let radius = Math.max(
+    let crossSectionArea = Math.max(
       startSegment.crossSectionArea!,
       endSegment.crossSectionArea!
     );
@@ -386,7 +386,10 @@ export class GeometryService {
       if (curve && segment) {
         curves.push(curve);
         length += segment.virtualLength!;
-        radius = Math.max(radius, segment.crossSectionArea!);
+        crossSectionArea = Math.max(
+          crossSectionArea,
+          segment.crossSectionArea!
+        );
       }
     }
 
@@ -395,7 +398,7 @@ export class GeometryService {
     return this.createProtectionGeometry(
       this.curveService.mergeCurves(curves),
       length,
-      radius,
+      crossSectionArea,
       buildingBlockId
     );
   }
@@ -453,13 +456,13 @@ export class GeometryService {
   private createProtectionGeometry(
     curve: Curve<Vector3>,
     length: number,
-    radius: number,
+    crossSectionArea: number,
     buildingBlockId: string
   ): BufferGeometry {
     const geo = this.positionService.positionTubeGeometry(
       curve,
       length,
-      HarnessUtils.computeDefaultProtectionRadius(radius)
+      HarnessUtils.computeDefaultProtectionRadius(crossSectionArea)
     );
     this.buildingBlockService.applyBuildingBlock(buildingBlockId, geo);
     return geo;

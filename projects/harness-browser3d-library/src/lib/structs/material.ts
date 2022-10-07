@@ -16,7 +16,6 @@
 */
 
 import {
-  AlwaysDepth,
   Color,
   FrontSide,
   MeshBasicMaterial,
@@ -29,16 +28,14 @@ export class GeometryMaterial {
       vertexColors: true,
       side: FrontSide,
       wireframe: false,
-      reflectivity: 1,
     });
   }
 
   public static get selection() {
     return new MeshBasicMaterial({
       color: new Color('orange'),
+      side: FrontSide,
       wireframe: false,
-      reflectivity: 0,
-      depthFunc: AlwaysDepth,
     });
   }
 }
