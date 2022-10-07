@@ -78,18 +78,20 @@ export class HarnessUtils {
     return Math.sqrt(crossSectionArea / Math.PI);
   }
 
-  public static computeDefaultProtectionRadius(segmentRadius: number): number {
-    return segmentRadius + this.PROTECTION_RADIUS_INCREASE;
+  public static computeDefaultProtectionRadius(
+    crossSectionArea: number
+  ): number {
+    return (
+      this.computeRadiusFromCrossSectionArea(crossSectionArea) +
+      this.PROTECTION_RADIUS_INCREASE
+    );
   }
 
   public static computeRatio(
     location: SegmentLocation,
     length: number
-  ): number | undefined {
+  ): number {
     const ratio = location.segmentOffsetLength / length;
-    if (ratio > 1 || ratio < 0) {
-      return undefined;
-    }
     return Anchor[location.anchor as keyof typeof Anchor] ===
       Anchor.FromStartNode
       ? ratio

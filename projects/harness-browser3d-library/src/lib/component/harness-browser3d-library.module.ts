@@ -36,6 +36,8 @@ import { SettingsService } from '../services/settings.service';
 import { ViewService } from '../services/view.service';
 import { HarnessBrowser3dLibraryComponent } from './harness-browser3d-library.component';
 import { EnableService } from '../services/enable.service';
+import { PreprocessService } from '../services/preprocess.service';
+import { LightsService } from '../services/lights.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
@@ -53,9 +55,11 @@ import { EnableService } from '../services/enable.service';
     GeometryService,
     HarnessBrowser3dLibraryAPI,
     HarnessService,
+    LightsService,
     LoadingService,
     MappingService,
     PositionService,
+    PreprocessService,
     RenderService,
     SceneService,
     SelectionService,

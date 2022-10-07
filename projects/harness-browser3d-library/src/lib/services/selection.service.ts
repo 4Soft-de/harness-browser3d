@@ -20,24 +20,28 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
-import { SceneService } from './scene.service';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { BufferGeometry, Mesh } from 'three';
+import { BufferGeometry, Mesh, Scene, WebGLRenderer } from 'three';
 import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { dispose } from '../utils/dispose-utils';
+import { LightsService } from './lights.service';
 
 @Injectable()
 export class SelectionService implements OnDestroy {
+  private scene: Scene;
   private selectMesh: Mesh | undefined;
   private readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();
   private subscription: Subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly sceneService: SceneService,
+    lightsService: LightsService,
     private readonly settingsService: SettingsService
   ) {
+    this.scene = new Scene();
+    lightsService.addLights(this.scene);
+
     this.subscription.add(
       settingsService.updatedGeometrySettings.subscribe(() => {
         this.clearGeos();
@@ -79,7 +83,7 @@ export class SelectionService implements OnDestroy {
       this.selectMesh = new Mesh(selectGeo, GeometryMaterial.selection);
       const selectCenter = GeometryUtils.centerGeometry(selectGeo);
       this.selectMesh.position.copy(selectCenter);
-      this.sceneService.getScene().add(this.selectMesh);
+      this.scene.add(this.selectMesh);
     }
     if (this.settingsService.zoomSelection) {
       this.zoomSelection();
@@ -88,7 +92,7 @@ export class SelectionService implements OnDestroy {
 
   public resetMesh() {
     if (this.selectMesh) {
-      this.sceneService.getScene().remove(this.selectMesh);
+      this.scene.remove(this.selectMesh);
       dispose(this.selectMesh);
       this.selectMesh = undefined;
     }
@@ -100,5 +104,9 @@ export class SelectionService implements OnDestroy {
     } else {
       this.cameraService.resetCamera();
     }
+  }
+
+  render(renderer: WebGLRenderer) {
+    renderer.render(this.scene, this.cameraService.getCamera());
   }
 }

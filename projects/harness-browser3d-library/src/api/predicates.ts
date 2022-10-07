@@ -28,60 +28,58 @@ import {
 export function isNode(object: any): object is Node {
   const node = object as Node;
   return (
-    node.id !== undefined &&
-    node.position !== undefined &&
-    node.buildingBlockId !== undefined
+    defined(node.id) && defined(node.position) && defined(node.buildingBlockId)
   );
 }
 
 export function isSegment(object: any): object is Segment {
   const segment = object as Segment;
   return (
-    segment.id !== undefined &&
-    segment.virtualLength !== undefined &&
-    segment.crossSectionArea !== undefined &&
-    segment.curves !== undefined &&
-    segment.startNodeId !== undefined &&
-    segment.endNodeId !== undefined &&
-    segment.buildingBlockId !== undefined
+    defined(segment.id) &&
+    defined(segment.curves) &&
+    defined(segment.startNodeId) &&
+    defined(segment.endNodeId) &&
+    defined(segment.buildingBlockId)
   );
 }
 
 export function isOccurrence(object: any): object is Occurrence {
   const occurrence = object as Occurrence;
   return (
-    occurrence.id !== undefined &&
-    occurrence.partType !== undefined &&
-    occurrence.partNumber !== undefined &&
-    occurrence.placement !== undefined &&
-    occurrence.buildingBlockId !== undefined
+    defined(occurrence.id) &&
+    defined(occurrence.partType) &&
+    defined(occurrence.buildingBlockId)
   );
 }
 
 export function isOnPointPlacement(object: any): object is OnPointPlacement {
   const placement = object as OnPointPlacement;
-  return placement.locations !== undefined;
+  return defined(placement.locations);
 }
 
 export function isOnWayPlacement(object: any): object is OnWayPlacement {
   const placement = object as OnWayPlacement;
   return (
-    placement.startLocation !== undefined &&
-    placement.endLocation !== undefined &&
-    placement.segmentPath !== undefined
+    defined(placement.startLocation) &&
+    defined(placement.endLocation) &&
+    defined(placement.segmentPath)
   );
 }
 
 export function isNodeLocation(object: any): object is NodeLocation {
   const location = object as NodeLocation;
-  return location.nodeId !== undefined;
+  return defined(location.nodeId);
 }
 
 export function isSegmentLocation(object: any): object is SegmentLocation {
   const location = object as SegmentLocation;
   return (
-    location.segmentId !== undefined &&
-    location.anchor !== undefined &&
-    location.segmentOffsetLength !== undefined
+    defined(location.segmentId) &&
+    defined(location.anchor) &&
+    defined(location.segmentOffsetLength)
   );
+}
+
+function defined(object: any): boolean {
+  return object !== undefined && object !== null;
 }

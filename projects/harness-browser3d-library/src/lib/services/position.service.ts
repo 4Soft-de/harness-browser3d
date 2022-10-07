@@ -48,10 +48,7 @@ export class PositionService {
     curve: Curve<Vector3>,
     length: number,
     radius: number
-  ): BufferGeometry | undefined {
-    if (length <= 0 || radius <= 0) {
-      return undefined;
-    }
+  ): BufferGeometry {
     const geo = new TubeBufferGeometry(
       curve,
       Math.ceil(length * this.settingsService.curveStepsFactor),

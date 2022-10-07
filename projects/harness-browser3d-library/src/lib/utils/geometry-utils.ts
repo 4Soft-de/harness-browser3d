@@ -47,6 +47,9 @@ export class GeometryUtils {
   }
 
   public static mergeGeos(geos: BufferGeometry[]): BufferGeometry {
+    if (!geos.length) {
+      return new BufferGeometry();
+    }
     const geo = mergeBufferGeometries(geos);
     if (geo) {
       return geo;
@@ -88,7 +91,7 @@ export class GeometryUtils {
     loadingService: LoadingService
   ): BufferGeometry {
     let loadedGeo =
-      'partNumber' in element
+      'partNumber' in element && element.partNumber
         ? loadingService.getGeometries().get(element.partNumber)
         : undefined;
     if (

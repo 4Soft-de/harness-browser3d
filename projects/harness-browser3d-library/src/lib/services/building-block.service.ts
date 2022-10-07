@@ -27,18 +27,13 @@ export class BuildingBlockService {
 
   constructor() {}
 
-  public fillBuildingBlockMap(buildingBlock: BuildingBlock | null) {
-    if (!buildingBlock) {
-      console.warn(ErrorUtils.isNull('buildingBlock'));
-      return;
-    }
-
+  public fillBuildingBlockMap(buildingBlock: BuildingBlock) {
     let position = new Vector3();
     let rotation = new Quaternion();
 
-    position = HarnessUtils.convertPointToVector(buildingBlock.position);
+    position = HarnessUtils.convertPointToVector(buildingBlock.position!);
     rotation = HarnessUtils.computeQuaternionFromRotation(
-      buildingBlock.rotation
+      buildingBlock.rotation!
     );
 
     const matrix = new Matrix4().compose(

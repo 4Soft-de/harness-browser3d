@@ -20,8 +20,6 @@ import { CameraService } from '../lib/services/camera.service';
 import { ColorService } from '../lib/services/color.service';
 import { HarnessService } from '../lib/services/harness.service';
 import { RenderService } from '../lib/services/render.service';
-import { SceneService } from '../lib/services/scene.service';
-import { SelectionService } from '../lib/services/selection.service';
 import { ViewService } from '../lib/services/view.service';
 import { View } from '../views/view';
 
@@ -32,8 +30,6 @@ export class HarnessBrowser3dLibraryAPI {
     private readonly colorService: ColorService,
     private readonly harnessService: HarnessService,
     private readonly renderService: RenderService,
-    private readonly sceneService: SceneService,
-    private readonly selectionService: SelectionService,
     private readonly viewService: ViewService
   ) {}
 
@@ -50,10 +46,7 @@ export class HarnessBrowser3dLibraryAPI {
   }
 
   public clear() {
-    this.sceneService.clearScene();
-    this.selectionService.clearGeos();
-    this.selectionService.resetMesh();
-    this.harnessService.clearCaches();
+    this.harnessService.clear();
   }
 
   public setView(view: View) {
