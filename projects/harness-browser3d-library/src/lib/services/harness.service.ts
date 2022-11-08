@@ -60,7 +60,11 @@ export class HarnessService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  addHarness(harness: Harness): void {
+  public addHarnesses(harnesses: Harness[]): void {
+    harnesses.forEach(this.addHarness.bind(this));
+  }
+
+  private addHarness(harness: Harness): void {
     if (this.loadedHarnesses.has(harness.id)) {
       console.warn(`harness ${harness.id} has already been loaded`);
       return;

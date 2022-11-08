@@ -30,19 +30,19 @@
       <mat-icon>delete</mat-icon> Clear Scene
     </button>
     <button mat-raised-button color="accent" (click)="fileInput.click()">
-      <mat-icon>add</mat-icon> {{ file ? file.name : "Upload Harness" }}
+      <mat-icon>add</mat-icon> {{ file ? file.name : "Upload Bordnet" }}
     </button>
     <input
       hidden
       type="file"
       #fileInput
       accept=".json"
-      (change)="uploadHarness(fileInput.files)"
+      (change)="uploadBordnet(fileInput.files)"
     />
     <mat-form-field>
       <mat-label>Add Harness</mat-label>
-      <mat-select [(value)]="selectedHarness">
-        <mat-option *ngFor="let struct of selectableHarnesses" [value]="struct">
+      <mat-select [(value)]="selectedBordnet">
+        <mat-option *ngFor="let struct of selectableBordnets" [value]="struct">
           {{ struct.name }}
         </mat-option>
       </mat-select>
@@ -224,7 +224,7 @@
       <lib-harness-browser3d
         class="browser_panel"
         (initialized)="addAPI($event)"
-        [addHarness]="selectedHarness?.harness"
+        [addHarnesses]="selectedBordnet?.bordnet?.harnesses"
         [selectedIds]="selectedIds$ | async"
         [disableIds]="disableIds$ | async"
         [enableIds]="enableIds$ | async"

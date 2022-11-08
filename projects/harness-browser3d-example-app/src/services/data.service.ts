@@ -27,22 +27,19 @@ import * as protectionHarness from '../assets/protectionHarness.json';
 export class DataService {
   index: number = 0;
 
-  getDebugHarness() {
-    const bordnet = debugHarness as Bordnet;
-    return bordnet.harnesses[0];
+  get debugHarness(): Bordnet {
+    return debugHarness as Bordnet;
   }
 
-  getBrokenHarness() {
-    const bordnet = brokenHarness as Bordnet;
-    return bordnet.harnesses[0];
+  get brokenHarness(): Bordnet {
+    return brokenHarness as Bordnet;
   }
 
-  getProtectionHarness() {
-    const bordnet = protectionHarness as Bordnet;
-    return bordnet.harnesses[0];
+  get protectionHarness(): Bordnet {
+    return protectionHarness as Bordnet;
   }
 
   async parseData(file: File) {
-    return JSON.parse(await file.text())['harnesses'][0];
+    return JSON.parse(await file.text());
   }
 }

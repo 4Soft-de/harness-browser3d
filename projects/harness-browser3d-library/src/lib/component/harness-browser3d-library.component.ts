@@ -103,10 +103,10 @@ export class HarnessBrowser3dLibraryComponent
   }
 
   @Input()
-  set addHarness(harness: Harness | null | undefined) {
+  set addHarnesses(harnesses: Harness[] | null | undefined) {
     this.checkInput(
-      this.harnessService.addHarness.bind(this.harnessService),
-      harness
+      this.harnessService.addHarnesses.bind(this.harnessService),
+      harnesses
     );
   }
 

@@ -6,7 +6,7 @@ A high performance angular component for displaying 3D representations of bordne
 
 ```html
 <lib-harness-browser3d
-  [addHarness]="data"
+  [addHarnesses]="data"
   [selectedIds]="selectedIds"
   [colors]="colors"
   [settings]="settings"
@@ -33,7 +33,7 @@ It is recommended to set the change detection strategy of the parent component t
 
 ### Add a Harness
 
-Add a harness by inserting a `Harness` object into the `addHarness` property. Include Harness from `api\alias.ts`.
+Add harnesses by inserting an array of `Harness` objects into the `addHarnesses` property. Include Harness from `api\alias.ts`.
 
 Harness has been generated from `assets\geometry-api.yaml`.
 
