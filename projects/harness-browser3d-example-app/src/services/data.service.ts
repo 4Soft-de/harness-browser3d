@@ -17,6 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { Bordnet } from 'harness-browser3d-library';
+import * as exampleBordnet from '../assets/exampleHarness.json';
 import * as debugHarness from '../assets/debugHarness.json';
 import * as brokenHarness from '../assets/brokenHarness.json';
 import * as protectionHarness from '../assets/protectionHarness.json';
@@ -26,6 +27,10 @@ import * as protectionHarness from '../assets/protectionHarness.json';
 })
 export class DataService {
   index: number = 0;
+
+  get exampleBordnet(): any {
+    return exampleBordnet;
+  }
 
   get debugHarness(): Bordnet {
     return debugHarness as Bordnet;

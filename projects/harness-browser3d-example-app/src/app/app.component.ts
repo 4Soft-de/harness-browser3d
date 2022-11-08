@@ -90,6 +90,7 @@ export class AppComponent implements AfterViewInit {
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this.selectableBordnets = [
+      new BordnetSelectionStruct('Example', dataService.exampleBordnet),
       new BordnetSelectionStruct('Debug', dataService.debugHarness),
       new BordnetSelectionStruct('Broken', dataService.brokenHarness),
       new BordnetSelectionStruct('Protection', dataService.protectionHarness),
