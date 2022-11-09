@@ -58,15 +58,14 @@ export class CameraService {
   }
 
   public focusCameraOnMesh(mesh: Mesh) {
-    if (mesh.geometry.boundingBox) {
-      const sphere = this.computeBoundingSphere(mesh);
-      this.focusCameraOnSphere(
-        sphere,
-        this.cameraSettings.selectionDistanceFactor
-      );
-    } else {
-      console.error('no bounding box computed');
+    if (!mesh.geometry.boundingBox) {
+      mesh.geometry.computeBoundingBox();
     }
+    const sphere = this.computeBoundingSphere(mesh);
+    this.focusCameraOnSphere(
+      sphere,
+      this.cameraSettings.selectionDistanceFactor
+    );
   }
 
   private computeBoundingSphere(mesh: Mesh) {

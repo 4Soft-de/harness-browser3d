@@ -48,9 +48,7 @@ export class CacheService {
     }
     geos.forEach((geo) => harnessGeos.push(geo));
     const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
-    const position = GeometryUtils.centerGeometry(mergedHarnessGeo);
     this.bordnetMesh = new Mesh(mergedHarnessGeo);
-    this.bordnetMesh.position.copy(position);
     this.bordnetMesh.name = this.bordnetMeshName;
   }
 

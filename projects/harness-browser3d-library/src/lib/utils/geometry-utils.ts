@@ -24,7 +24,6 @@ import {
   BufferGeometry,
   SphereBufferGeometry,
   TubeBufferGeometry,
-  Vector3,
 } from 'three';
 import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
@@ -114,13 +113,5 @@ export class GeometryUtils {
       geo.applyMatrix4(loadedGeo.offsetMatrix());
       return GeometryUtils.clean(geo);
     }
-  }
-
-  public static centerGeometry(geo: BufferGeometry) {
-    geo.computeBoundingBox();
-    const center = new Vector3();
-    geo.boundingBox!.getCenter(center);
-    geo.center();
-    return center;
   }
 }
