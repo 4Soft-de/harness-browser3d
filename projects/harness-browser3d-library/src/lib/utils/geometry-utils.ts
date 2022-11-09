@@ -37,6 +37,10 @@ export class GeometryUtils {
   ): void {
     const attributeSize =
       bufferAttribute.array.length / bufferAttribute.itemSize;
+    if (!harnessGeo.attributes['position']) {
+      console.error(`harnessGeo has no vertices`);
+      return;
+    }
     if (harnessGeo.attributes['position'].count != attributeSize) {
       console.error(
         `vertex count ${harnessGeo.attributes['position'].count} and buffer attribute size ${attributeSize} must be same`

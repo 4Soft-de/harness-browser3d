@@ -34,10 +34,14 @@ export class CacheService {
   }
 
   public getVerticesCount(): number {
-    return this.bordnetMesh?.geometry.attributes['position'].count ?? 0;
+    return this.bordnetMesh?.geometry?.attributes['position']?.count ?? 0;
   }
 
   public addGeos(geos: Map<string, BufferGeometry>): void {
+    if (!geos.size) {
+      console.error('geos are empty');
+      return;
+    }
     const harnessGeos: BufferGeometry[] = [];
     if (this.bordnetMesh) {
       harnessGeos.push(GeometryUtils.clean(this.bordnetMesh.geometry));

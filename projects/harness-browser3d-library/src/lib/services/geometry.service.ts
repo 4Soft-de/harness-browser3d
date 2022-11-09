@@ -76,20 +76,22 @@ export class GeometryService {
     this.defaultFixings = this.defaultGeometryCreationService.fixing();
   }
 
-  public processHarness(harness: Harness): Map<string, BufferGeometry> {
-    harness.nodes.forEach((node) => this.nodes.set(node.id, node));
-    harness.segments.forEach(this.cacheSegment.bind(this));
+  public processHarnesses(harnesses: Harness[]): Map<string, BufferGeometry> {
+    const geos = new Map<string, BufferGeometry>();
+    harnesses.forEach((harness) => {
+      harness.nodes.forEach((node) => this.nodes.set(node.id, node));
+      harness.segments.forEach(this.cacheSegment.bind(this));
 
-    this.handleBlocks(harness);
-    this.loadGeometries(harness);
+      this.handleBlocks(harness);
+      this.loadGeometries(harness);
 
-    const geos = this.positionGeometries(harness);
+      this.positionGeometries(harness, geos);
 
-    this.nodes.clear();
-    this.segments.clear();
-    this.curves.clear();
-    this.segmentDirections.clear();
-
+      this.nodes.clear();
+      this.segments.clear();
+      this.curves.clear();
+      this.segmentDirections.clear();
+    });
     return geos;
   }
 
@@ -140,24 +142,25 @@ export class GeometryService {
     }
   }
 
-  private positionGeometries(harness: Harness): Map<string, BufferGeometry> {
-    const harnessElementGeos: Map<string, BufferGeometry> = new Map();
+  private positionGeometries(
+    harness: Harness,
+    result: Map<string, BufferGeometry>
+  ): void {
     harness.nodes.forEach((node) => {
-      harnessElementGeos.set(node.id, this.processNode(node));
+      result.set(node.id, this.processNode(node));
     });
     harness.segments.forEach((segment) => {
       const geo = this.processSegment(segment);
       if (geo) {
-        harnessElementGeos.set(segment.id, geo);
+        result.set(segment.id, geo);
       }
     });
     harness.occurrences.forEach((occurrence) => {
       const geo = this.processOccurrence(occurrence);
       if (geo) {
-        harnessElementGeos.set(occurrence.id, geo);
+        result.set(occurrence.id, geo);
       }
     });
-    return harnessElementGeos;
   }
 
   private processNode(node: Node): BufferGeometry {

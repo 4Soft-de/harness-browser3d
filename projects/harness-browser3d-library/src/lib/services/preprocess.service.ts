@@ -21,7 +21,11 @@ export class PreprocessService {
   private readonly nodes = new Set<string>();
   private readonly segments = new Set<string>();
 
-  public preprocess(harness: Harness): Harness {
+  public preprocessHarnesses(harnesses: Harness[]): Harness[] {
+    return harnesses.map(this.preprocessHarness.bind(this));
+  }
+
+  private preprocessHarness(harness: Harness): Harness {
     const result = {
       id: harness.id,
       buildingBlocks: harness.buildingBlocks.map(

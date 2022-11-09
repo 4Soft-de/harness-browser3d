@@ -50,7 +50,11 @@ export class ColorService {
     this.applyColors(this.key, new Map<string, Color>());
   }
 
-  public initializeDefaultColors(harness: Harness): void {
+  public initializeDefaultColors(harnesses: Harness[]): void {
+    harnesses.forEach(this.initializeDefaultColorsImplementation.bind(this));
+  }
+
+  private initializeDefaultColorsImplementation(harness: Harness): void {
     const set = (harnessElement: Node | Segment | Occurrence) => {
       this.defaultColors.set(
         harnessElement.id,

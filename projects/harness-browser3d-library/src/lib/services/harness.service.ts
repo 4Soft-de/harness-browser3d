@@ -61,25 +61,30 @@ export class HarnessService implements OnDestroy {
   }
 
   public addHarnesses(harnesses: Harness[]): void {
-    harnesses.forEach(this.addHarness.bind(this));
-  }
+    const notLoadedHarnesses: Harness[] = [];
+    harnesses.forEach((harness) => {
+      if (this.loadedHarnesses.has(harness.id)) {
+        console.warn(`harness ${harness.id} has already been loaded`);
+      } else {
+        this.loadedHarnesses.add(harness.id);
+        notLoadedHarnesses.push(harness);
+      }
+    });
 
-  private addHarness(harness: Harness): void {
-    if (this.loadedHarnesses.has(harness.id)) {
-      console.warn(`harness ${harness.id} has already been loaded`);
-      return;
-    }
-    const preprocessedHarness = this.preprocessService.preprocess(harness);
-    this.loadedHarnesses.add(preprocessedHarness.id);
-    const harnessElementGeos =
-      this.geometryService.processHarness(preprocessedHarness);
+    const preprocessedHarnesses =
+      this.preprocessService.preprocessHarnesses(notLoadedHarnesses);
+    const harnessElementGeos = this.geometryService.processHarnesses(
+      preprocessedHarnesses
+    );
+
     this.createHarnessElementMappings(harnessElementGeos);
     this.cacheService.addGeos(harnessElementGeos);
-    this.colorService.initializeDefaultColors(preprocessedHarness);
+    this.colorService.initializeDefaultColors(preprocessedHarnesses);
     this.selectionService.addGeos(harnessElementGeos);
     this.sceneService.replaceMesh();
-    this.enableService.enableHarness(preprocessedHarness);
-    this.viewService.setCurrentView(preprocessedHarness);
+    this.enableService.enableHarnesses(preprocessedHarnesses);
+    this.viewService.setCurrentView(preprocessedHarnesses);
+
     if (this.settingsService.addHarnessResetCamera) {
       this.cameraService.resetCamera();
     }
