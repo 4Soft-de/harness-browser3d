@@ -81,12 +81,8 @@ export class GeometryService {
     harnesses.forEach((harness) => {
       harness.nodes.forEach((node) => this.nodes.set(node.id, node));
       harness.segments.forEach(this.cacheSegment.bind(this));
-
       this.handleBlocks(harness);
-      this.loadGeometries(harness);
-
       this.positionGeometries(harness, geos);
-
       this.nodes.clear();
       this.segments.clear();
       this.curves.clear();
@@ -131,15 +127,6 @@ export class GeometryService {
     harness.buildingBlocks.forEach((bb: BuildingBlock) =>
       this.buildingBlockService.fillBuildingBlockMap(bb)
     );
-  }
-
-  private loadGeometries(harness: Harness): void {
-    if (
-      this.settingsService.geometryMode === GeometryModeAPIEnum.loaded &&
-      harness.graphics
-    ) {
-      this.loadingService.parseGeometryData(harness.graphics);
-    }
   }
 
   private positionGeometries(
@@ -222,12 +209,14 @@ export class GeometryService {
     }
 
     const node = this.nodes.get(getNodeId(connector)!)!;
-    const position = HarnessUtils.convertPointToVector(node.position);
+    let position: Vector3 | undefined = undefined;
 
     let rotation: Quaternion;
 
     switch (this.settingsService.geometryMode) {
       case GeometryModeAPIEnum.default:
+        position = HarnessUtils.convertPointToVector(node.position);
+
         const depth = (this.defaultConnectors[index] as BoxBufferGeometry)
           .parameters.depth;
 
@@ -255,11 +244,10 @@ export class GeometryService {
           connector.rotation !== undefined
             ? HarnessUtils.computeQuaternionFromRotation(connector.rotation!)
             : new Quaternion();
-        const offset =
-          connector.positionOffset !== undefined
-            ? HarnessUtils.convertPointToVector(connector.positionOffset!)
+        position =
+          connector.graphicPosition !== undefined
+            ? HarnessUtils.convertPointToVector(connector.graphicPosition!)
             : new Vector3(0, 0, 0);
-        position.add(offset);
         break;
     }
 
@@ -476,14 +464,20 @@ export class GeometryService {
       other.rotation !== undefined
         ? HarnessUtils.computeQuaternionFromRotation(other.rotation!)
         : new Quaternion();
-    const node = this.nodes.get(getNodeId(other)!)!;
-    const offset =
-      other.positionOffset !== undefined
-        ? HarnessUtils.convertPointToVector(other.positionOffset!)
-        : new Vector3(0, 0, 0);
-    const position = HarnessUtils.convertPointToVector(node.position).add(
-      offset
-    );
+
+    let position: Vector3 | undefined = undefined;
+    switch (this.settingsService.geometryMode) {
+      case GeometryModeAPIEnum.default:
+        const node = this.nodes.get(getNodeId(other)!)!;
+        position = HarnessUtils.convertPointToVector(node.position);
+        break;
+      case GeometryModeAPIEnum.loaded:
+        position =
+          other.graphicPosition !== undefined
+            ? HarnessUtils.convertPointToVector(other.graphicPosition!)
+            : new Vector3(0, 0, 0);
+        break;
+    }
 
     const geo = GeometryUtils.createGeo(
       other,

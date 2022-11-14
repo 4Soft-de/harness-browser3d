@@ -103,15 +103,7 @@ export class GeometryUtils {
     ) {
       return defaultGeo.clone();
     } else {
-      loadedGeo.bufferGeometry.computeBoundingBox();
-      const boundingBox = loadedGeo.bufferGeometry.boundingBox!;
-      const geo = new BoxBufferGeometry(
-        boundingBox.max.x - boundingBox.min.x,
-        boundingBox.max.y - boundingBox.min.y,
-        boundingBox.max.z - boundingBox.min.z
-      );
-      geo.applyMatrix4(loadedGeo.offsetMatrix());
-      return GeometryUtils.clean(geo);
+      return loadedGeo.bufferGeometry.clone();
     }
   }
 }

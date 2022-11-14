@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   BuildingBlock,
   Curve,
+  Graphic,
   Harness,
   Node,
   Occurrence,
@@ -20,6 +21,7 @@ export class PreprocessService {
   private readonly buildingBlocks = new Set<string>();
   private readonly nodes = new Set<string>();
   private readonly segments = new Set<string>();
+  private readonly occurrences = new Set<string>();
 
   public preprocessHarnesses(harnesses: Harness[]): Harness[] {
     return harnesses.map(this.preprocessHarness.bind(this));
@@ -36,10 +38,12 @@ export class PreprocessService {
       occurrences: harness.occurrences.filter(
         this.preprocessOccurrence.bind(this)
       ),
+      graphics: harness.graphics?.filter(this.preprocessGraphic.bind(this)),
     };
     this.buildingBlocks.clear();
     this.nodes.clear();
     this.segments.clear();
+    this.occurrences.clear();
     return result;
   }
 
@@ -143,7 +147,7 @@ export class PreprocessService {
   }
 
   private preprocessOccurrence(occurrence: Occurrence): boolean {
-    const correct =
+    const defined =
       this.defined(
         occurrence,
         ['id', 'partType', 'partNumber', 'placement', 'buildingBlockId'],
@@ -154,10 +158,18 @@ export class PreprocessService {
         occurrence.buildingBlockId,
         'occurrence'
       );
-    if (!correct) {
+    if (!defined) {
       return false;
     }
 
+    const correct = this.preprocessOccurrencePartType(occurrence);
+    if (correct) {
+      this.occurrences.add(occurrence.partNumber!);
+    }
+    return correct;
+  }
+
+  private preprocessOccurrencePartType(occurrence: Occurrence): boolean {
     switch (PartType[occurrence.partType as keyof typeof PartType]) {
       case PartType.Connector:
         return this.preprocessConnector(occurrence);
@@ -256,6 +268,14 @@ export class PreprocessService {
     );
   }
 
+  private preprocessGraphic(graphic: Graphic): boolean {
+    const defined = this.defined(graphic, ['partNumber', 'data'], 'graphic');
+    if (!defined) {
+      return false;
+    }
+    return this.correctGraphic(graphic.partNumber);
+  }
+
   private defined(
     object: any,
     key: string[] | string,
@@ -318,5 +338,13 @@ export class PreprocessService {
       return false;
     }
     return true;
+  }
+
+  private correctGraphic(partNumber: string): boolean {
+    const correct = this.occurrences.has(partNumber);
+    if (!correct) {
+      console.warn(`graphic for part number ${partNumber} is not needed`);
+    }
+    return correct;
   }
 }

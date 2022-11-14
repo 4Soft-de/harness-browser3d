@@ -30,6 +30,8 @@ import { EnableService } from './enable.service';
 import { CacheService } from './cache.service';
 import { Subscription } from 'rxjs';
 import { PreprocessService } from './preprocess.service';
+import { LoadingService } from './loading.service';
+import { GeometryModeAPIEnum } from '../../api/structs';
 
 @Injectable()
 export class HarnessService implements OnDestroy {
@@ -42,6 +44,7 @@ export class HarnessService implements OnDestroy {
     private readonly colorService: ColorService,
     private readonly enableService: EnableService,
     private readonly geometryService: GeometryService,
+    private readonly loadingService: LoadingService,
     private readonly mappingService: MappingService,
     private readonly preprocessService: PreprocessService,
     private readonly sceneService: SceneService,
@@ -73,6 +76,14 @@ export class HarnessService implements OnDestroy {
 
     const preprocessedHarnesses =
       this.preprocessService.preprocessHarnesses(notLoadedHarnesses);
+
+    if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
+      const graphics = preprocessedHarnesses.flatMap(
+        (harness) => harness.graphics ?? []
+      );
+      this.loadingService.parseGeometryData(graphics);
+    }
+
     const harnessElementGeos = this.geometryService.processHarnesses(
       preprocessedHarnesses
     );
@@ -91,6 +102,7 @@ export class HarnessService implements OnDestroy {
   }
 
   public clear(): void {
+    this.loadingService.clear();
     this.sceneService.removeMesh();
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
