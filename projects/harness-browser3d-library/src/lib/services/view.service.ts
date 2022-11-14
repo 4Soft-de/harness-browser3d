@@ -63,7 +63,7 @@ export class ViewService {
       if (setMaterial) {
         mesh.material = view.material;
       }
-      if (view.propertyKey) {
+      if (view.propertyKey && view.defaultValue && view.mapper) {
         const array = this.mappingService.applyMapping(
           view.defaultValue,
           this.propertiesCache.get(view.propertyKey) ??

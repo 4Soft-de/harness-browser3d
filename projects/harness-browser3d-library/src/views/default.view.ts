@@ -15,13 +15,9 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Color, Float32BufferAttribute, ShaderLib } from 'three';
+import { ShaderLib } from 'three';
 import { GeometryMaterial } from '../lib/structs/material';
 import { View } from '../views/view';
-
-const defaultViewPropertyKey = undefined;
-
-const defaultViewDefaultValue = new Color('black').getHexString();
 
 function defaultViewVertexShader(): string {
   let shader = ShaderLib.lambert.vertexShader;
@@ -55,18 +51,4 @@ function defaultViewMaterial() {
   return material;
 }
 
-const defaultViewMapper = (properties: string[]) => {
-  const array: number[] = [];
-  properties
-    .map((property) => Number.parseInt(property))
-    .map((property) => new Color(property))
-    .forEach((color) => array.push(color.r, color.g, color.b));
-  return new Float32BufferAttribute(array, 3);
-};
-
-export const defaultView = new View(
-  defaultViewPropertyKey,
-  defaultViewDefaultValue,
-  defaultViewMaterial(),
-  defaultViewMapper
-);
+export const defaultView = new View(defaultViewMaterial());

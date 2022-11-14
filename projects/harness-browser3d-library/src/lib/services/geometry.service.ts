@@ -69,11 +69,10 @@ export class GeometryService {
     private readonly positionService: PositionService,
     private readonly settingsService: SettingsService
   ) {
-    this.defaultNodes = this.defaultGeometryCreationService.node();
-    this.defaultConnectors =
-      this.defaultGeometryCreationService.connectorSizes();
-    this.defaultOthers = this.defaultGeometryCreationService.accessory();
-    this.defaultFixings = this.defaultGeometryCreationService.fixing();
+    this.defaultNodes = this.defaultGeometryCreationService.node;
+    this.defaultConnectors = this.defaultGeometryCreationService.connectorSizes;
+    this.defaultOthers = this.defaultGeometryCreationService.accessory;
+    this.defaultFixings = this.defaultGeometryCreationService.fixing;
   }
 
   public processHarnesses(harnesses: Harness[]): Map<string, BufferGeometry> {

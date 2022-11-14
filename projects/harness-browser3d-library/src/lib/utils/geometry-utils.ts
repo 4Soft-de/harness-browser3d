@@ -18,13 +18,7 @@
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { Node, Occurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
-import {
-  BoxBufferGeometry,
-  BufferAttribute,
-  BufferGeometry,
-  SphereBufferGeometry,
-  TubeBufferGeometry,
-} from 'three';
+import { BufferAttribute, BufferGeometry } from 'three';
 import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
 
@@ -62,29 +56,13 @@ export class GeometryUtils {
     }
   }
 
-  public static clean(geo: BufferGeometry): BufferGeometry {
+  public static clean(geo: BufferGeometry): void {
     const position = geo.attributes['position'];
     const normal = geo.attributes['normal'];
-    //const cleanedGeo = geo.toNonIndexed();
-    const cleanedGeo = geo.clone();
-    cleanedGeo.attributes = {
+    geo.attributes = {
       position: position,
       normal: normal,
     };
-    GeometryUtils.setParameters(geo, cleanedGeo);
-    return cleanedGeo;
-  }
-
-  private static setParameters(
-    baseGeo: BufferGeometry,
-    cleanedGeo: BufferGeometry
-  ): void {
-    const box = cleanedGeo as BoxBufferGeometry;
-    box.parameters = (baseGeo as BoxBufferGeometry).parameters;
-    const sphere = cleanedGeo as SphereBufferGeometry;
-    sphere.parameters = (baseGeo as SphereBufferGeometry).parameters;
-    const tube = cleanedGeo as TubeBufferGeometry;
-    tube.parameters = (baseGeo as TubeBufferGeometry).parameters;
   }
 
   public static createGeo(
