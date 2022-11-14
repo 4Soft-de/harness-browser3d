@@ -81,7 +81,7 @@ export class HarnessService implements OnDestroy {
       const graphics = preprocessedHarnesses.flatMap(
         (harness) => harness.graphics ?? []
       );
-      this.loadingService.parseGeometryData(graphics);
+      this.loadingService.loadGraphics(graphics);
     }
 
     const harnessElementGeos = this.geometryService.processHarnesses(

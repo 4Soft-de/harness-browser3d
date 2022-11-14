@@ -82,7 +82,7 @@ export class GeometryUtils {
     ) {
       return defaultGeo.clone();
     } else {
-      return loadedGeo.bufferGeometry.clone();
+      return loadedGeo.clone();
     }
   }
 }

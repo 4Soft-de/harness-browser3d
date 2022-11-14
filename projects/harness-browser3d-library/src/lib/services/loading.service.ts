@@ -20,16 +20,15 @@ import { BufferGeometry, Mesh, Scene } from 'three';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 import { Graphic } from '../../api/alias';
-import { LoadedGeometry } from '../structs/loaded-geometries';
 import { GeometryUtils } from '../utils/geometry-utils';
 
 @Injectable()
 export class LoadingService {
-  private readonly geometries: Map<string, LoadedGeometry> = new Map();
+  private readonly geometries: Map<string, BufferGeometry> = new Map();
 
   constructor() {}
 
-  public getGeometries(): Map<string, LoadedGeometry> {
+  public getGeometries(): Map<string, BufferGeometry> {
     return this.geometries;
   }
 
@@ -37,44 +36,42 @@ export class LoadingService {
     this.geometries.clear();
   }
 
-  public parseGeometryData(graphics: Graphic[]): void {
-    let emptyIterator = true;
+  public loadGraphics(graphics: Graphic[]): void {
+    if (!graphics.length) {
+      console.info('no geometries to parse');
+      return;
+    }
 
     graphics.forEach((graphic) => {
-      emptyIterator = false;
       if (this.geometries.has(graphic.partNumber)) {
         return;
       }
 
-      const vrmloader = new VRMLLoader();
-      let loaded;
-      try {
-        loaded = vrmloader.parse(graphic.data, '');
-      } catch (e) {
-        console.error(
-          `exception during VRML loading for part number ${graphic.partNumber}\n\n${e}`
+      const scene = this.parseGraphic(graphic);
+      if (scene) {
+        const geo = mergeVertices(
+          GeometryUtils.mergeGeos(this.filterScene(scene))
         );
-        return;
-      }
-
-      const geos: BufferGeometry[] = this.traverseLoadedData(loaded);
-      if (geos.length > 0) {
-        const geo = mergeVertices(GeometryUtils.mergeGeos(geos));
-        geo.name = graphic.partNumber;
-        const loadedGeo = new LoadedGeometry(geo);
-        geo.applyMatrix4(loadedGeo.offsetMatrix());
-        this.geometries.set(graphic.partNumber, loadedGeo);
+        this.geometries.set(graphic.partNumber, geo);
       }
     });
+  }
 
-    if (emptyIterator) {
-      console.info('no geometries to parse');
+  private parseGraphic(graphic: Graphic): Scene | undefined {
+    const vrmloader = new VRMLLoader();
+    try {
+      return vrmloader.parse(graphic.data, '');
+    } catch (e) {
+      console.error(
+        `exception during VRML loading for part number ${graphic.partNumber}\n\n${e}`
+      );
+      return undefined;
     }
   }
 
-  private traverseLoadedData(loaded: Scene): BufferGeometry[] {
+  private filterScene(scene: Scene): BufferGeometry[] {
     const geos: BufferGeometry[] = [];
-    loaded.traverse((mesh) => {
+    scene.traverse((mesh) => {
       if (mesh instanceof Mesh && mesh.geometry instanceof BufferGeometry) {
         const geo = this.filterAttributes(mesh.geometry);
         if (geo) {
