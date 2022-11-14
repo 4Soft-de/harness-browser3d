@@ -19,7 +19,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1744.37861,
                         "y": 298.12279,
                         "z": 108.42673
@@ -58,7 +58,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2835.76869,
                         "y": 432.98329,
                         "z": 312.98178
@@ -97,7 +97,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1744.37861,
                         "y": 298.12279,
                         "z": 108.42673
@@ -136,7 +136,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2835.76869,
                         "y": 432.98329,
                         "z": 312.98178
@@ -272,7 +272,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2520.09825,
                         "y": 85.37645,
                         "z": 495.96006
@@ -311,7 +311,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2620.48151,
                         "y": -108.84067,
                         "z": 518.2952
@@ -350,7 +350,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2454.64602,
                         "y": 153.72182,
                         "z": 504.80412
@@ -389,7 +389,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2497.89744,
                         "y": 155.39663,
                         "z": 501.74922
@@ -438,7 +438,7 @@
                             "segmentOffsetLength": 219.800924
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified893fcd20-ae42-458c-b4d7-e6c6dc526d4c",
                     "viewProperties": {
@@ -471,7 +471,7 @@
                             "segmentOffsetLength": 96.31014901155
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified893fcd20-ae42-458c-b4d7-e6c6dc526d4c",
                     "viewProperties": {
@@ -504,7 +504,7 @@
                             "segmentOffsetLength": 41.518514
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified893fcd20-ae42-458c-b4d7-e6c6dc526d4c",
                     "viewProperties": {
@@ -527,7 +527,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2497.89744,
                         "y": 155.39663,
                         "z": 501.74922
@@ -875,7 +875,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1904.27405,
                         "y": 260.68386,
                         "z": 47.7406
@@ -914,7 +914,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1759.7214,
                         "y": 543.74929,
                         "z": 95.05636
@@ -953,7 +953,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1904.27405,
                         "y": 260.68386,
                         "z": 47.7406
@@ -992,7 +992,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1759.7214,
                         "y": 543.74929,
                         "z": 95.05636
@@ -1126,7 +1126,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2498.71585,
                         "y": 118.58411,
                         "z": 281.9026
@@ -1165,7 +1165,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1904.41023,
                         "y": 261.72883,
                         "z": 50.16006
@@ -1204,7 +1204,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2498.71585,
                         "y": 118.58411,
                         "z": 281.9026
@@ -1243,7 +1243,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1904.41023,
                         "y": 261.72883,
                         "z": 50.16006
@@ -1377,7 +1377,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2648.53654,
                         "y": -9.68644,
                         "z": 370.0
@@ -1416,7 +1416,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2560.0,
                         "y": -134.51911,
                         "z": 370.0
@@ -1455,7 +1455,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2560.50668,
                         "y": -215.60268,
                         "z": 368.21929
@@ -1494,7 +1494,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2900.0,
                         "y": -50.0,
                         "z": 400.0
@@ -1533,7 +1533,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2690.34985,
                         "y": 57.81179,
                         "z": 390.61249
@@ -1572,7 +1572,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 3000.0,
                         "y": 16.3549,
                         "z": 403.88071
@@ -1611,7 +1611,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2697.61157,
                         "y": -94.31305,
                         "z": 404.28821
@@ -1650,7 +1650,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2594.44531,
                         "y": -12.33004,
                         "z": 394.65589
@@ -1689,7 +1689,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2900.0,
                         "y": 9.87197,
                         "z": 401.35915
@@ -1728,7 +1728,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2550.0,
                         "y": 2.40143,
                         "z": 382.4
@@ -1767,7 +1767,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2800.0,
                         "y": 253.00108,
                         "z": 368.91572
@@ -1806,7 +1806,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2800.0,
                         "y": -253.09598,
                         "z": 368.78117
@@ -1845,7 +1845,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 3000.0,
                         "y": 253.0,
                         "z": 368.61097
@@ -1884,7 +1884,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 3000.0,
                         "y": -253.09518,
                         "z": 368.54872
@@ -1923,7 +1923,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2900.0,
                         "y": -50.0,
                         "z": 402.0
@@ -1962,7 +1962,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2550.0,
                         "y": 62.27575,
                         "z": 388.33414
@@ -2001,7 +2001,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2550.0,
                         "y": 62.27237,
                         "z": 368.33414
@@ -2040,7 +2040,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2570.0,
                         "y": 62.27237,
                         "z": 368.33414
@@ -2079,7 +2079,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2570.0,
                         "y": 62.27575,
                         "z": 388.33414
@@ -2118,7 +2118,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2559.59302,
                         "y": 62.81916,
                         "z": 377.83388
@@ -2157,7 +2157,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2900.0,
                         "y": -50.0,
                         "z": 402.0
@@ -2196,7 +2196,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2900.0,
                         "y": -50.0,
                         "z": 400.0
@@ -4246,7 +4246,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1153.8588,
                         "y": -649.54218,
                         "z": -51.3403
@@ -4287,7 +4287,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1620.08775,
                         "y": -713.98932,
                         "z": -15.32453
@@ -4328,7 +4328,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 528.63054,
                         "y": -397.30524,
                         "z": -76.16703
@@ -4369,7 +4369,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 500.10603,
                         "y": -396.68277,
                         "z": -71.45568
@@ -4410,7 +4410,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 554.02576,
                         "y": -396.72922,
                         "z": -71.78716
@@ -4465,7 +4465,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1789.14219,
                         "y": -614.50687,
                         "z": -32.51322
@@ -4498,7 +4498,7 @@
                         "id": null,
                         "locations": []
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2663.98012,
                         "y": -388.39706,
                         "z": 439.76085
@@ -4539,7 +4539,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2664.47886,
                         "y": -387.82775,
                         "z": 438.13713
@@ -4580,7 +4580,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2657.55085,
                         "y": -397.25248,
                         "z": 459.75276
@@ -4621,7 +4621,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 211.09558,
                         "y": -355.48715,
                         "z": 0.0
@@ -4669,7 +4669,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 88.15098,
                         "y": -307.28771,
                         "z": 0.0
@@ -4710,7 +4710,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 216.84085,
                         "y": 323.56217,
                         "z": -10.95767
@@ -4751,7 +4751,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 93.33069,
                         "y": 342.9713,
                         "z": 0.0
@@ -4792,7 +4792,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2716.0043,
                         "y": -569.48738,
                         "z": 260.74225
@@ -4831,7 +4831,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 357.68491,
                         "y": -485.63231,
                         "z": 570.91416
@@ -4870,7 +4870,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 456.22347,
                         "y": -37.55107,
                         "z": 556.0853
@@ -4909,7 +4909,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 464.99795,
                         "y": -203.93592,
                         "z": 603.35335
@@ -4948,7 +4948,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1995.01205,
                         "y": 177.17412,
                         "z": -65.0272
@@ -4987,7 +4987,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 450.66162,
                         "y": -287.31276,
                         "z": 616.13017
@@ -5026,7 +5026,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 368.79641,
                         "y": -545.7435,
                         "z": 544.63099
@@ -5065,7 +5065,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 462.01222,
                         "y": -31.03183,
                         "z": 557.77008
@@ -5104,7 +5104,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 469.2737,
                         "y": -282.20534,
                         "z": 608.96941
@@ -5143,7 +5143,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 492.05434,
                         "y": -341.13908,
                         "z": 444.83077
@@ -5182,7 +5182,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 359.54763,
                         "y": -475.90036,
                         "z": 571.37522
@@ -5221,7 +5221,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 534.01522,
                         "y": -343.9006,
                         "z": 466.30811
@@ -5260,7 +5260,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 513.32548,
                         "y": -110.26651,
                         "z": 545.66236
@@ -5299,7 +5299,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 398.15583,
                         "y": -375.52121,
                         "z": 596.96085
@@ -5338,7 +5338,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 434.91241,
                         "y": -312.33868,
                         "z": 615.09362
@@ -5377,7 +5377,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1866.03763,
                         "y": -579.92657,
                         "z": -34.68152
@@ -5416,7 +5416,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 405.851,
                         "y": -314.9121,
                         "z": 600.08462
@@ -5455,7 +5455,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 370.61334,
                         "y": -556.2812,
                         "z": 540.68796
@@ -5494,7 +5494,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1824.22986,
                         "y": -617.87181,
                         "z": -36.78654
@@ -5533,7 +5533,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 343.75031,
                         "y": -360.76271,
                         "z": 697.83209
@@ -5572,7 +5572,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 521.81556,
                         "y": -215.49486,
                         "z": 621.96692
@@ -5611,7 +5611,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 438.27094,
                         "y": -293.76958,
                         "z": 619.84974
@@ -5650,7 +5650,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1804.53995,
                         "y": -540.08254,
                         "z": -48.15306
@@ -5689,7 +5689,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 331.3589,
                         "y": -343.05596,
                         "z": 667.01951
@@ -5728,7 +5728,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2482.45227,
                         "y": -399.99634,
                         "z": 386.32587
@@ -5767,7 +5767,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 344.07524,
                         "y": -545.16185,
                         "z": 544.80133
@@ -5806,7 +5806,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 529.42015,
                         "y": -2.07012,
                         "z": 311.21659
@@ -5845,7 +5845,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 517.18049,
                         "y": -142.5899,
                         "z": 541.08546
@@ -5884,7 +5884,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 248.26765,
                         "y": -415.63502,
                         "z": 186.7923
@@ -5923,7 +5923,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 247.17595,
                         "y": -412.23091,
                         "z": 124.74949
@@ -5962,7 +5962,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 541.98183,
                         "y": -85.61099,
                         "z": 604.10729
@@ -6001,7 +6001,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -306.57644,
                         "y": -410.54115,
                         "z": 511.6054
@@ -6040,7 +6040,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -128.57982,
                         "y": 497.22315,
                         "z": 548.86006
@@ -6079,7 +6079,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 539.59176,
                         "y": -78.82058,
                         "z": 608.4972
@@ -6118,7 +6118,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 348.72851,
                         "y": -380.79792,
                         "z": 665.81868
@@ -6157,7 +6157,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2655.51786,
                         "y": 380.33336,
                         "z": 319.10096
@@ -6196,7 +6196,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 363.86904,
                         "y": -399.57079,
                         "z": 675.72462
@@ -6235,7 +6235,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 350.0,
                         "y": -400.0,
                         "z": 300.0
@@ -6274,7 +6274,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 350.0,
                         "y": -380.0,
                         "z": 300.0
@@ -6313,7 +6313,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 350.0,
                         "y": -360.0,
                         "z": 300.0
@@ -6352,7 +6352,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2620.93288,
                         "y": -108.39573,
                         "z": 493.92486
@@ -6391,7 +6391,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2562.15981,
                         "y": -216.2935,
                         "z": 367.66469
@@ -6430,7 +6430,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2504.07178,
                         "y": -318.74881,
                         "z": 355.50511
@@ -6474,7 +6474,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.60133,
                         "y": 400.23217,
                         "z": 504.1847
@@ -6513,7 +6513,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.72591,
                         "y": -599.63518,
                         "z": 556.0969
@@ -6552,7 +6552,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 449.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -6591,7 +6591,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2459.85228,
                         "y": 400.34996,
                         "z": 133.34052
@@ -6630,7 +6630,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.60133,
                         "y": -401.23289,
                         "z": 504.1847
@@ -6669,7 +6669,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.66595,
                         "y": 401.23289,
                         "z": 504.24932
@@ -6708,7 +6708,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2580.4168,
                         "y": 154.3811,
                         "z": 59.89137
@@ -6747,7 +6747,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1991.29764,
                         "y": -381.21699,
                         "z": -62.56874
@@ -6786,7 +6786,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1759.1523,
                         "y": 287.4831,
                         "z": 120.01529
@@ -6825,7 +6825,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1777.64356,
                         "y": 557.98855,
                         "z": 119.81501
@@ -6864,7 +6864,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 712.0006,
                         "y": -295.3491,
                         "z": 534.89992
@@ -6903,7 +6903,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 698.427,
                         "y": -244.02981,
                         "z": 518.56229
@@ -6942,7 +6942,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 580.6775,
                         "y": -450.59617,
                         "z": 455.92867
@@ -6981,7 +6981,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 580.67773,
                         "y": -228.67175,
                         "z": 455.94301
@@ -7020,7 +7020,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 504.97701,
                         "y": 10.98073,
                         "z": 462.89511
@@ -7059,7 +7059,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 580.67773,
                         "y": -199.80235,
                         "z": 441.94297
@@ -7098,7 +7098,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 676.15492,
                         "y": -367.78296,
                         "z": 557.13779
@@ -7137,7 +7137,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 621.17773,
                         "y": -116.82698,
                         "z": 430.319
@@ -7176,7 +7176,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 580.31682,
                         "y": -195.0797,
                         "z": 154.85768
@@ -7215,7 +7215,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 573.98063,
                         "y": -195.13744,
                         "z": 168.44569
@@ -7254,7 +7254,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 591.22566,
                         "y": -638.70073,
                         "z": 443.96282
@@ -7293,7 +7293,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 600.32773,
                         "y": 630.41632,
                         "z": 439.519
@@ -7332,7 +7332,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1864.63474,
                         "y": 550.0,
                         "z": 378.9212
@@ -7371,7 +7371,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 850.71878,
                         "y": -3.00072,
                         "z": 2.8E-4
@@ -7410,7 +7410,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1158.68836,
                         "y": 5.0,
                         "z": -12.0
@@ -7449,7 +7449,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 238.04439,
                         "y": 367.61385,
                         "z": 578.06601
@@ -7488,7 +7488,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 550.67738,
                         "y": -313.32851,
                         "z": 588.15568
@@ -7527,7 +7527,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2529.07632,
                         "y": -350.0,
                         "z": 56.32201
@@ -7566,7 +7566,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2546.72726,
                         "y": 394.66318,
                         "z": 33.63576
@@ -7605,7 +7605,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 20.0,
                         "y": -482.78329,
                         "z": 48.42878
@@ -7644,7 +7644,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 20.0,
                         "y": 485.84415,
                         "z": 58.14638
@@ -7683,7 +7683,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2500.0,
                         "y": 466.57632,
                         "z": -2.897
@@ -7722,7 +7722,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 0.0,
                         "y": 489.79512,
                         "z": 3.13708
@@ -7761,7 +7761,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2500.0,
                         "y": -478.98171,
                         "z": 55.08814
@@ -7800,7 +7800,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 0.0,
                         "y": -472.30759,
                         "z": 19.1759
@@ -7839,7 +7839,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 758.46796,
                         "y": -304.54064,
                         "z": 578.97486
@@ -7878,7 +7878,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -434.25443,
                         "y": -87.91155,
                         "z": 123.80452
@@ -7917,7 +7917,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 503.55889,
                         "y": 0.0,
                         "z": 404.04863
@@ -7956,7 +7956,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2719.52708,
                         "y": -412.01347,
                         "z": 501.9637
@@ -7995,7 +7995,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -274.50906,
                         "z": 549.11522
@@ -8034,7 +8034,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -308.94239,
                         "z": 634.62854
@@ -8073,7 +8073,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -349.01661,
                         "z": 551.09136
@@ -8112,7 +8112,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -262.66983,
                         "z": 572.61814
@@ -8151,7 +8151,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -314.32103,
                         "z": 535.17928
@@ -8190,7 +8190,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -365.87679,
                         "z": 582.74072
@@ -8229,7 +8229,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -349.51212,
                         "z": 639.42278
@@ -8268,7 +8268,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 570.67773,
                         "y": -278.63088,
                         "z": 638.66915
@@ -8307,7 +8307,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -91.3512,
                         "y": -575.97268,
                         "z": 518.1192
@@ -8346,7 +8346,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -91.35085,
                         "y": 575.97196,
                         "z": 518.11948
@@ -8385,7 +8385,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -341.53356,
                         "y": -594.26791,
                         "z": 340.7394
@@ -8424,7 +8424,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -341.5339,
                         "y": 594.26719,
                         "z": 340.73912
@@ -8463,7 +8463,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2903.61394,
                         "y": -599.74528,
                         "z": 336.77658
@@ -8502,7 +8502,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -12.74403,
                         "y": -350.0,
                         "z": 82.35691
@@ -8541,7 +8541,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -38.01599,
                         "y": -350.0,
                         "z": 72.78993
@@ -8580,7 +8580,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -5.67923,
                         "y": 350.0,
                         "z": 72.9387
@@ -8619,7 +8619,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2554.51367,
                         "y": -410.92595,
                         "z": 87.19193
@@ -8658,7 +8658,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2491.1932,
                         "y": 344.25607,
                         "z": 114.15771
@@ -8697,7 +8697,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 18.21006,
                         "y": 352.33011,
                         "z": 85.91306
@@ -8736,7 +8736,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 332.42286,
                         "y": -252.09863,
                         "z": 611.2731
@@ -8775,7 +8775,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 442.66331,
                         "y": -0.00126,
                         "z": 252.48628
@@ -8814,7 +8814,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2530.4916,
                         "y": -348.04893,
                         "z": 87.82463
@@ -8853,7 +8853,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2540.6858,
                         "y": 376.98048,
                         "z": 81.02642
@@ -8892,7 +8892,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 250.0,
                         "y": 22.8854,
                         "z": 528.90394
@@ -8931,7 +8931,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 813.15631,
                         "y": -37.52087,
                         "z": 1074.67216
@@ -8970,7 +8970,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1654.1424,
                         "y": -527.29396,
                         "z": 998.64085
@@ -9009,7 +9009,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 3014.4046,
                         "y": -32.05173,
                         "z": 482.93226
@@ -9048,7 +9048,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2468.60355,
                         "y": -422.12978,
                         "z": 838.77803
@@ -9087,7 +9087,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.72591,
                         "y": 600.30537,
                         "z": 556.0969
@@ -9126,7 +9126,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.57538,
                         "y": -400.43682,
                         "z": 504.16966
@@ -9165,7 +9165,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 447.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -9204,7 +9204,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2459.85228,
                         "y": 399.34996,
                         "z": 133.34052
@@ -9243,7 +9243,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.72591,
                         "y": -600.3068,
                         "z": 556.0969
@@ -9282,7 +9282,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2459.85228,
                         "y": -400.3514,
                         "z": 133.34052
@@ -9321,7 +9321,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1993.12828,
                         "y": -382.85381,
                         "z": -60.31874
@@ -9360,7 +9360,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1778.18818,
                         "y": 540.78503,
                         "z": 106.68194
@@ -9399,7 +9399,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2744.58966,
                         "y": -401.56359,
                         "z": 490.90177
@@ -9438,7 +9438,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 507.05624,
                         "y": 416.6013,
                         "z": 548.12098
@@ -9477,7 +9477,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2434.8169,
                         "y": -549.71212,
                         "z": 676.81185
@@ -9516,7 +9516,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2470.05757,
                         "y": 440.30443,
                         "z": 840.47968
@@ -9555,7 +9555,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 451.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -9614,7 +9614,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 448.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -9653,7 +9653,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 504.61108,
                         "y": 23.62359,
                         "z": 404.6
@@ -9692,7 +9692,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 504.58496,
                         "y": 441.5632,
                         "z": 554.33539
@@ -9731,7 +9731,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.78184,
                         "y": 50.0,
                         "z": 403.18264
@@ -9770,7 +9770,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 246.40303,
                         "y": 73.10078,
                         "z": 500.41219
@@ -9809,7 +9809,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 196.8158,
                         "y": -399.99994,
                         "z": 557.07156
@@ -9858,7 +9858,7 @@
                             "segmentOffsetLength": 78.75810578286
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -9891,7 +9891,7 @@
                             "segmentOffsetLength": 130.39028816799998
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -9924,7 +9924,7 @@
                             "segmentOffsetLength": 258.661281
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -9957,7 +9957,7 @@
                             "segmentOffsetLength": 266.511887
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -9990,7 +9990,7 @@
                             "segmentOffsetLength": 233.501227
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10023,7 +10023,7 @@
                             "segmentOffsetLength": 762.83217
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10056,7 +10056,7 @@
                             "segmentOffsetLength": 89.198101
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10089,7 +10089,7 @@
                             "segmentOffsetLength": 90.070765
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10122,7 +10122,7 @@
                             "segmentOffsetLength": 32.743669
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10156,7 +10156,7 @@
                             "segmentOffsetLength": 290.894445
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10189,7 +10189,7 @@
                             "segmentOffsetLength": 68.212156
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10222,7 +10222,7 @@
                             "segmentOffsetLength": 113.888475
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10255,7 +10255,7 @@
                             "segmentOffsetLength": 0.0
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10288,7 +10288,7 @@
                             "segmentOffsetLength": 208.41627
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10321,7 +10321,7 @@
                             "segmentOffsetLength": 142.957047
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10354,7 +10354,7 @@
                             "segmentOffsetLength": 163.283972
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10387,7 +10387,7 @@
                             "segmentOffsetLength": 99.467241
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10420,7 +10420,7 @@
                             "segmentOffsetLength": 105.763378
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10453,7 +10453,7 @@
                             "segmentOffsetLength": 122.566613
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10486,7 +10486,7 @@
                             "segmentOffsetLength": 108.276178
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10519,7 +10519,7 @@
                             "segmentOffsetLength": 104.829523
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10552,7 +10552,7 @@
                             "segmentOffsetLength": 264.746298
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10585,7 +10585,7 @@
                             "segmentOffsetLength": 198.592469
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10618,7 +10618,7 @@
                             "segmentOffsetLength": 236.885647
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10651,7 +10651,7 @@
                             "segmentOffsetLength": 195.23261
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10684,7 +10684,7 @@
                             "segmentOffsetLength": 76.278818
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10717,7 +10717,7 @@
                             "segmentOffsetLength": 128.41997
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10750,7 +10750,7 @@
                             "segmentOffsetLength": 119.464244
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10783,7 +10783,7 @@
                             "segmentOffsetLength": 106.620974
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10816,7 +10816,7 @@
                             "segmentOffsetLength": 108.395335
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10849,7 +10849,7 @@
                             "segmentOffsetLength": 128.145793
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10882,7 +10882,7 @@
                             "segmentOffsetLength": 105.406357
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10915,7 +10915,7 @@
                             "segmentOffsetLength": 38.597906
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10948,7 +10948,7 @@
                             "segmentOffsetLength": 207.337143
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -10981,7 +10981,7 @@
                             "segmentOffsetLength": 154.538013
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11014,7 +11014,7 @@
                             "segmentOffsetLength": 123.833853
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11047,7 +11047,7 @@
                             "segmentOffsetLength": 130.33498
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11080,7 +11080,7 @@
                             "segmentOffsetLength": 76.016745
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11113,7 +11113,7 @@
                             "segmentOffsetLength": 61.785777
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11146,7 +11146,7 @@
                             "segmentOffsetLength": 94.186817
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11179,7 +11179,7 @@
                             "segmentOffsetLength": 55.259429
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11212,7 +11212,7 @@
                             "segmentOffsetLength": 59.926661
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11245,7 +11245,7 @@
                             "segmentOffsetLength": 65.890215
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11278,7 +11278,7 @@
                             "segmentOffsetLength": 69.557898
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11311,7 +11311,7 @@
                             "segmentOffsetLength": 135.289883
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11344,7 +11344,7 @@
                             "segmentOffsetLength": 57.308668
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11377,7 +11377,7 @@
                             "segmentOffsetLength": 53.987495
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11410,7 +11410,7 @@
                             "segmentOffsetLength": 222.559315
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11443,7 +11443,7 @@
                             "segmentOffsetLength": 453.492617
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11476,7 +11476,7 @@
                             "segmentOffsetLength": 325.69529
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11509,7 +11509,7 @@
                             "segmentOffsetLength": 483.962097
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11542,7 +11542,7 @@
                             "segmentOffsetLength": 146.872363
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11575,7 +11575,7 @@
                             "segmentOffsetLength": 163.63924
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11608,7 +11608,7 @@
                             "segmentOffsetLength": 302.473741
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11641,7 +11641,7 @@
                             "segmentOffsetLength": 194.458683
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11674,7 +11674,7 @@
                             "segmentOffsetLength": 146.75801
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11707,7 +11707,7 @@
                             "segmentOffsetLength": 64.948605
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11740,7 +11740,7 @@
                             "segmentOffsetLength": 95.648932
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11773,7 +11773,7 @@
                             "segmentOffsetLength": 101.098451
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11806,7 +11806,7 @@
                             "segmentOffsetLength": 473.90239
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11839,7 +11839,7 @@
                             "segmentOffsetLength": 295.031396
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11872,7 +11872,7 @@
                             "segmentOffsetLength": 316.601269
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11905,7 +11905,7 @@
                             "segmentOffsetLength": 174.208962
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11938,7 +11938,7 @@
                             "segmentOffsetLength": 246.90603
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -11971,7 +11971,7 @@
                             "segmentOffsetLength": 197.771786
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12005,7 +12005,7 @@
                             "segmentOffsetLength": 894.320494
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12038,7 +12038,7 @@
                             "segmentOffsetLength": 652.916045
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12071,7 +12071,7 @@
                             "segmentOffsetLength": 156.17465866912002
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12108,7 +12108,7 @@
                             "segmentOffsetLength": 1532.174291
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12141,7 +12141,7 @@
                             "segmentOffsetLength": 778.811069
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12174,7 +12174,7 @@
                             "segmentOffsetLength": 455.808683
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12207,7 +12207,7 @@
                             "segmentOffsetLength": 737.556115
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12240,7 +12240,7 @@
                             "segmentOffsetLength": 208.64409000947998
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12273,7 +12273,7 @@
                             "segmentOffsetLength": 199.8405449523
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12306,7 +12306,7 @@
                             "segmentOffsetLength": 144.978669
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12339,7 +12339,7 @@
                             "segmentOffsetLength": 92.879075
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12372,7 +12372,7 @@
                             "segmentOffsetLength": 120.819483
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12405,7 +12405,7 @@
                             "segmentOffsetLength": 252.316284
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12438,7 +12438,7 @@
                             "segmentOffsetLength": 278.169457
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12471,7 +12471,7 @@
                             "segmentOffsetLength": 447.935676
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12504,7 +12504,7 @@
                             "segmentOffsetLength": 88.757529
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12538,7 +12538,7 @@
                             "segmentOffsetLength": 620.155301
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12571,7 +12571,7 @@
                             "segmentOffsetLength": 140.3918
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12605,7 +12605,7 @@
                             "segmentOffsetLength": 113.963193
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12638,7 +12638,7 @@
                             "segmentOffsetLength": 295.141098
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12671,7 +12671,7 @@
                             "segmentOffsetLength": 252.66240025388996
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12704,7 +12704,7 @@
                             "segmentOffsetLength": 372.265367
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12737,7 +12737,7 @@
                             "segmentOffsetLength": 1105.4133916222102
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12770,7 +12770,7 @@
                             "segmentOffsetLength": 67.609886
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12803,7 +12803,7 @@
                             "segmentOffsetLength": 858.022391
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12836,7 +12836,7 @@
                             "segmentOffsetLength": 549.966708
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12869,7 +12869,7 @@
                             "segmentOffsetLength": 269.413747
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12902,7 +12902,7 @@
                             "segmentOffsetLength": 273.956766
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12935,7 +12935,7 @@
                             "segmentOffsetLength": 524.771662
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -12968,7 +12968,7 @@
                             "segmentOffsetLength": 172.675929
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13001,7 +13001,7 @@
                             "segmentOffsetLength": 147.037155
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13034,7 +13034,7 @@
                             "segmentOffsetLength": 241.81984499408998
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13067,7 +13067,7 @@
                             "segmentOffsetLength": 762.83217
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13100,7 +13100,7 @@
                             "segmentOffsetLength": 453.492617
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13133,7 +13133,7 @@
                             "segmentOffsetLength": 222.559315
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13166,7 +13166,7 @@
                             "segmentOffsetLength": 325.69529
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13199,7 +13199,7 @@
                             "segmentOffsetLength": 473.96344007598003
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13233,7 +13233,7 @@
                             "segmentOffsetLength": 620.155301
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13266,7 +13266,7 @@
                             "segmentOffsetLength": 67.158761
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13299,7 +13299,7 @@
                             "segmentOffsetLength": 113.963193
                         }
                     },
-                    "positionOffset": null,
+                    "graphicPosition": null,
                     "rotation": null,
                     "buildingBlockId": "unmodified73ab2671-7a52-4228-9090-d202e0a18104",
                     "viewProperties": {
@@ -13322,7 +13322,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2459.85228,
                         "y": 400.34996,
                         "z": 133.34052
@@ -13361,7 +13361,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.60133,
                         "y": -401.23289,
                         "z": 504.1847
@@ -13400,7 +13400,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 451.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -13439,7 +13439,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.72591,
                         "y": -600.3068,
                         "z": 556.0969
@@ -13478,7 +13478,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 447.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -13537,7 +13537,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 448.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -13576,7 +13576,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 246.40303,
                         "y": 73.10078,
                         "z": 500.41219
@@ -13615,7 +13615,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1778.18818,
                         "y": 540.78503,
                         "z": 106.68194
@@ -13654,7 +13654,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 196.8158,
                         "y": -399.99994,
                         "z": 557.07156
@@ -13698,7 +13698,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.60133,
                         "y": 400.23217,
                         "z": 504.1847
@@ -13737,7 +13737,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1777.64356,
                         "y": 557.98855,
                         "z": 119.81501
@@ -13776,7 +13776,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.72591,
                         "y": 600.30537,
                         "z": 556.0969
@@ -13815,7 +13815,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1993.12828,
                         "y": -382.85381,
                         "z": -60.31874
@@ -13854,7 +13854,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.66595,
                         "y": 401.23289,
                         "z": 504.24932
@@ -13893,7 +13893,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2580.4168,
                         "y": 154.3811,
                         "z": 59.89137
@@ -13932,7 +13932,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 494.72591,
                         "y": -599.63518,
                         "z": 556.0969
@@ -13971,7 +13971,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1759.1523,
                         "y": 287.4831,
                         "z": 120.01529
@@ -14010,7 +14010,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": -223.57538,
                         "y": -400.43682,
                         "z": 504.16966
@@ -14049,7 +14049,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2459.85228,
                         "y": 399.34996,
                         "z": 133.34052
@@ -14088,7 +14088,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 449.91095,
                         "y": -114.74054,
                         "z": 617.33549
@@ -14127,7 +14127,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 1991.29764,
                         "y": -381.21699,
                         "z": -62.56874
@@ -14166,7 +14166,7 @@
                             }
                         ]
                     },
-                    "positionOffset": {
+                    "graphicPosition": {
                         "x": 2459.85228,
                         "y": -400.3514,
                         "z": 133.34052

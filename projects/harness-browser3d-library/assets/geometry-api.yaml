@@ -227,7 +227,7 @@ components:
           type: integer
         placement:
           $ref: "#/components/schemas/Placement"
-        positionOffset:
+        graphicPosition:
           $ref: "#/components/schemas/Point"
         rotation:
           $ref: "#/components/schemas/Rotation"
