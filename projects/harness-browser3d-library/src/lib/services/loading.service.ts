@@ -17,13 +17,11 @@
 
 import { Injectable } from '@angular/core';
 import { BufferGeometry, Mesh, Scene } from 'three';
-import {
-  mergeBufferGeometries,
-  mergeVertices,
-} from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 import { Graphic } from '../../api/alias';
 import { LoadedGeometry } from '../structs/loaded-geometries';
+import { GeometryUtils } from '../utils/geometry-utils';
 
 @Injectable()
 export class LoadingService {
@@ -61,7 +59,7 @@ export class LoadingService {
 
       const geos: BufferGeometry[] = this.traverseLoadedData(loaded);
       if (geos.length > 0) {
-        const geo = mergeVertices(mergeBufferGeometries(geos, false));
+        const geo = mergeVertices(GeometryUtils.mergeGeos(geos));
         geo.name = graphic.partNumber;
         const loadedGeo = new LoadedGeometry(geo);
         geo.applyMatrix4(loadedGeo.offsetMatrix());

@@ -239,14 +239,8 @@ export class GeometryService {
         position.add(junctionPoint);
         break;
       case GeometryModeAPIEnum.loaded:
-        rotation =
-          connector.rotation !== undefined
-            ? HarnessUtils.computeQuaternionFromRotation(connector.rotation!)
-            : new Quaternion();
-        position =
-          connector.graphicPosition !== undefined
-            ? HarnessUtils.convertPointToVector(connector.graphicPosition!)
-            : new Vector3(0, 0, 0);
+        position = this.readGraphicPosition(connector);
+        rotation = this.readRotation(connector);
         break;
     }
 
@@ -267,20 +261,38 @@ export class GeometryService {
   }
 
   private processFixing(fixing: Occurrence): BufferGeometry {
-    const rotation =
-      fixing.rotation !== undefined
-        ? HarnessUtils.computeQuaternionFromRotation(fixing.rotation!)
-        : new Quaternion();
-
-    const geos = getOnPointSegmentLocations(fixing).map((location) =>
-      this.createFixingGeo(fixing, location, rotation)
+    let geo = GeometryUtils.createGeo(
+      fixing,
+      this.defaultFixings,
+      this.settingsService,
+      this.loadingService
     );
 
-    return GeometryUtils.mergeGeos(geos);
+    let geos: BufferGeometry[] = [];
+    if (this.settingsService.geometryMode === GeometryModeAPIEnum.default) {
+      geos = getOnPointSegmentLocations(fixing).map((location) =>
+        this.createFixingDefaultGeo(
+          geo.clone(),
+          location,
+          this.readRotation(fixing)
+        )
+      );
+      geo.dispose();
+      geo = GeometryUtils.mergeGeos(geos);
+    } else {
+      this.positionService.positionGeometry(
+        this.readGraphicPosition(fixing),
+        this.readRotation(fixing),
+        geo
+      );
+    }
+
+    this.buildingBlockService.applyBuildingBlock(fixing.buildingBlockId, geo);
+    return geo;
   }
 
-  private createFixingGeo(
-    fixing: Occurrence,
+  private createFixingDefaultGeo(
+    geo: BufferGeometry,
     location: SegmentLocation,
     rotation: Quaternion
   ) {
@@ -296,20 +308,11 @@ export class GeometryService {
       ratio = 1 - ratio;
     }
 
-    const geo = GeometryUtils.createGeo(
-      fixing,
-      this.defaultFixings,
-      this.settingsService,
-      this.loadingService
-    );
-
     this.positionService.positionGeometry(
       this.curves.get(location.segmentId)!.getPoint(ratio),
       rotation,
       geo
     );
-
-    this.buildingBlockService.applyBuildingBlock(fixing.buildingBlockId, geo);
 
     return geo;
   }
@@ -459,11 +462,6 @@ export class GeometryService {
   }
 
   private processOther(other: Occurrence): BufferGeometry {
-    const rotation =
-      other.rotation !== undefined
-        ? HarnessUtils.computeQuaternionFromRotation(other.rotation!)
-        : new Quaternion();
-
     let position: Vector3 | undefined = undefined;
     switch (this.settingsService.geometryMode) {
       case GeometryModeAPIEnum.default:
@@ -471,10 +469,7 @@ export class GeometryService {
         position = HarnessUtils.convertPointToVector(node.position);
         break;
       case GeometryModeAPIEnum.loaded:
-        position =
-          other.graphicPosition !== undefined
-            ? HarnessUtils.convertPointToVector(other.graphicPosition!)
-            : new Vector3(0, 0, 0);
+        position = this.readGraphicPosition(other);
         break;
     }
 
@@ -484,9 +479,26 @@ export class GeometryService {
       this.settingsService,
       this.loadingService
     );
-    this.positionService.positionGeometry(position, rotation, geo);
+    this.positionService.positionGeometry(
+      position,
+      this.readRotation(other),
+      geo
+    );
     this.buildingBlockService.applyBuildingBlock(other.buildingBlockId, geo);
 
     return geo;
+  }
+
+  private readGraphicPosition(occurrence: Occurrence): Vector3 {
+    return occurrence.graphicPosition !== undefined &&
+      occurrence.graphicPosition !== null
+      ? HarnessUtils.convertPointToVector(occurrence.graphicPosition)
+      : new Vector3(0, 0, 0);
+  }
+
+  private readRotation(occurrence: Occurrence): Quaternion {
+    return occurrence.rotation !== undefined && occurrence.rotation !== null
+      ? HarnessUtils.computeQuaternionFromRotation(occurrence.rotation)
+      : new Quaternion();
   }
 }

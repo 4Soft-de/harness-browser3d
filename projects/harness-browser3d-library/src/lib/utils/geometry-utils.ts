@@ -49,6 +49,7 @@ export class GeometryUtils {
     }
     const geo = mergeBufferGeometries(geos);
     if (geo) {
+      geos.forEach((geo) => geo.dispose());
       return geo;
     } else {
       console.error('geos could not be merged');
