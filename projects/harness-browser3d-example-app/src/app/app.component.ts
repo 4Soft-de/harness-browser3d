@@ -20,6 +20,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
 } from '@angular/core';
 import {
   GeometryModeAPIEnum,
@@ -43,7 +44,7 @@ import {
   HarnessSelectionStruct as BordnetSelectionStruct,
   ViewSelectionStruct,
 } from '../structs';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Color } from 'three';
 
 type HarnessElement = Node | Segment | Occurrence;
@@ -54,7 +55,9 @@ type HarnessElement = Node | Segment | Occurrence;
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
+  subscription: Subscription = new Subscription();
+
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
   selectedIds$: Subject<string[]> = new Subject();
@@ -90,12 +93,22 @@ export class AppComponent implements AfterViewInit {
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this.selectableBordnets = [
-      new BordnetSelectionStruct('Example', dataService.exampleBordnet),
       new BordnetSelectionStruct('Debug', dataService.debugHarness),
       new BordnetSelectionStruct('Broken', dataService.brokenHarness),
       new BordnetSelectionStruct('Protection', dataService.protectionHarness),
       this.uploadedBordnet,
     ];
+    this.subscription.add(
+      dataService.exampleBordnet.subscribe((bordnet) =>
+        this.selectableBordnets.push(
+          new BordnetSelectionStruct('Example', bordnet)
+        )
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -192,10 +205,11 @@ export class AppComponent implements AfterViewInit {
 
   geometry(event: MatSlideToggleChange) {
     if (event.checked) {
-      this.settings = { geometryMode: GeometryModeAPIEnum.default };
-    } else {
       this.settings = { geometryMode: GeometryModeAPIEnum.loaded };
+    } else {
+      this.settings = { geometryMode: GeometryModeAPIEnum.default };
     }
+    this.clearScene();
   }
 
   set selectedBordnet(selectedHarness: BordnetSelectionStruct | undefined) {
