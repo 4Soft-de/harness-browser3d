@@ -19,6 +19,7 @@ export * from './lib/component/harness-browser3d-library.component';
 export * from './lib/component/harness-browser3d-library.module';
 export * from './api/alias';
 export * from './api/api';
+export * from './api/predicates';
 export * from './api/structs';
 export * from './views/default.view';
 export * from './views/diff.view';

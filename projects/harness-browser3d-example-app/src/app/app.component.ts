@@ -20,6 +20,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
 } from '@angular/core';
 import {
   GeometryModeAPIEnum,
@@ -32,13 +33,18 @@ import {
   Node,
   Segment,
   Occurrence,
+  Harness,
+  Bordnet,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ColorService } from '../services/color.service';
 import { DataService } from '../services/data.service';
-import { HarnessSelectionStruct, ViewSelectionStruct } from '../structs';
-import { Subject } from 'rxjs';
+import {
+  HarnessSelectionStruct as BordnetSelectionStruct,
+  ViewSelectionStruct,
+} from '../structs';
+import { Subject, Subscription } from 'rxjs';
 import { Color } from 'three';
 
 type HarnessElement = Node | Segment | Occurrence;
@@ -49,7 +55,9 @@ type HarnessElement = Node | Segment | Occurrence;
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit, OnDestroy {
+  subscription: Subscription = new Subscription();
+
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
   selectedIds$: Subject<string[]> = new Subject();
@@ -61,15 +69,15 @@ export class AppComponent implements AfterViewInit {
   };
 
   displayedColumns: string[] = ['actions', 'module'];
-  dataSource = new MatTableDataSource<HarnessElement>();
+  dataSource = this.initializeDataSource();
   selection: HarnessElement[] = [];
 
-  selectableHarnesses: HarnessSelectionStruct[];
-  uploadedHarness: HarnessSelectionStruct = new HarnessSelectionStruct(
+  selectableBordnets: BordnetSelectionStruct[];
+  uploadedBordnet: BordnetSelectionStruct = new BordnetSelectionStruct(
     'Uploaded'
   );
-  selectedHarnessInternal?: HarnessSelectionStruct;
-  addedHarnesses = 0;
+  selectedBordnetInternal?: BordnetSelectionStruct;
+  addedBordnets = 0;
 
   selectableViews: ViewSelectionStruct[] = [
     new ViewSelectionStruct(defaultView, 'Default'),
@@ -84,19 +92,27 @@ export class AppComponent implements AfterViewInit {
     public readonly dataService: DataService,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {
-    this.selectableHarnesses = [
-      new HarnessSelectionStruct('Debug', dataService.getDebugHarness()),
-      new HarnessSelectionStruct('Broken', dataService.getBrokenHarness()),
-      new HarnessSelectionStruct(
-        'Protection',
-        dataService.getProtectionHarness()
-      ),
-      this.uploadedHarness,
+    this.selectableBordnets = [
+      new BordnetSelectionStruct('Debug', dataService.debugHarness),
+      new BordnetSelectionStruct('Broken', dataService.brokenHarness),
+      new BordnetSelectionStruct('Protection', dataService.protectionHarness),
+      this.uploadedBordnet,
     ];
+    this.subscription.add(
+      dataService.exampleBordnet.subscribe((bordnet) =>
+        this.selectableBordnets.push(
+          new BordnetSelectionStruct('Example', bordnet)
+        )
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   ngAfterViewInit(): void {
-    this.selectedHarness = this.selectableHarnesses[0];
+    this.selectedBordnet = this.selectableBordnets[0];
   }
 
   applyFilter(event: Event) {
@@ -104,14 +120,14 @@ export class AppComponent implements AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  async uploadHarness(files: FileList | null) {
+  async uploadBordnet(files: FileList | null) {
     if (files) {
       const file = files.item(0);
       if (file) {
         try {
-          await this.dataService.parseData(file).then((harness) => {
-            this.uploadedHarness.harness = harness;
-            this.selectedHarness = this.uploadedHarness;
+          await this.dataService.parseData(file).then((bordnet) => {
+            this.uploadedBordnet.bordnet = bordnet;
+            this.selectedBordnet = this.uploadedBordnet;
             this.changeDetectorRef.detectChanges();
           });
         } catch (e) {
@@ -121,33 +137,31 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  private setTableData() {
-    if (!this.selectedHarness?.harness) {
-      this.dataSource = new MatTableDataSource<HarnessElement>([]);
-      return;
-    }
+  private initializeDataSource(data?: HarnessElement[]) {
+    const dataSource = new MatTableDataSource<HarnessElement>(data);
+    dataSource.filterPredicate = (module: HarnessElement, filter: string) =>
+      module.id.toLowerCase().includes(filter);
+    return dataSource;
+  }
 
-    const geometryData: HarnessElement[] = [
-      ...this.selectedHarness.harness.nodes,
-      ...this.selectedHarness.harness.segments,
-      ...this.selectedHarness.harness.occurrences,
-    ];
-
-    this.dataSource = new MatTableDataSource<HarnessElement>(geometryData);
-    this.dataSource.filterPredicate = function (
-      module: HarnessElement,
-      filter: string
-    ): boolean {
-      return module.id.toLowerCase().includes(filter);
-    };
+  private addTableData(bordnet?: Bordnet) {
+    const harnessElements = this.dataSource.data;
+    bordnet?.harnesses.forEach((harness: Harness) => {
+      harness.nodes.forEach((node) => harnessElements.push(node));
+      harness.segments.forEach((segment) => harnessElements.push(segment));
+      harness.occurrences.forEach((occurrence) =>
+        harnessElements.push(occurrence)
+      );
+    });
+    this.dataSource = this.initializeDataSource(harnessElements);
   }
 
   clearScene() {
-    this.selectedHarness = undefined;
+    this.selectedBordnet = undefined;
+    this.dataSource = this.initializeDataSource();
     this.resetSelection();
     this.api?.clear();
-    this.dataSource = new MatTableDataSource<HarnessElement>();
-    this.addedHarnesses = 0;
+    this.addedBordnets = 0;
   }
 
   toggleRowHighlighting(row: HarnessElement, event: MouseEvent) {
@@ -191,28 +205,29 @@ export class AppComponent implements AfterViewInit {
 
   geometry(event: MatSlideToggleChange) {
     if (event.checked) {
-      this.settings = { geometryMode: GeometryModeAPIEnum.default };
-    } else {
       this.settings = { geometryMode: GeometryModeAPIEnum.loaded };
+    } else {
+      this.settings = { geometryMode: GeometryModeAPIEnum.default };
     }
+    this.clearScene();
   }
 
-  set selectedHarness(selectedHarness: HarnessSelectionStruct | undefined) {
-    this.selectedHarnessInternal = selectedHarness;
-    this.selectedHarnessInternal?.harness?.buildingBlocks.forEach(
-      (buildingBlock) => {
+  set selectedBordnet(selectedHarness: BordnetSelectionStruct | undefined) {
+    this.selectedBordnetInternal = selectedHarness;
+    this.selectedBordnetInternal?.bordnet?.harnesses
+      .flatMap((harness) => harness.buildingBlocks)
+      .forEach((buildingBlock) => {
         if (!buildingBlock.position) {
           buildingBlock.position = { x: 0, y: 0, z: 0 };
         }
-        buildingBlock.position.z += this.addedHarnesses * 100;
-      }
-    );
-    this.setTableData();
-    this.addedHarnesses++;
+        buildingBlock.position.z += this.addedBordnets * 100;
+      });
+    this.addTableData(selectedHarness?.bordnet);
+    this.addedBordnets++;
   }
 
-  get selectedHarness(): HarnessSelectionStruct | undefined {
-    return this.selectedHarnessInternal;
+  get selectedBordnet(): BordnetSelectionStruct | undefined {
+    return this.selectedBordnetInternal;
   }
 
   set selectedView(selectedView: ViewSelectionStruct) {
@@ -241,7 +256,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   setColors() {
-    if (!this.selectedHarness?.harness) {
+    if (!this.selectedBordnet?.bordnet) {
       return;
     }
 
@@ -249,7 +264,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   resetColors() {
-    if (!this.selectedHarness?.harness) {
+    if (!this.selectedBordnet?.bordnet) {
       return;
     }
 

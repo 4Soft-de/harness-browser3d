@@ -30,6 +30,8 @@ import { EnableService } from './enable.service';
 import { CacheService } from './cache.service';
 import { Subscription } from 'rxjs';
 import { PreprocessService } from './preprocess.service';
+import { LoadingService } from './loading.service';
+import { GeometryModeAPIEnum } from '../../api/structs';
 
 @Injectable()
 export class HarnessService implements OnDestroy {
@@ -42,6 +44,7 @@ export class HarnessService implements OnDestroy {
     private readonly colorService: ColorService,
     private readonly enableService: EnableService,
     private readonly geometryService: GeometryService,
+    private readonly loadingService: LoadingService,
     private readonly mappingService: MappingService,
     private readonly preprocessService: PreprocessService,
     private readonly sceneService: SceneService,
@@ -60,28 +63,46 @@ export class HarnessService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  addHarness(harness: Harness): void {
-    if (this.loadedHarnesses.has(harness.id)) {
-      console.warn(`harness ${harness.id} has already been loaded`);
-      return;
+  public addHarnesses(harnesses: Harness[]): void {
+    const notLoadedHarnesses: Harness[] = [];
+    harnesses.forEach((harness) => {
+      if (this.loadedHarnesses.has(harness.id)) {
+        console.warn(`harness ${harness.id} has already been loaded`);
+      } else {
+        this.loadedHarnesses.add(harness.id);
+        notLoadedHarnesses.push(harness);
+      }
+    });
+
+    const preprocessedHarnesses =
+      this.preprocessService.preprocessHarnesses(notLoadedHarnesses);
+
+    if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
+      const graphics = preprocessedHarnesses.flatMap(
+        (harness) => harness.graphics ?? []
+      );
+      this.loadingService.loadGraphics(graphics);
     }
-    const preprocessedHarness = this.preprocessService.preprocess(harness);
-    this.loadedHarnesses.add(preprocessedHarness.id);
-    const harnessElementGeos =
-      this.geometryService.processHarness(preprocessedHarness);
+
+    const harnessElementGeos = this.geometryService.processHarnesses(
+      preprocessedHarnesses
+    );
+
     this.createHarnessElementMappings(harnessElementGeos);
     this.cacheService.addGeos(harnessElementGeos);
-    this.colorService.initializeDefaultColors(preprocessedHarness);
+    this.colorService.initializeDefaultColors(preprocessedHarnesses);
     this.selectionService.addGeos(harnessElementGeos);
     this.sceneService.replaceMesh();
-    this.enableService.enableHarness(preprocessedHarness);
-    this.viewService.setCurrentView(preprocessedHarness);
+    this.enableService.enableHarnesses(preprocessedHarnesses);
+    this.viewService.setCurrentView(preprocessedHarnesses);
+
     if (this.settingsService.addHarnessResetCamera) {
       this.cameraService.resetCamera();
     }
   }
 
   public clear(): void {
+    this.loadingService.clear();
     this.sceneService.removeMesh();
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();

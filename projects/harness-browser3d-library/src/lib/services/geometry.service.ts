@@ -69,27 +69,24 @@ export class GeometryService {
     private readonly positionService: PositionService,
     private readonly settingsService: SettingsService
   ) {
-    this.defaultNodes = this.defaultGeometryCreationService.node();
-    this.defaultConnectors =
-      this.defaultGeometryCreationService.connectorSizes();
-    this.defaultOthers = this.defaultGeometryCreationService.accessory();
-    this.defaultFixings = this.defaultGeometryCreationService.fixing();
+    this.defaultNodes = this.defaultGeometryCreationService.node;
+    this.defaultConnectors = this.defaultGeometryCreationService.connectorSizes;
+    this.defaultOthers = this.defaultGeometryCreationService.accessory;
+    this.defaultFixings = this.defaultGeometryCreationService.fixing;
   }
 
-  public processHarness(harness: Harness): Map<string, BufferGeometry> {
-    harness.nodes.forEach((node) => this.nodes.set(node.id, node));
-    harness.segments.forEach(this.cacheSegment.bind(this));
-
-    this.handleBlocks(harness);
-    this.loadGeometries(harness);
-
-    const geos = this.positionGeometries(harness);
-
-    this.nodes.clear();
-    this.segments.clear();
-    this.curves.clear();
-    this.segmentDirections.clear();
-
+  public processHarnesses(harnesses: Harness[]): Map<string, BufferGeometry> {
+    const geos = new Map<string, BufferGeometry>();
+    harnesses.forEach((harness) => {
+      harness.nodes.forEach((node) => this.nodes.set(node.id, node));
+      harness.segments.forEach(this.cacheSegment.bind(this));
+      this.handleBlocks(harness);
+      this.positionGeometries(harness, geos);
+      this.nodes.clear();
+      this.segments.clear();
+      this.curves.clear();
+      this.segmentDirections.clear();
+    });
     return geos;
   }
 
@@ -131,33 +128,25 @@ export class GeometryService {
     );
   }
 
-  private loadGeometries(harness: Harness): void {
-    if (
-      this.settingsService.geometryMode === GeometryModeAPIEnum.loaded &&
-      harness.graphics
-    ) {
-      this.loadingService.parseGeometryData(harness.graphics);
-    }
-  }
-
-  private positionGeometries(harness: Harness): Map<string, BufferGeometry> {
-    const harnessElementGeos: Map<string, BufferGeometry> = new Map();
+  private positionGeometries(
+    harness: Harness,
+    result: Map<string, BufferGeometry>
+  ): void {
     harness.nodes.forEach((node) => {
-      harnessElementGeos.set(node.id, this.processNode(node));
+      result.set(node.id, this.processNode(node));
     });
     harness.segments.forEach((segment) => {
       const geo = this.processSegment(segment);
       if (geo) {
-        harnessElementGeos.set(segment.id, geo);
+        result.set(segment.id, geo);
       }
     });
     harness.occurrences.forEach((occurrence) => {
       const geo = this.processOccurrence(occurrence);
       if (geo) {
-        harnessElementGeos.set(occurrence.id, geo);
+        result.set(occurrence.id, geo);
       }
     });
-    return harnessElementGeos;
   }
 
   private processNode(node: Node): BufferGeometry {
@@ -219,12 +208,14 @@ export class GeometryService {
     }
 
     const node = this.nodes.get(getNodeId(connector)!)!;
-    const position = HarnessUtils.convertPointToVector(node.position);
+    let position: Vector3 | undefined = undefined;
 
     let rotation: Quaternion;
 
     switch (this.settingsService.geometryMode) {
       case GeometryModeAPIEnum.default:
+        position = HarnessUtils.convertPointToVector(node.position);
+
         const depth = (this.defaultConnectors[index] as BoxBufferGeometry)
           .parameters.depth;
 
@@ -248,15 +239,8 @@ export class GeometryService {
         position.add(junctionPoint);
         break;
       case GeometryModeAPIEnum.loaded:
-        rotation =
-          connector.rotation !== undefined
-            ? HarnessUtils.computeQuaternionFromRotation(connector.rotation!)
-            : new Quaternion();
-        const offset =
-          connector.positionOffset !== undefined
-            ? HarnessUtils.convertPointToVector(connector.positionOffset!)
-            : new Vector3(0, 0, 0);
-        position.add(offset);
+        position = this.readGraphicPosition(connector);
+        rotation = this.readRotation(connector);
         break;
     }
 
@@ -277,20 +261,38 @@ export class GeometryService {
   }
 
   private processFixing(fixing: Occurrence): BufferGeometry {
-    const rotation =
-      fixing.rotation !== undefined
-        ? HarnessUtils.computeQuaternionFromRotation(fixing.rotation!)
-        : new Quaternion();
-
-    const geos = getOnPointSegmentLocations(fixing).map((location) =>
-      this.createFixingGeo(fixing, location, rotation)
+    let geo = GeometryUtils.createGeo(
+      fixing,
+      this.defaultFixings,
+      this.settingsService,
+      this.loadingService
     );
 
-    return GeometryUtils.mergeGeos(geos);
+    let geos: BufferGeometry[] = [];
+    if (this.settingsService.geometryMode === GeometryModeAPIEnum.default) {
+      geos = getOnPointSegmentLocations(fixing).map((location) =>
+        this.createFixingDefaultGeo(
+          geo.clone(),
+          location,
+          this.readRotation(fixing)
+        )
+      );
+      geo.dispose();
+      geo = GeometryUtils.mergeGeos(geos);
+    } else {
+      this.positionService.positionGeometry(
+        this.readGraphicPosition(fixing),
+        this.readRotation(fixing),
+        geo
+      );
+    }
+
+    this.buildingBlockService.applyBuildingBlock(fixing.buildingBlockId, geo);
+    return geo;
   }
 
-  private createFixingGeo(
-    fixing: Occurrence,
+  private createFixingDefaultGeo(
+    geo: BufferGeometry,
     location: SegmentLocation,
     rotation: Quaternion
   ) {
@@ -306,20 +308,11 @@ export class GeometryService {
       ratio = 1 - ratio;
     }
 
-    const geo = GeometryUtils.createGeo(
-      fixing,
-      this.defaultFixings,
-      this.settingsService,
-      this.loadingService
-    );
-
     this.positionService.positionGeometry(
       this.curves.get(location.segmentId)!.getPoint(ratio),
       rotation,
       geo
     );
-
-    this.buildingBlockService.applyBuildingBlock(fixing.buildingBlockId, geo);
 
     return geo;
   }
@@ -469,18 +462,16 @@ export class GeometryService {
   }
 
   private processOther(other: Occurrence): BufferGeometry {
-    const rotation =
-      other.rotation !== undefined
-        ? HarnessUtils.computeQuaternionFromRotation(other.rotation!)
-        : new Quaternion();
-    const node = this.nodes.get(getNodeId(other)!)!;
-    const offset =
-      other.positionOffset !== undefined
-        ? HarnessUtils.convertPointToVector(other.positionOffset!)
-        : new Vector3(0, 0, 0);
-    const position = HarnessUtils.convertPointToVector(node.position).add(
-      offset
-    );
+    let position: Vector3 | undefined = undefined;
+    switch (this.settingsService.geometryMode) {
+      case GeometryModeAPIEnum.default:
+        const node = this.nodes.get(getNodeId(other)!)!;
+        position = HarnessUtils.convertPointToVector(node.position);
+        break;
+      case GeometryModeAPIEnum.loaded:
+        position = this.readGraphicPosition(other);
+        break;
+    }
 
     const geo = GeometryUtils.createGeo(
       other,
@@ -488,9 +479,26 @@ export class GeometryService {
       this.settingsService,
       this.loadingService
     );
-    this.positionService.positionGeometry(position, rotation, geo);
+    this.positionService.positionGeometry(
+      position,
+      this.readRotation(other),
+      geo
+    );
     this.buildingBlockService.applyBuildingBlock(other.buildingBlockId, geo);
 
     return geo;
+  }
+
+  private readGraphicPosition(occurrence: Occurrence): Vector3 {
+    return occurrence.graphicPosition !== undefined &&
+      occurrence.graphicPosition !== null
+      ? HarnessUtils.convertPointToVector(occurrence.graphicPosition)
+      : new Vector3(0, 0, 0);
+  }
+
+  private readRotation(occurrence: Occurrence): Quaternion {
+    return occurrence.rotation !== undefined && occurrence.rotation !== null
+      ? HarnessUtils.computeQuaternionFromRotation(occurrence.rotation)
+      : new Quaternion();
   }
 }

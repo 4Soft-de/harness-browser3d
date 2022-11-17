@@ -25,16 +25,19 @@ export class EnableService {
     this.applyEnabled();
   }
 
-  public enableHarness(harness: Harness) {
-    harness.nodes.forEach((node) =>
-      this.enabledHarnessElementsCache.set(node.id, true)
-    );
-    harness.segments.forEach((segment) =>
-      this.enabledHarnessElementsCache.set(segment.id, true)
-    );
-    harness.occurrences.forEach((occurrence) =>
-      this.enabledHarnessElementsCache.set(occurrence.id, true)
-    );
+  public enableHarnesses(harnesses: Harness[]) {
+    harnesses.forEach((harness) => {
+      harness.nodes.forEach((node) =>
+        this.enabledHarnessElementsCache.set(node.id, true)
+      );
+      harness.segments.forEach((segment) =>
+        this.enabledHarnessElementsCache.set(segment.id, true)
+      );
+      harness.occurrences.forEach((occurrence) =>
+        this.enabledHarnessElementsCache.set(occurrence.id, true)
+      );
+    });
+
     this.applyEnabled();
   }
 
