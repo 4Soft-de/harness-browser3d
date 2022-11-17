@@ -20,7 +20,6 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
-import { GeometryUtils } from '../utils/geometry-utils';
 import { BufferGeometry, Mesh, Scene, WebGLRenderer } from 'three';
 import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
@@ -81,8 +80,6 @@ export class SelectionService implements OnDestroy {
     if (selectedObjects.length > 0) {
       const selectGeo = mergeBufferGeometries(selectedObjects);
       this.selectMesh = new Mesh(selectGeo, GeometryMaterial.selection);
-      const selectCenter = GeometryUtils.centerGeometry(selectGeo);
-      this.selectMesh.position.copy(selectCenter);
       this.scene.add(this.selectMesh);
     }
     if (this.settingsService.zoomSelection) {

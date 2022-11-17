@@ -48,9 +48,9 @@ export class ViewService {
     }
   }
 
-  public setCurrentView(harness: Harness): void {
+  public setCurrentView(harnesses: Harness[]): void {
     dispose(this.cacheService.getBordnetMesh()?.material);
-    this.readProperties(harness);
+    this.readProperties(harnesses);
     this.applyMapping(
       this.currentView,
       this.cacheService.getBordnetMesh()?.material !== this.currentView.material
@@ -63,7 +63,7 @@ export class ViewService {
       if (setMaterial) {
         mesh.material = view.material;
       }
-      if (view.propertyKey) {
+      if (view.propertyKey && view.defaultValue && view.mapper) {
         const array = this.mappingService.applyMapping(
           view.defaultValue,
           this.propertiesCache.get(view.propertyKey) ??
@@ -89,10 +89,12 @@ export class ViewService {
     this.currentView = defaultView;
   }
 
-  private readProperties(harness: Harness): void {
-    harness.nodes.forEach(this.setProperty.bind(this));
-    harness.segments.forEach(this.setProperty.bind(this));
-    harness.occurrences.forEach(this.setProperty.bind(this));
+  private readProperties(harnesses: Harness[]): void {
+    harnesses.forEach((harness) => {
+      harness.nodes.forEach(this.setProperty.bind(this));
+      harness.segments.forEach(this.setProperty.bind(this));
+      harness.occurrences.forEach(this.setProperty.bind(this));
+    });
   }
 
   private setProperty(harnessElement: Node | Segment | Occurrence) {

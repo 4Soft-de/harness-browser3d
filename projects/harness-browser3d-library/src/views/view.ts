@@ -19,9 +19,9 @@ import { BufferAttribute, Material } from 'three';
 
 export class View {
   constructor(
-    public readonly propertyKey: string | undefined,
-    public readonly defaultValue: string,
     public readonly material: Material,
-    public readonly mapper: (properties: string[]) => BufferAttribute
+    public readonly propertyKey?: string | undefined,
+    public readonly defaultValue?: string,
+    public readonly mapper?: (properties: string[]) => BufferAttribute
   ) {}
 }

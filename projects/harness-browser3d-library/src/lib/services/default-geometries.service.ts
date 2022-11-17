@@ -18,6 +18,7 @@
 import { Injectable } from '@angular/core';
 import {
   BoxBufferGeometry,
+  BufferGeometry,
   CylinderBufferGeometry,
   MathUtils,
   SphereBufferGeometry,
@@ -29,40 +30,44 @@ import { SettingsService } from './settings.service';
 export class DefaultGeometryCreationService {
   constructor(private readonly settingsService: SettingsService) {}
 
-  node() {
+  get node(): BufferGeometry {
     const node = new SphereBufferGeometry(
       4,
       this.settingsService.segmentCount,
       this.settingsService.segmentCount
     );
-    return GeometryUtils.clean(node);
+    GeometryUtils.clean(node);
+    return node;
   }
 
-  connectorSizes() {
+  get connectorSizes(): BufferGeometry[] {
     const connectorSizes = [
       new BoxBufferGeometry(40, 10, 10, 1),
       new BoxBufferGeometry(30, 10, 10, 1),
       new BoxBufferGeometry(20, 10, 10, 1),
     ];
-    return connectorSizes.map((connector) => GeometryUtils.clean(connector));
+    connectorSizes.forEach(GeometryUtils.clean);
+    return connectorSizes;
   }
 
-  accessory() {
+  get accessory(): BufferGeometry {
     const accessory = new CylinderBufferGeometry(
       10,
       10,
       20,
       this.settingsService.segmentCount
     ).rotateX(MathUtils.degToRad(90));
-    return GeometryUtils.clean(accessory);
+    GeometryUtils.clean(accessory);
+    return accessory;
   }
 
-  fixing() {
+  get fixing(): BufferGeometry {
     const fixing = new SphereBufferGeometry(
       10,
       this.settingsService.segmentCount,
       this.settingsService.segmentCount
     );
-    return GeometryUtils.clean(fixing);
+    GeometryUtils.clean(fixing);
+    return fixing;
   }
 }

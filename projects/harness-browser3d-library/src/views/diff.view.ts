@@ -149,8 +149,8 @@ const diffViewMapper = (properties: string[]) => {
 };
 
 export const diffView = new View(
+  diffViewMaterial(),
   diffViewPropertyKey,
   diffViewDefaultValue,
-  diffViewMaterial(),
   diffViewMapper
 );

@@ -17,62 +17,61 @@
 
 import { Injectable } from '@angular/core';
 import { BufferGeometry, Mesh, Scene } from 'three';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 import { Graphic } from '../../api/alias';
-import { LoadedGeometry } from '../structs/loaded-geometries';
+import { GeometryUtils } from '../utils/geometry-utils';
 
 @Injectable()
 export class LoadingService {
-  private readonly geometries: Map<string, LoadedGeometry> = new Map();
+  private readonly geometries: Map<string, BufferGeometry> = new Map();
 
   constructor() {}
 
-  public getGeometries() {
+  public getGeometries(): Map<string, BufferGeometry> {
     return this.geometries;
   }
 
-  public parseGeometryData(geometries: Graphic[]) {
-    if (process.env['NODE_ENV'] !== 'production') {
-      import('three/examples/jsm/loaders/VRMLLoader').then((module) => {
-        let emptyIterator = true;
+  public clear(): void {
+    this.geometries.clear();
+  }
 
-        for (const passedGeometry of geometries.values()) {
-          emptyIterator = false;
-          if (this.geometries.has(passedGeometry.partNumber)) {
-            continue;
-          }
+  public loadGraphics(graphics: Graphic[]): void {
+    if (!graphics.length) {
+      console.info('no geometries to parse');
+      return;
+    }
 
-          const vrmloader = new module.VRMLLoader();
-          let loaded;
-          try {
-            loaded = vrmloader.parse(passedGeometry.data, '');
-          } catch (e) {
-            console.error(`exception during VRML loading\n\n${e}`);
-            return;
-          }
+    graphics.forEach((graphic) => {
+      if (this.geometries.has(graphic.partNumber)) {
+        return;
+      }
 
-          const geos: BufferGeometry[] = this.traverseLoadedData(loaded);
-          if (geos.length > 0) {
-            const geo = mergeBufferGeometries(geos, false);
-            geo.scale(1, 1, 1);
-            geo.name = passedGeometry.partNumber;
-            this.geometries.set(
-              passedGeometry.partNumber,
-              new LoadedGeometry(geo)
-            );
-          }
-        }
+      const scene = this.parseGraphic(graphic);
+      if (scene) {
+        const geo = mergeVertices(
+          GeometryUtils.mergeGeos(this.filterScene(scene))
+        );
+        this.geometries.set(graphic.partNumber, geo);
+      }
+    });
+  }
 
-        if (emptyIterator) {
-          console.info('no geometries to parse');
-        }
-      });
+  private parseGraphic(graphic: Graphic): Scene | undefined {
+    const vrmloader = new VRMLLoader();
+    try {
+      return vrmloader.parse(graphic.data, '');
+    } catch (e) {
+      console.error(
+        `exception during VRML loading for part number ${graphic.partNumber}\n\n${e}`
+      );
+      return undefined;
     }
   }
 
-  private traverseLoadedData(loaded: Scene): BufferGeometry[] {
+  private filterScene(scene: Scene): BufferGeometry[] {
     const geos: BufferGeometry[] = [];
-    loaded.traverse((mesh) => {
+    scene.traverse((mesh) => {
       if (mesh instanceof Mesh && mesh.geometry instanceof BufferGeometry) {
         const geo = this.filterAttributes(mesh.geometry);
         if (geo) {
@@ -83,7 +82,7 @@ export class LoadingService {
     return geos;
   }
 
-  private filterAttributes(geo: BufferGeometry) {
+  private filterAttributes(geo: BufferGeometry): BufferGeometry | undefined {
     const copy = new BufferGeometry();
     const loadedPosition = geo.getAttribute('position');
     const loadedNormal = geo.getAttribute('normal');
@@ -99,6 +98,6 @@ export class LoadingService {
       copy.setAttribute('normal', loadedNormal);
       return copy;
     }
-    return null;
+    return undefined;
   }
 }

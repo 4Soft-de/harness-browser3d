@@ -32,6 +32,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -52,6 +53,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatSlideToggleModule,
     MatSelectModule,
     MatCheckboxModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -15,12 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import {
-  Color,
-  FrontSide,
-  MeshBasicMaterial,
-  MeshLambertMaterial,
-} from 'three';
+import { Color, FrontSide, MeshLambertMaterial } from 'three';
 
 export class GeometryMaterial {
   public static get defaultHarness() {
@@ -32,7 +27,7 @@ export class GeometryMaterial {
   }
 
   public static get selection() {
-    return new MeshBasicMaterial({
+    return new MeshLambertMaterial({
       color: new Color('orange'),
       side: FrontSide,
       wireframe: false,

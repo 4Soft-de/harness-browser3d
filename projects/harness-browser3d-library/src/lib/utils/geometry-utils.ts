@@ -18,14 +18,7 @@
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { Node, Occurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
-import {
-  BoxBufferGeometry,
-  BufferAttribute,
-  BufferGeometry,
-  SphereBufferGeometry,
-  TubeBufferGeometry,
-  Vector3,
-} from 'three';
+import { BufferAttribute, BufferGeometry } from 'three';
 import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
 
@@ -37,6 +30,10 @@ export class GeometryUtils {
   ): void {
     const attributeSize =
       bufferAttribute.array.length / bufferAttribute.itemSize;
+    if (!harnessGeo.attributes['position']) {
+      console.error(`harnessGeo has no vertices`);
+      return;
+    }
     if (harnessGeo.attributes['position'].count != attributeSize) {
       console.error(
         `vertex count ${harnessGeo.attributes['position'].count} and buffer attribute size ${attributeSize} must be same`
@@ -52,6 +49,7 @@ export class GeometryUtils {
     }
     const geo = mergeBufferGeometries(geos);
     if (geo) {
+      geos.forEach((geo) => geo.dispose());
       return geo;
     } else {
       console.error('geos could not be merged');
@@ -59,29 +57,13 @@ export class GeometryUtils {
     }
   }
 
-  public static clean(geo: BufferGeometry): BufferGeometry {
+  public static clean(geo: BufferGeometry): void {
     const position = geo.attributes['position'];
     const normal = geo.attributes['normal'];
-    //const cleanedGeo = geo.toNonIndexed();
-    const cleanedGeo = geo.clone();
-    cleanedGeo.attributes = {
+    geo.attributes = {
       position: position,
       normal: normal,
     };
-    GeometryUtils.setParameters(geo, cleanedGeo);
-    return cleanedGeo;
-  }
-
-  private static setParameters(
-    baseGeo: BufferGeometry,
-    cleanedGeo: BufferGeometry
-  ): void {
-    const box = cleanedGeo as BoxBufferGeometry;
-    box.parameters = (baseGeo as BoxBufferGeometry).parameters;
-    const sphere = cleanedGeo as SphereBufferGeometry;
-    sphere.parameters = (baseGeo as SphereBufferGeometry).parameters;
-    const tube = cleanedGeo as TubeBufferGeometry;
-    tube.parameters = (baseGeo as TubeBufferGeometry).parameters;
   }
 
   public static createGeo(
@@ -100,23 +82,7 @@ export class GeometryUtils {
     ) {
       return defaultGeo.clone();
     } else {
-      loadedGeo.bufferGeometry.computeBoundingBox();
-      const boundingBox = loadedGeo.bufferGeometry.boundingBox!;
-      const geo = new BoxBufferGeometry(
-        boundingBox.max.x - boundingBox.min.x,
-        boundingBox.max.y - boundingBox.min.y,
-        boundingBox.max.z - boundingBox.min.z
-      );
-      geo.applyMatrix4(loadedGeo.offsetMatrix());
-      return GeometryUtils.clean(geo);
+      return loadedGeo.clone();
     }
-  }
-
-  public static centerGeometry(geo: BufferGeometry) {
-    geo.computeBoundingBox();
-    const center = new Vector3();
-    geo.boundingBox!.getCenter(center);
-    geo.center();
-    return center;
   }
 }

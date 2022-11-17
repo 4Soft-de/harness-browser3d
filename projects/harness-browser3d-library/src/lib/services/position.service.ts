@@ -56,6 +56,7 @@ export class PositionService {
       this.settingsService.segmentCount,
       false
     );
-    return GeometryUtils.clean(geo);
+    GeometryUtils.clean(geo);
+    return geo;
   }
 }

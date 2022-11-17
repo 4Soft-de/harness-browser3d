@@ -1,7 +1,7 @@
-import { Harness, View } from 'harness-browser3d-library';
+import { Bordnet, View } from 'harness-browser3d-library';
 
 export class HarnessSelectionStruct {
-  constructor(public readonly name: string, public harness?: Harness) {}
+  constructor(public readonly name: string, public bordnet?: Bordnet) {}
 }
 
 export class ViewSelectionStruct {
