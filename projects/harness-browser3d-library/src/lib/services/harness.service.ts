@@ -32,6 +32,7 @@ import { Subscription } from 'rxjs';
 import { PreprocessService } from './preprocess.service';
 import { LoadingService } from './loading.service';
 import { GeometryModeAPIEnum } from '../../api/structs';
+import { DiffService } from './diff.service';
 
 @Injectable()
 export class HarnessService implements OnDestroy {
@@ -42,6 +43,7 @@ export class HarnessService implements OnDestroy {
     private readonly cacheService: CacheService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
+    private readonly diffService: DiffService,
     private readonly enableService: EnableService,
     private readonly geometryService: GeometryService,
     private readonly loadingService: LoadingService,
@@ -94,6 +96,7 @@ export class HarnessService implements OnDestroy {
     this.selectionService.addGeos(harnessElementGeos);
     this.sceneService.replaceMesh();
     this.enableService.enableHarnesses(preprocessedHarnesses);
+    this.diffService.applyDiffState(preprocessedHarnesses);
     this.viewService.setCurrentView(preprocessedHarnesses);
 
     if (this.settingsService.addHarnessResetCamera) {

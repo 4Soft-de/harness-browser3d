@@ -47,3 +47,11 @@ export enum SplineModeAPIEnum {
   unclamped,
   clamped,
 }
+
+export enum DiffStateAPIEnum {
+  unmodified = 0,
+  added = 1,
+  removed = 2,
+  modified_new = 3,
+  modified_old = 4,
+}

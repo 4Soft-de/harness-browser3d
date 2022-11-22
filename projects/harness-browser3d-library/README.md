@@ -74,10 +74,6 @@ In this example an `exampleProperty` property is added to the object `exampleId`
 
 Pass the view into the `setView` API function. The previous view is disposed.
 
-### Refresh Views
-
-Views can have settings. Either set them before calling `setView` or call `refreshView`. Settings should not affect the shaders but only the mapping function because `refreshView` does not refresh the shaders for performance reasons.
-
 ### Define custom Views
 
 Views are instances of `View` in `views\view.ts`.
@@ -103,19 +99,20 @@ Built-in shader attributes are controlled by the viewer and can be used by custo
 - `vec3 pDefaultColor` is the default color of the corresponding harness element
 - `vec3 pColor` is the specified color as set in the `colors` input property on the angular component
 - `float pEnabled` is whether the harness element is enabled
+- `float pDiffState` corresponds to the `diffState` property. See `DiffStateAPIEnum` for details.
 
 ### Predefined Views
 
 Diff
 
 - property `diffState`
-- values can be hidden, unmodified, added, removed, modified_new, modified_old
+- values can be unmodified, added, removed, modified_new, modified_old
 - hide certain states by setting the display booleans
 - example
 
 ```ts
 diffView.displayRemoved = false;
-api.refreshView();
+api.setView(diffView);
 ```
 
 # References

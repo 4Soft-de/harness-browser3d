@@ -16,6 +16,7 @@
 */
 
 import { ShaderLib } from 'three';
+import { DiffStateAPIEnum } from '../api/structs';
 import { GeometryMaterial } from '../lib/structs/material';
 import { View } from '../views/view';
 
@@ -26,12 +27,17 @@ function defaultViewVertexShader(): string {
       attribute vec3 pDefaultColor;
       attribute vec3 pColor;
       attribute float pEnabled;
+      attribute float pDiffState;
     `;
 
   const code = `
       vec3 emptyColor = vec3(0, 0, 0);
       vColor = pColor == emptyColor ? pDefaultColor : pColor;
-      gl_Position = pEnabled == 1.0 ? gl_Position : vec4(gl_Position.xyz, 0);
+      gl_Position =
+        pEnabled == 0.0 ||
+        pDiffState == ${DiffStateAPIEnum.removed.toFixed(1)} ||
+        pDiffState == ${DiffStateAPIEnum.modified_old.toFixed(1)}
+        ? vec4(gl_Position.xyz, 0) : gl_Position;
     `;
 
   let anchor = `#include <common>`;
