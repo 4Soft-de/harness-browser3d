@@ -115,6 +115,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.selectedBordnet = this.selectableBordnets[0];
+    this.changeDetectorRef.detectChanges();
   }
 
   applyFilter(event: Event) {
@@ -159,6 +160,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   clearScene() {
+    this.selectedBordnet = undefined;
     this.dataSource = this.initializeDataSource();
     this.resetSelection();
     this.api?.clear();
@@ -223,11 +225,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           }
           buildingBlock.position.z += this.addedBordnets * 100;
         });
-      this.addHarnesses$.next(selectedBordnet.bordnet.harnesses);
       this.addTableData(selectedBordnet?.bordnet);
       this.addedBordnets++;
-      this.selectedBordnetInternal = selectedBordnet;
     }
+    this.addHarnesses$.next(selectedBordnet?.bordnet?.harnesses ?? []);
+    this.selectedBordnetInternal = selectedBordnet;
   }
 
   get selectedBordnet(): BordnetSelectionStruct | undefined {
