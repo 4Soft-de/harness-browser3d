@@ -60,6 +60,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
+  addHarnesses$: Subject<Harness[]> = new Subject();
   selectedIds$: Subject<string[]> = new Subject();
   disableIds$: Subject<string[]> = new Subject();
   enableIds$: Subject<string[]> = new Subject();
@@ -94,6 +95,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ) {
     this.selectableBordnets = [
       new BordnetSelectionStruct('Debug', dataService.debugHarness),
+      new BordnetSelectionStruct('Diff', dataService.diffHarness),
       new BordnetSelectionStruct('Broken', dataService.brokenHarness),
       new BordnetSelectionStruct('Protection', dataService.protectionHarness),
       this.uploadedBordnet,
@@ -157,7 +159,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   clearScene() {
-    this.selectedBordnet = undefined;
     this.dataSource = this.initializeDataSource();
     this.resetSelection();
     this.api?.clear();
@@ -212,18 +213,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.clearScene();
   }
 
-  set selectedBordnet(selectedHarness: BordnetSelectionStruct | undefined) {
-    this.selectedBordnetInternal = selectedHarness;
-    this.selectedBordnetInternal?.bordnet?.harnesses
-      .flatMap((harness) => harness.buildingBlocks)
-      .forEach((buildingBlock) => {
-        if (!buildingBlock.position) {
-          buildingBlock.position = { x: 0, y: 0, z: 0 };
-        }
-        buildingBlock.position.z += this.addedBordnets * 100;
-      });
-    this.addTableData(selectedHarness?.bordnet);
-    this.addedBordnets++;
+  set selectedBordnet(selectedBordnet: BordnetSelectionStruct | undefined) {
+    if (selectedBordnet?.bordnet) {
+      selectedBordnet.bordnet.harnesses
+        .flatMap((harness) => harness.buildingBlocks)
+        .forEach((buildingBlock) => {
+          if (!buildingBlock.position) {
+            buildingBlock.position = { x: 0, y: 0, z: 0 };
+          }
+          buildingBlock.position.z += this.addedBordnets * 100;
+        });
+      this.addHarnesses$.next(selectedBordnet.bordnet.harnesses);
+      this.addTableData(selectedBordnet?.bordnet);
+      this.addedBordnets++;
+      this.selectedBordnetInternal = selectedBordnet;
+    }
   }
 
   get selectedBordnet(): BordnetSelectionStruct | undefined {
@@ -256,18 +260,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   setColors() {
-    if (!this.selectedBordnet?.bordnet) {
-      return;
-    }
-
     this.colors$.next(this.colorService.setColors());
   }
 
   resetColors() {
-    if (!this.selectedBordnet?.bordnet) {
-      return;
-    }
-
     this.api?.resetColors();
     this.colors$.next(this.colorService.resetColors());
   }
@@ -282,26 +278,26 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   displayUnmodified(display: boolean) {
     diffViewSettings.displayUnmodified = display;
-    this.api?.refreshView();
+    this.api?.setView(diffView);
   }
 
   displayAdded(display: boolean) {
     diffViewSettings.displayAdded = display;
-    this.api?.refreshView();
+    this.api?.setView(diffView);
   }
 
   displayRemoved(display: boolean) {
     diffViewSettings.displayRemoved = display;
-    this.api?.refreshView();
+    this.api?.setView(diffView);
   }
 
   displayModifiedNew(display: boolean) {
     diffViewSettings.displayModifiedNew = display;
-    this.api?.refreshView();
+    this.api?.setView(diffView);
   }
 
   displayModifiedOld(display: boolean) {
     diffViewSettings.displayModifiedOld = display;
-    this.api?.refreshView();
+    this.api?.setView(diffView);
   }
 }

@@ -224,7 +224,7 @@
       <lib-harness-browser3d
         class="browser_panel"
         (initialized)="addAPI($event)"
-        [addHarnesses]="selectedBordnet?.bordnet?.harnesses"
+        [addHarnesses]="addHarnesses$ | async"
         [selectedIds]="selectedIds$ | async"
         [disableIds]="disableIds$ | async"
         [enableIds]="enableIds$ | async"
