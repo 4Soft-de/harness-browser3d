@@ -35,13 +35,7 @@ import { PositionService } from './position.service';
 import { LoadingService } from './loading.service';
 import { CurveService } from './curve.service';
 import { SettingsService } from './settings.service';
-import {
-  BoxBufferGeometry,
-  BufferGeometry,
-  Curve,
-  Quaternion,
-  Vector3,
-} from 'three';
+import { BoxGeometry, BufferGeometry, Curve, Quaternion, Vector3 } from 'three';
 import { DefaultGeometryCreationService } from './default-geometries.service';
 import {
   getNodeId,
@@ -216,8 +210,8 @@ export class GeometryService {
       case GeometryModeAPIEnum.default:
         position = HarnessUtils.convertPointToVector(node.position);
 
-        const depth = (this.defaultConnectors[index] as BoxBufferGeometry)
-          .parameters.depth;
+        const depth = (this.defaultConnectors[index] as BoxGeometry).parameters
+          .depth;
 
         const segmentDirection = this.segmentDirections.get(node.id);
 

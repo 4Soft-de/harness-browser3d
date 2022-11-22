@@ -66,6 +66,10 @@ export class HarnessService implements OnDestroy {
   }
 
   public addHarnesses(harnesses: Harness[]): void {
+    if (harnesses.length === 0) {
+      return;
+    }
+
     const notLoadedHarnesses: Harness[] = [];
     harnesses.forEach((harness) => {
       if (this.loadedHarnesses.has(harness.id)) {

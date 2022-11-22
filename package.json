@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "13.x",
     "@angular/router": "13.x",
     "rxjs": "7.x",
-    "three": "0.141.x",
+    "three": "0.146.x",
     "tslib": "2.x",
     "zone.js": "0.11.x",
     "stats.js": "0.17.x"
@@ -32,7 +32,7 @@
     "@angular/cli": "13.x",
     "@angular/compiler-cli": "13.x",
     "@types/jasmine": "4.x",
-    "@types/three": "0.141.x",
+    "@types/three": "0.146.x",
     "@types/stats.js": "0.17.x",
     "jasmine-core": "4.x",
     "karma": "6.x",
