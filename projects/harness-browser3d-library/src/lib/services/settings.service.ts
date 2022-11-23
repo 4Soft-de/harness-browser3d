@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Color } from 'three';
+import { Color, Scene } from 'three';
 import {
   GeometryModeAPIEnum,
   SettingsAPIStruct,
@@ -27,6 +27,7 @@ import {
 @Injectable()
 export class SettingsService implements SettingsAPIStruct {
   public geometryMode = GeometryModeAPIEnum.default;
+  public geometryParser?: (data: string) => Scene = undefined;
   public splineMode = SplineModeAPIEnum.unclamped;
   public pixelRatio = window.devicePixelRatio;
   public segmentCount = 15;
@@ -51,6 +52,7 @@ export class SettingsService implements SettingsAPIStruct {
     const geoSetting = this.updatedSettings.find(
       (element) =>
         element === 'geometryMode' ||
+        element === 'geometryParser' ||
         element === 'splineMode' ||
         element === 'segmentCount' ||
         element === 'curveStepsFactor'

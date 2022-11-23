@@ -49,6 +49,10 @@ Set arbitrary colors for harness elements by inserting an array of `SetColorAPIS
 
 Apply settings by inserting an array of `SettingsAPIStruct` objects into the `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
 
+### Load Geometries
+
+Default geometries can be replaced by supplied geometries. Set `geometryMode` to `GeometryModeAPIEnum.loaded` and set `geometryParser` to a function that parses the string data into a `Scene` object. Open the geometry files and push their contents into the `graphics` array on a `Harness` object and add the harness.
+
 ### Additional API
 
 A `HarnessBrowser3dLibraryAPI` object is used to invoke certain actions, like resetting the camera. It is passed in the `initialized` event directly after the component has been initialized. Include HarnessBrowser3dLibraryAPI from `api\api.ts`.

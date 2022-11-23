@@ -18,15 +18,15 @@
 import { Injectable } from '@angular/core';
 import { BufferGeometry, Mesh, Scene } from 'three';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 import { Graphic } from '../../api/alias';
 import { GeometryUtils } from '../utils/geometry-utils';
+import { SettingsService } from './settings.service';
 
 @Injectable()
 export class LoadingService {
   private readonly geometries: Map<string, BufferGeometry> = new Map();
 
-  constructor() {}
+  constructor(private readonly settingsService: SettingsService) {}
 
   public getGeometries(): Map<string, BufferGeometry> {
     return this.geometries;
@@ -58,12 +58,16 @@ export class LoadingService {
   }
 
   private parseGraphic(graphic: Graphic): Scene | undefined {
-    const vrmloader = new VRMLLoader();
+    if (!this.settingsService.geometryParser) {
+      console.error(`no geometry loader specified`);
+      return undefined;
+    }
+
     try {
-      return vrmloader.parse(graphic.data, '');
+      return this.settingsService.geometryParser(graphic.data);
     } catch (e) {
       console.error(
-        `exception during VRML loading for part number ${graphic.partNumber}\n\n${e}`
+        `exception during geometry loading for part number ${graphic.partNumber}\n\n${e}`
       );
       return undefined;
     }

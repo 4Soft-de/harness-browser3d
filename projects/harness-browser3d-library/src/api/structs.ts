@@ -15,10 +15,11 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Color } from 'three';
+import { Color, Scene } from 'three';
 
 export interface SettingsAPIStruct {
   geometryMode?: GeometryModeAPIEnum;
+  geometryParser?: (data: string) => Scene;
   splineMode?: SplineModeAPIEnum;
   segmentCount?: number;
   curveStepsFactor?: number;
