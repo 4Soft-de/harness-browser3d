@@ -21,7 +21,7 @@ import {
   Curve,
   Matrix4,
   Quaternion,
-  TubeBufferGeometry,
+  TubeGeometry,
   Vector3,
 } from 'three';
 import { GeometryUtils } from '../utils/geometry-utils';
@@ -49,7 +49,7 @@ export class PositionService {
     length: number,
     radius: number
   ): BufferGeometry {
-    const geo = new TubeBufferGeometry(
+    const geo = new TubeGeometry(
       curve,
       Math.ceil(length * this.settingsService.curveStepsFactor),
       radius,

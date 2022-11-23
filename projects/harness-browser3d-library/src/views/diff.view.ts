@@ -15,7 +15,8 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Color, Int8BufferAttribute, ShaderLib } from 'three';
+import { Color, ShaderLib } from 'three';
+import { DiffStateAPIEnum } from '../api/structs';
 import { GeometryMaterial } from '../lib/structs/material';
 import { View } from '../views/view';
 
@@ -27,84 +28,58 @@ export const diffViewSettings = {
   displayModifiedOld: true,
 };
 
-enum StateEnum {
-  hidden = 'hidden',
-  unmodified = 'unmodified',
-  added = 'added',
-  removed = 'removed',
-  modified_new = 'modified_new',
-  modified_old = 'modified_old',
-}
-
 class State {
   public readonly colorString: string;
   public readonly idString: string;
-  constructor(
-    public readonly stateEnum: StateEnum,
-    public readonly id: number,
-    colorName: string
-  ) {
+  constructor(public readonly id: number, colorName: string) {
     this.idString = `float(${id})`;
     const color = new Color(colorName);
     this.colorString = `vec4(${color.r}, ${color.g}, ${color.b}, ${1})`;
   }
 }
 
-const hiddenState = new State(StateEnum.hidden, 0, 'black');
-const unmodifiedState = new State(StateEnum.unmodified, 1, 'lightgrey');
-const addedState = new State(StateEnum.added, 2, 'mediumseagreen');
-const removedState = new State(StateEnum.removed, 3, 'red');
-const modifiedNewState = new State(StateEnum.modified_new, 4, 'dodgerblue');
-const modifiedOldState = new State(StateEnum.modified_old, 5, 'steelblue');
-
-function getState(property: string): State {
-  const hide = (hidden: boolean, state: State) => {
-    if (!hidden) {
-      return hiddenState;
-    } else {
-      return state;
-    }
-  };
-
-  switch (StateEnum[property as keyof typeof StateEnum]) {
-    case StateEnum.hidden:
-      return hiddenState;
-    case StateEnum.unmodified:
-      return hide(diffViewSettings.displayUnmodified, unmodifiedState);
-    case StateEnum.added:
-      return hide(diffViewSettings.displayAdded, addedState);
-    case StateEnum.removed:
-      return hide(diffViewSettings.displayRemoved, removedState);
-    case StateEnum.modified_new:
-      return hide(diffViewSettings.displayModifiedNew, modifiedNewState);
-    case StateEnum.modified_old:
-      return hide(diffViewSettings.displayModifiedOld, modifiedOldState);
-    default:
-      return hiddenState;
-  }
-}
-
-const diffViewPropertyKey = 'diffState';
-
-const diffViewDefaultValue = StateEnum.unmodified.toString();
+const unmodifiedState = new State(DiffStateAPIEnum.unmodified, 'lightgrey');
+const addedState = new State(DiffStateAPIEnum.added, 'mediumseagreen');
+const removedState = new State(DiffStateAPIEnum.removed, 'red');
+const modifiedNewState = new State(DiffStateAPIEnum.modified_new, 'dodgerblue');
+const modifiedOldState = new State(DiffStateAPIEnum.modified_old, 'steelblue');
 
 function diffViewVertexShader(): string {
   let shader = ShaderLib.lambert.vertexShader;
 
   const declarations = `
-    attribute float diffState;
+    attribute float pDiffState;
+    attribute float pEnabled;
     varying vec4 vStateColor;
   `;
 
   const code = `
     vec4 noneColor = vec4(0, 0, 0, 0);
-    vec4 unmodifiedColor = diffState == ${unmodifiedState.idString} ? ${unmodifiedState.colorString} : noneColor;
-    vec4 addedColor = diffState == ${addedState.idString} ? ${addedState.colorString} : noneColor;
-    vec4 removedColor = diffState == ${removedState.idString} ? ${removedState.colorString} : noneColor;
-    vec4 modifiedNewColor = diffState == ${modifiedNewState.idString} ? ${modifiedNewState.colorString} : noneColor;
-    vec4 modifiedOldColor = diffState == ${modifiedOldState.idString} ? ${modifiedOldState.colorString} : noneColor;
+    vec4 unmodifiedColor =
+      pDiffState == ${unmodifiedState.idString} &&
+      ${diffViewSettings.displayUnmodified}
+      ? ${unmodifiedState.colorString} : noneColor;
+    vec4 addedColor =
+      pDiffState == ${addedState.idString} &&
+      ${diffViewSettings.displayAdded}
+      ? ${addedState.colorString} : noneColor;
+    vec4 removedColor =
+      pDiffState == ${removedState.idString} &&
+      ${diffViewSettings.displayRemoved}
+      ? ${removedState.colorString} : noneColor;
+    vec4 modifiedNewColor =
+      pDiffState == ${modifiedNewState.idString} &&
+      ${diffViewSettings.displayModifiedNew}
+      ? ${modifiedNewState.colorString} : noneColor;
+    vec4 modifiedOldColor =
+      pDiffState == ${modifiedOldState.idString} &&
+      ${diffViewSettings.displayModifiedOld}
+      ? ${modifiedOldState.colorString} : noneColor;
     vStateColor = unmodifiedColor + addedColor + removedColor + modifiedNewColor + modifiedOldColor;
-    gl_Position = diffState == ${hiddenState.idString} ? vec4(gl_Position.xyz, 0) : gl_Position;
+    gl_Position =
+      vStateColor == vec4(0, 0, 0, 0) ||
+      pEnabled == 0.0
+      ? vec4(gl_Position.xyz, 0) : gl_Position;
   `;
 
   let anchor = `#include <common>`;
@@ -143,14 +118,4 @@ function diffViewMaterial() {
   return material;
 }
 
-const diffViewMapper = (properties: string[]) => {
-  const array = properties.map((property) => getState(property).id);
-  return new Int8BufferAttribute(array, 1);
-};
-
-export const diffView = new View(
-  diffViewMaterial(),
-  diffViewPropertyKey,
-  diffViewDefaultValue,
-  diffViewMapper
-);
+export const diffView = new View(diffViewMaterial());

@@ -15,10 +15,11 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Color } from 'three';
+import { Color, Scene } from 'three';
 
 export interface SettingsAPIStruct {
   geometryMode?: GeometryModeAPIEnum;
+  geometryParser?: (data: string) => Scene;
   splineMode?: SplineModeAPIEnum;
   segmentCount?: number;
   curveStepsFactor?: number;
@@ -46,4 +47,12 @@ export enum GeometryModeAPIEnum {
 export enum SplineModeAPIEnum {
   unclamped,
   clamped,
+}
+
+export enum DiffStateAPIEnum {
+  unmodified = 0,
+  added = 1,
+  removed = 2,
+  modified_new = 3,
+  modified_old = 4,
 }

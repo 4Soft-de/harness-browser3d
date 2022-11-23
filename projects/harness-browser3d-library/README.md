@@ -49,6 +49,10 @@ Set arbitrary colors for harness elements by inserting an array of `SetColorAPIS
 
 Apply settings by inserting an array of `SettingsAPIStruct` objects into the `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
 
+### Load Geometries
+
+Default geometries can be replaced by supplied geometries. Set `geometryMode` to `GeometryModeAPIEnum.loaded` and set `geometryParser` to a function that parses the string data into a `Scene` object. Open the geometry files and push their contents into the `graphics` array on a `Harness` object and add the harness.
+
 ### Additional API
 
 A `HarnessBrowser3dLibraryAPI` object is used to invoke certain actions, like resetting the camera. It is passed in the `initialized` event directly after the component has been initialized. Include HarnessBrowser3dLibraryAPI from `api\api.ts`.
@@ -73,10 +77,6 @@ In this example an `exampleProperty` property is added to the object `exampleId`
 ### Apply Views
 
 Pass the view into the `setView` API function. The previous view is disposed.
-
-### Refresh Views
-
-Views can have settings. Either set them before calling `setView` or call `refreshView`. Settings should not affect the shaders but only the mapping function because `refreshView` does not refresh the shaders for performance reasons.
 
 ### Define custom Views
 
@@ -103,19 +103,20 @@ Built-in shader attributes are controlled by the viewer and can be used by custo
 - `vec3 pDefaultColor` is the default color of the corresponding harness element
 - `vec3 pColor` is the specified color as set in the `colors` input property on the angular component
 - `float pEnabled` is whether the harness element is enabled
+- `float pDiffState` corresponds to the `diffState` property. See `DiffStateAPIEnum` for details.
 
 ### Predefined Views
 
 Diff
 
 - property `diffState`
-- values can be hidden, unmodified, added, removed, modified_new, modified_old
+- values can be unmodified, added, removed, modified_new, modified_old
 - hide certain states by setting the display booleans
 - example
 
 ```ts
 diffView.displayRemoved = false;
-api.refreshView();
+api.setView(diffView);
 ```
 
 # References

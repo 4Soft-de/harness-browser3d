@@ -17,11 +17,11 @@
 
 import { Injectable } from '@angular/core';
 import {
-  BoxBufferGeometry,
+  BoxGeometry,
   BufferGeometry,
-  CylinderBufferGeometry,
+  CylinderGeometry,
   MathUtils,
-  SphereBufferGeometry,
+  SphereGeometry,
 } from 'three';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { SettingsService } from './settings.service';
@@ -31,7 +31,7 @@ export class DefaultGeometryCreationService {
   constructor(private readonly settingsService: SettingsService) {}
 
   get node(): BufferGeometry {
-    const node = new SphereBufferGeometry(
+    const node = new SphereGeometry(
       4,
       this.settingsService.segmentCount,
       this.settingsService.segmentCount
@@ -42,16 +42,16 @@ export class DefaultGeometryCreationService {
 
   get connectorSizes(): BufferGeometry[] {
     const connectorSizes = [
-      new BoxBufferGeometry(40, 10, 10, 1),
-      new BoxBufferGeometry(30, 10, 10, 1),
-      new BoxBufferGeometry(20, 10, 10, 1),
+      new BoxGeometry(40, 10, 10, 1),
+      new BoxGeometry(30, 10, 10, 1),
+      new BoxGeometry(20, 10, 10, 1),
     ];
     connectorSizes.forEach(GeometryUtils.clean);
     return connectorSizes;
   }
 
   get accessory(): BufferGeometry {
-    const accessory = new CylinderBufferGeometry(
+    const accessory = new CylinderGeometry(
       10,
       10,
       20,
@@ -62,7 +62,7 @@ export class DefaultGeometryCreationService {
   }
 
   get fixing(): BufferGeometry {
-    const fixing = new SphereBufferGeometry(
+    const fixing = new SphereGeometry(
       10,
       this.settingsService.segmentCount,
       this.settingsService.segmentCount
