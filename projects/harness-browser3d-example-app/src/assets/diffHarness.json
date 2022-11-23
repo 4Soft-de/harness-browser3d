@@ -1,0 +1,76 @@
+{
+  "harnesses": [
+    {
+      "id": "diffHarness",
+      "occurrences": [],
+      "nodes": [
+        {
+          "id": "unmodified",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "buildingBlockId": "diffBuildingBlock",
+          "viewProperties": {
+            "diffState": "unmodified"
+          }
+        },
+        {
+          "id": "added",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": 50
+          },
+          "buildingBlockId": "diffBuildingBlock",
+          "viewProperties": {
+            "diffState": "added"
+          }
+        },
+        {
+          "id": "removed",
+          "position": {
+            "x": -50,
+            "y": 0,
+            "z": 50
+          },
+          "buildingBlockId": "diffBuildingBlock",
+          "viewProperties": {
+            "diffState": "removed"
+          }
+        },
+        {
+          "id": "modified_old",
+          "position": {
+            "x": 50,
+            "y": 0,
+            "z": -50
+          },
+          "buildingBlockId": "diffBuildingBlock",
+          "viewProperties": {
+            "diffState": "modified_old"
+          }
+        },
+        {
+          "id": "modified_new",
+          "position": {
+            "x": -50,
+            "y": 0,
+            "z": -50
+          },
+          "buildingBlockId": "diffBuildingBlock",
+          "viewProperties": {
+            "diffState": "modified_new"
+          }
+        }
+      ],
+      "segments": [],
+      "buildingBlocks": [
+        {
+          "id": "diffBuildingBlock"
+        }
+      ]
+    }
+  ]
+}
