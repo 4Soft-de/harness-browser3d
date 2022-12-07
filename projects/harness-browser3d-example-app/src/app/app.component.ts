@@ -35,6 +35,7 @@ import {
   Occurrence,
   Harness,
   Bordnet,
+  BuildingBlock,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -220,8 +221,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   set selectedBordnet(selectedBordnet: BordnetSelectionStruct | undefined) {
     if (selectedBordnet?.bordnet) {
       selectedBordnet.bordnet.harnesses
-        .flatMap((harness) => harness.buildingBlocks)
-        .forEach((buildingBlock) => {
+        .flatMap((harness: Harness) => harness.buildingBlocks)
+        .forEach((buildingBlock: BuildingBlock) => {
           if (!buildingBlock.position) {
             buildingBlock.position = { x: 0, y: 0, z: 0 };
           }
