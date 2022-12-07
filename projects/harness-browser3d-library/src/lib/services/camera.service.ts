@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { ErrorUtils } from '../utils/error-utils';
 import { Box3, Mesh, PerspectiveCamera, Sphere, Vector3 } from 'three';
 
@@ -31,7 +31,7 @@ export class CameraService {
   private camera: PerspectiveCamera;
   private controls?: OrbitControls;
 
-  constructor(private readonly cacheService: CacheService) {
+  constructor(private readonly bordnetMeshService: BordnetMeshService) {
     this.camera = new PerspectiveCamera(70, 1, 0.1, 10000);
     this.camera.up.set(0, 0, 1);
     this.camera.updateProjectionMatrix();
@@ -51,7 +51,7 @@ export class CameraService {
   }
 
   public resetCamera() {
-    const mesh = this.cacheService.getBordnetMesh();
+    const mesh = this.bordnetMeshService.getBordnetMesh();
     if (mesh) {
       this.focusCameraOnMesh(mesh);
     }

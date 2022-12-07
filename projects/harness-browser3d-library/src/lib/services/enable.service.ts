@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Int8BufferAttribute } from 'three';
 import { Harness } from '../../public-api';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { MappingService } from './mapping.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class EnableService {
   private readonly enabledHarnessElementsCache = new Map<string, boolean>();
 
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly mappingService: MappingService
   ) {}
 
@@ -42,7 +42,7 @@ export class EnableService {
   }
 
   private applyEnabled() {
-    const geo = this.cacheService.getBordnetGeo();
+    const geo = this.bordnetMeshService.getBordnetGeo();
     if (geo) {
       const array = this.mappingService
         .applyMapping(true, this.enabledHarnessElementsCache)

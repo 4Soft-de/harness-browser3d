@@ -18,7 +18,6 @@
 import { Harness } from '../../api/alias';
 import { Injectable, OnDestroy } from '@angular/core';
 import { GeometryService } from './geometry.service';
-import { SceneService } from './scene.service';
 import { SelectionService } from './selection.service';
 import { BufferGeometry } from 'three';
 import { MappingService } from './mapping.service';
@@ -27,7 +26,7 @@ import { ColorService } from './color.service';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
 import { EnableService } from './enable.service';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { Subscription } from 'rxjs';
 import { PreprocessService } from './preprocess.service';
 import { LoadingService } from './loading.service';
@@ -40,7 +39,7 @@ export class HarnessService implements OnDestroy {
   private subscription: Subscription = new Subscription();
 
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly diffService: DiffService,
@@ -49,7 +48,6 @@ export class HarnessService implements OnDestroy {
     private readonly loadingService: LoadingService,
     private readonly mappingService: MappingService,
     private readonly preprocessService: PreprocessService,
-    private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
     private readonly viewService: ViewService
@@ -95,10 +93,9 @@ export class HarnessService implements OnDestroy {
     );
 
     this.createHarnessElementMappings(harnessElementGeos);
-    this.cacheService.addGeos(harnessElementGeos);
+    this.bordnetMeshService.addGeos(harnessElementGeos);
     this.colorService.initializeDefaultColors(preprocessedHarnesses);
     this.selectionService.addGeos(harnessElementGeos);
-    this.sceneService.replaceMesh();
     this.enableService.enableHarnesses(preprocessedHarnesses);
     this.diffService.applyDiffState(preprocessedHarnesses);
     this.viewService.setCurrentView(preprocessedHarnesses);
@@ -110,12 +107,11 @@ export class HarnessService implements OnDestroy {
 
   public clear(): void {
     this.loadingService.clear();
-    this.sceneService.removeMesh();
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
     this.colorService.clear();
     this.enableService.clear();
-    this.cacheService.clear();
+    this.bordnetMeshService.clear();
     this.mappingService.clear();
     this.loadedHarnesses.clear();
   }

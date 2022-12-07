@@ -27,7 +27,7 @@ import {
 } from '../../public-api';
 import { GeometryColors } from '../structs/colors';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { MappingService } from './mapping.service';
 
 @Injectable()
@@ -38,7 +38,7 @@ export class ColorService {
   private readonly defaultColors = new Map<string, Color>();
 
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly mappingService: MappingService
   ) {}
 
@@ -79,7 +79,7 @@ export class ColorService {
   }
 
   private applyColors(key: string, colors: Map<string, Color>) {
-    const geo = this.cacheService.getBordnetGeo();
+    const geo = this.bordnetMeshService.getBordnetGeo();
     if (geo) {
       const array: number[] = [];
       this.mappingService

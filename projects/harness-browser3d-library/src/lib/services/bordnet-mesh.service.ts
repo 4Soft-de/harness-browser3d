@@ -15,15 +15,30 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Injectable } from '@angular/core';
-import { BufferGeometry, Mesh } from 'three';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { BufferGeometry, Mesh, Scene } from 'three';
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
+import { SettingsService } from './settings.service';
 
 @Injectable()
-export class CacheService {
-  public readonly bordnetMeshName = 'bordnet_mesh';
+export class BordnetMeshService implements OnDestroy {
   private bordnetMesh?: Mesh;
+
+  private readonly scene: Scene;
+  private subscription: Subscription = new Subscription();
+
+  constructor(settingsService: SettingsService) {
+    this.scene = new Scene();
+    this.subscription.add(
+      settingsService.updatedGeometrySettings.subscribe(this.clear.bind(this))
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   public getBordnetGeo(): BufferGeometry | undefined {
     return this.bordnetMesh?.geometry;
@@ -50,13 +65,18 @@ export class CacheService {
     geos.forEach((geo) => harnessGeos.push(geo));
     const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
     this.bordnetMesh = new Mesh(mergedHarnessGeo);
-    this.bordnetMesh.name = this.bordnetMeshName;
+    this.scene.add(this.bordnetMesh);
   }
 
   public clear(): void {
     if (this.bordnetMesh) {
       dispose(this.bordnetMesh);
+      this.scene.remove(this.bordnetMesh);
       this.bordnetMesh = undefined;
     }
+  }
+
+  public getScene() {
+    return this.scene;
   }
 }

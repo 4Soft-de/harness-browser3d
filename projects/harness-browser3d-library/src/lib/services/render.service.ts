@@ -23,10 +23,10 @@ import {
   Pass,
 } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { ErrorUtils } from '../utils/error-utils';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
 import { CoordinateSystemService } from './coordinate-system.service';
 import { LightsService } from './lights.service';
-import { SceneService } from './scene.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 
@@ -45,10 +45,10 @@ export class RenderService implements OnDestroy {
   private subscription: Subscription = new Subscription();
 
   constructor(
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly coordinateSystemService: CoordinateSystemService,
     private readonly lightsService: LightsService,
-    private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
@@ -73,7 +73,7 @@ export class RenderService implements OnDestroy {
     this.postProcessor = new EffectComposer(renderer);
     this.postProcessor.addPass(
       new DefaultPass(
-        this.sceneService.getScene(),
+        this.bordnetMeshService.getScene(),
         this.cameraService.getCamera()
       )
     );

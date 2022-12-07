@@ -17,7 +17,7 @@
 
 import { NgModule } from '@angular/core';
 import { BuildingBlockService } from '../services/building-block.service';
-import { CacheService } from '../services/cache.service';
+import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { CameraService } from '../services/camera.service';
 import { ColorService } from '../services/color.service';
 import { CoordinateSystemService } from '../services/coordinate-system.service';
@@ -30,7 +30,6 @@ import { LoadingService } from '../services/loading.service';
 import { MappingService } from '../services/mapping.service';
 import { PositionService } from '../services/position.service';
 import { RenderService } from '../services/render.service';
-import { SceneService } from '../services/scene.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ViewService } from '../services/view.service';
@@ -46,7 +45,7 @@ import { DiffService } from '../services/diff.service';
   exports: [HarnessBrowser3dLibraryComponent],
   providers: [
     BuildingBlockService,
-    CacheService,
+    BordnetMeshService,
     CameraService,
     ColorService,
     CoordinateSystemService,
@@ -63,7 +62,6 @@ import { DiffService } from '../services/diff.service';
     PositionService,
     PreprocessService,
     RenderService,
-    SceneService,
     SelectionService,
     SettingsService,
     ViewService,

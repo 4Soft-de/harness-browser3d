@@ -38,6 +38,8 @@ import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
 import { EnableService } from '../services/enable.service';
 import Stats from 'stats.js';
+import { BordnetMeshService } from '../services/bordnet-mesh.service';
+import { LightsService } from '../services/lights.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -57,10 +59,12 @@ export class HarnessBrowser3dLibraryComponent
   constructor(
     private readonly ngZone: NgZone,
     private readonly api: HarnessBrowser3dLibraryAPI,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly enableService: EnableService,
     private readonly harnessService: HarnessService,
+    private readonly lightsService: LightsService,
     private readonly renderService: RenderService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
@@ -70,6 +74,7 @@ export class HarnessBrowser3dLibraryComponent
     this.renderService.initRenderer(this.canvasElement.nativeElement);
     this.renderService.resizeRendererToCanvasSize();
     this.cameraService.initControls(this.canvasElement.nativeElement);
+    this.lightsService.addLights(this.bordnetMeshService.getScene());
     this.initialized.emit(this.api);
     this.isInitialized = true;
     this.animate();

@@ -21,7 +21,7 @@ import { defaultView } from '../../views/default.view';
 import { View } from '../../views/view';
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { MappingService } from './mapping.service';
 
 @Injectable()
@@ -30,7 +30,7 @@ export class ViewService {
   private propertiesCache = new Map<string, Map<string, string>>();
 
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly mappingService: MappingService
   ) {}
 
@@ -41,7 +41,7 @@ export class ViewService {
   }
 
   public refreshView(): void {
-    const mesh = this.cacheService.getBordnetMesh();
+    const mesh = this.bordnetMeshService.getBordnetMesh();
     if (mesh && this.currentView.propertyKey) {
       mesh.geometry.deleteAttribute(this.currentView.propertyKey);
       this.applyMapping(this.currentView, false);
@@ -49,16 +49,17 @@ export class ViewService {
   }
 
   public setCurrentView(harnesses: Harness[]): void {
-    dispose(this.cacheService.getBordnetMesh()?.material);
+    dispose(this.bordnetMeshService.getBordnetMesh()?.material);
     this.readProperties(harnesses);
     this.applyMapping(
       this.currentView,
-      this.cacheService.getBordnetMesh()?.material !== this.currentView.material
+      this.bordnetMeshService.getBordnetMesh()?.material !==
+        this.currentView.material
     );
   }
 
   private applyMapping(view: View, setMaterial: boolean): void {
-    const mesh = this.cacheService.getBordnetMesh();
+    const mesh = this.bordnetMeshService.getBordnetMesh();
     if (mesh) {
       if (setMaterial) {
         mesh.material = view.material;
@@ -79,7 +80,7 @@ export class ViewService {
   }
 
   private removeView(view: View): void {
-    const mesh = this.cacheService.getBordnetMesh();
+    const mesh = this.bordnetMeshService.getBordnetMesh();
     if (mesh) {
       dispose(mesh.material);
       if (view.propertyKey) {

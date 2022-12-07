@@ -18,13 +18,13 @@
 import { Injectable } from '@angular/core';
 import { BufferGeometry } from 'three';
 import { VertexRange } from '../structs/range';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 
 @Injectable()
 export class MappingService {
   private mappingsCache = new Map<string, VertexRange>();
 
-  constructor(private readonly cacheService: CacheService) {}
+  constructor(private readonly bordnetMeshService: BordnetMeshService) {}
 
   /**
    * converts map into attribute array
@@ -48,7 +48,7 @@ export class MappingService {
   private initializeMap<PROPERTY>(
     defaultValue: PROPERTY
   ): Map<number, PROPERTY> {
-    const size = this.cacheService.getVerticesCount();
+    const size = this.bordnetMeshService.getVerticesCount();
     const map: Map<number, PROPERTY> = new Map();
     for (let i = 0; i < size; i++) {
       map.set(i, defaultValue);
@@ -71,7 +71,7 @@ export class MappingService {
   public addHarnessElementVertexMappings(
     harnessElementGeos: Map<string, BufferGeometry>
   ): void {
-    let index = this.cacheService.getVerticesCount();
+    let index = this.bordnetMeshService.getVerticesCount();
     for (let entry of harnessElementGeos) {
       const id = entry[0];
       const geo = entry[1];
