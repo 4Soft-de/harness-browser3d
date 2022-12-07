@@ -25,7 +25,7 @@ import { CurveService } from '../services/curve.service';
 import { DefaultGeometryCreationService } from '../services/default-geometries.service';
 import { GeometryService } from '../services/geometry.service';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
-import { HarnessService } from '../services/harness.service';
+import { AddHarnessesService } from '../services/add-harnesses.service';
 import { LoadingService } from '../services/loading.service';
 import { MappingService } from '../services/mapping.service';
 import { PositionService } from '../services/position.service';
@@ -44,6 +44,7 @@ import { DiffService } from '../services/diff.service';
   imports: [],
   exports: [HarnessBrowser3dLibraryComponent],
   providers: [
+    AddHarnessesService,
     BuildingBlockService,
     BordnetMeshService,
     CameraService,
@@ -55,7 +56,6 @@ import { DiffService } from '../services/diff.service';
     EnableService,
     GeometryService,
     HarnessBrowser3dLibraryAPI,
-    HarnessService,
     LightsService,
     LoadingService,
     MappingService,

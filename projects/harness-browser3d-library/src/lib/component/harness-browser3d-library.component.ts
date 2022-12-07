@@ -32,7 +32,7 @@ import { HarnessBrowser3dLibraryAPI } from '../../api/api';
 import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
 import { RenderService } from '../services/render.service';
 import { CameraService } from '../services/camera.service';
-import { HarnessService } from '../services/harness.service';
+import { AddHarnessesService } from '../services/add-harnesses.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
@@ -58,12 +58,12 @@ export class HarnessBrowser3dLibraryComponent
 
   constructor(
     private readonly ngZone: NgZone,
+    private readonly addHarnessesService: AddHarnessesService,
     private readonly api: HarnessBrowser3dLibraryAPI,
     private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly enableService: EnableService,
-    private readonly harnessService: HarnessService,
     private readonly lightsService: LightsService,
     private readonly renderService: RenderService,
     private readonly selectionService: SelectionService,
@@ -110,7 +110,7 @@ export class HarnessBrowser3dLibraryComponent
   @Input()
   set addHarnesses(harnesses: Harness[] | null | undefined) {
     this.checkInput(
-      this.harnessService.addHarnesses.bind(this.harnessService),
+      this.addHarnessesService.addHarnesses.bind(this.addHarnessesService),
       harnesses
     );
   }

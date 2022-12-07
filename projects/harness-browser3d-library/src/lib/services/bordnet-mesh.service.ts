@@ -15,29 +15,18 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { BufferGeometry, Mesh, Scene } from 'three';
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { SettingsService } from './settings.service';
 
 @Injectable()
-export class BordnetMeshService implements OnDestroy {
+export class BordnetMeshService {
   private bordnetMesh?: Mesh;
-
   private readonly scene: Scene;
-  private subscription: Subscription = new Subscription();
 
-  constructor(settingsService: SettingsService) {
+  constructor() {
     this.scene = new Scene();
-    this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(this.clear.bind(this))
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   public getBordnetGeo(): BufferGeometry | undefined {

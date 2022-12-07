@@ -34,7 +34,7 @@ import { GeometryModeAPIEnum } from '../../api/structs';
 import { DiffService } from './diff.service';
 
 @Injectable()
-export class HarnessService implements OnDestroy {
+export class AddHarnessesService implements OnDestroy {
   private loadedHarnesses = new Set<string>();
   private subscription: Subscription = new Subscription();
 
@@ -53,9 +53,7 @@ export class HarnessService implements OnDestroy {
     private readonly viewService: ViewService
   ) {
     this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(() => {
-        this.clear();
-      })
+      settingsService.updatedGeometrySettings.subscribe(this.clear.bind(this))
     );
   }
 
