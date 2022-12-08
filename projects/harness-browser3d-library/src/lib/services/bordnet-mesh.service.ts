@@ -41,18 +41,19 @@ export class BordnetMeshService {
     return this.bordnetMesh?.geometry?.attributes['position']?.count ?? 0;
   }
 
-  public addGeos(geos: Map<string, BufferGeometry>): void {
-    if (!geos.size) {
+  public addGeos(geos: BufferGeometry[]): void {
+    if (!geos.length) {
       console.error('geos are empty');
       return;
     }
-    const harnessGeos: BufferGeometry[] = [];
     if (this.bordnetMesh) {
       GeometryUtils.clean(this.bordnetMesh.geometry);
-      harnessGeos.push(this.bordnetMesh.geometry);
+      geos.unshift(this.bordnetMesh.geometry);
     }
-    geos.forEach((geo) => harnessGeos.push(geo));
-    const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
+    const mergedHarnessGeo = GeometryUtils.mergeGeos(geos);
+    if (this.bordnetMesh) {
+      geos.shift();
+    }
     this.bordnetMesh = new Mesh(mergedHarnessGeo);
     this.scene.add(this.bordnetMesh);
   }

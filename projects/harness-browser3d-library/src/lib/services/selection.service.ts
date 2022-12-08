@@ -54,10 +54,8 @@ export class SelectionService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public addGeos(geos: Map<string, BufferGeometry>) {
-    for (const entry of geos) {
-      this.harnessElementGeos.set(entry[0], entry[1]);
-    }
+  public addGeos(geos: BufferGeometry[]) {
+    geos.forEach((geo) => this.harnessElementGeos.set(geo.name, geo));
   }
 
   public clearGeos() {
@@ -65,7 +63,10 @@ export class SelectionService implements OnDestroy {
     this.harnessElementGeos.clear();
   }
 
-  public selectElements(ids: string[]) {
+  public selectElements(
+    ids: string[],
+    zoom: boolean = this.settingsService.zoomSelection
+  ) {
     this.resetMesh();
 
     const selectedObjects: BufferGeometry[] = [];
@@ -82,7 +83,7 @@ export class SelectionService implements OnDestroy {
       this.selectMesh = new Mesh(selectGeo, GeometryMaterial.selection);
       this.scene.add(this.selectMesh);
     }
-    if (this.settingsService.zoomSelection) {
+    if (zoom) {
       this.zoomSelection();
     }
   }

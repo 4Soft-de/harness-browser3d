@@ -69,16 +69,14 @@ export class MappingService {
    * The mapping is filled according to this information.
    */
   public addHarnessElementVertexMappings(
-    harnessElementGeos: Map<string, BufferGeometry>
+    harnessElementGeos: BufferGeometry[]
   ): void {
     let index = this.bordnetMeshService.getVerticesCount();
-    for (let entry of harnessElementGeos) {
-      const id = entry[0];
-      const geo = entry[1];
+    harnessElementGeos.forEach((geo) => {
       const newIndex = index + geo.attributes['position'].count;
-      this.mappingsCache.set(id, new VertexRange(index, newIndex - 1));
+      this.mappingsCache.set(geo.name, new VertexRange(index, newIndex - 1));
       index = newIndex;
-    }
+    });
   }
 
   public clear() {

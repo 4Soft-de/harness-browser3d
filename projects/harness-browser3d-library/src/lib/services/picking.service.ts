@@ -20,6 +20,7 @@ import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { BufferGeometry, Mesh, Raycaster, Scene, Vector2 } from 'three';
 import { getMousePosition } from '../utils/mouse-utils';
 import { CameraService } from './camera.service';
+import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 
 @Injectable()
@@ -27,12 +28,13 @@ export class PickingService implements OnDestroy {
   private mousePosition?: Vector2;
   private previousMousePosition?: Vector2;
   private previousHoverGeo?: BufferGeometry;
-  private readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();
+  private harnessElementGeos: BufferGeometry[] = [];
   private readonly scene = new Scene();
   private readonly subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
+    private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
     this.subscription.add(
@@ -60,19 +62,16 @@ export class PickingService implements OnDestroy {
     }
   }
 
-  public addGeos(geos: Map<string, BufferGeometry>) {
-    for (const entry of geos) {
-      const id = entry[0];
-      const geo = entry[1];
-      geo.name = id;
-      this.harnessElementGeos.set(id, geo);
+  public addGeos(geos: BufferGeometry[]) {
+    this.harnessElementGeos = geos;
+    geos.forEach((geo) => {
       this.scene.add(new Mesh(geo));
-    }
+    });
   }
 
   public clearGeos() {
     this.harnessElementGeos.forEach((geo) => geo.dispose());
-    this.harnessElementGeos.clear();
+    this.harnessElementGeos = [];
     this.clearMousePosition();
     this.scene.clear();
   }
@@ -149,6 +148,10 @@ export class PickingService implements OnDestroy {
 
   private pickGeo(geo?: BufferGeometry): void {
     if (geo) {
+      this.selectionService.selectElements(
+        [geo.name],
+        this.settingsService.zoomPicking
+      );
     }
   }
 }

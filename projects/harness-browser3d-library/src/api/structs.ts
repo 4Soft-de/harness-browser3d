@@ -26,8 +26,9 @@ export interface SettingsAPIStruct {
   pixelRatio?: number;
   backgroundColor?: Color;
   addHarnessResetCamera?: boolean;
-  zoomSelection?: boolean;
   enablePicking?: boolean;
+  zoomPicking?: boolean;
+  zoomSelection?: boolean;
 }
 
 export interface SetColorAPIStruct {

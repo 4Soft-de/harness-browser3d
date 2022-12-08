@@ -119,7 +119,7 @@ export class AddHarnessesService implements OnDestroy {
   }
 
   private createHarnessElementMappings(
-    harnessElementGeos: Map<string, BufferGeometry>
+    harnessElementGeos: BufferGeometry[]
   ): void {
     const harnessGeos: BufferGeometry[] = [];
     harnessElementGeos.forEach((geo) => harnessGeos.push(geo));
