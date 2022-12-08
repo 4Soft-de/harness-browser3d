@@ -27,6 +27,7 @@ import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
 import { CoordinateSystemService } from './coordinate-system.service';
 import { LightsService } from './lights.service';
+import { PickingService } from './picking.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 
@@ -49,6 +50,7 @@ export class RenderService implements OnDestroy {
     private readonly cameraService: CameraService,
     private readonly coordinateSystemService: CoordinateSystemService,
     private readonly lightsService: LightsService,
+    private readonly pickingService: PickingService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
@@ -119,6 +121,8 @@ export class RenderService implements OnDestroy {
     } else {
       console.error(ErrorUtils.isUndefined('controls'));
     }
+
+    this.pickingService.animate();
 
     if (this.postProcessor?.renderer) {
       this.postProcessor.renderer.clear();

@@ -27,6 +27,7 @@ export interface SettingsAPIStruct {
   backgroundColor?: Color;
   addHarnessResetCamera?: boolean;
   zoomSelection?: boolean;
+  enablePicking?: boolean;
 }
 
 export interface SetColorAPIStruct {

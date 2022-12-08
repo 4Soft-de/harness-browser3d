@@ -40,6 +40,7 @@ import { EnableService } from '../services/enable.service';
 import Stats from 'stats.js';
 import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { LightsService } from '../services/lights.service';
+import { PickingService } from '../services/picking.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -51,7 +52,7 @@ export class HarnessBrowser3dLibraryComponent
   implements AfterViewInit, OnDestroy
 {
   @ViewChild('harness3dBrowserCanvas')
-  private canvasElement!: ElementRef<HTMLCanvasElement>;
+  private canvasElementRef!: ElementRef<HTMLCanvasElement>;
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
   private isInitialized = false;
   private stats?: Stats;
@@ -65,15 +66,18 @@ export class HarnessBrowser3dLibraryComponent
     private readonly colorService: ColorService,
     private readonly enableService: EnableService,
     private readonly lightsService: LightsService,
+    private readonly pickingService: PickingService,
     private readonly renderService: RenderService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {}
 
   ngAfterViewInit(): void {
-    this.renderService.initRenderer(this.canvasElement.nativeElement);
+    const canvasElement = this.canvasElementRef.nativeElement;
+    this.renderService.initRenderer(canvasElement);
+    this.cameraService.initControls(canvasElement);
+    this.pickingService.initPickingEvents(canvasElement);
     this.renderService.resizeRendererToCanvasSize();
-    this.cameraService.initControls(this.canvasElement.nativeElement);
     this.lightsService.addLights(this.bordnetMeshService.getScene());
     this.initialized.emit(this.api);
     this.isInitialized = true;

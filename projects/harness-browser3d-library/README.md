@@ -136,3 +136,9 @@ https://www.ag-grid.com/angular-data-grid/grid-api/
 MIT License
 
 - component returns api object
+
+## Picking
+
+https://threejs.org/manual/#en/picking
+
+- compute normalized mouse positions

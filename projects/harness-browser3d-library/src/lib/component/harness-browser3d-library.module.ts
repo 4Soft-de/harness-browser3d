@@ -38,6 +38,7 @@ import { EnableService } from '../services/enable.service';
 import { PreprocessService } from '../services/preprocess.service';
 import { LightsService } from '../services/lights.service';
 import { DiffService } from '../services/diff.service';
+import { PickingService } from '../services/picking.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
@@ -59,6 +60,7 @@ import { DiffService } from '../services/diff.service';
     LightsService,
     LoadingService,
     MappingService,
+    PickingService,
     PositionService,
     PreprocessService,
     RenderService,

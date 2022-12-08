@@ -35,6 +35,7 @@ export class SettingsService implements SettingsAPIStruct {
   public backgroundColor = new Color(0xcccccc);
   public addHarnessResetCamera = true;
   public zoomSelection = true;
+  public enablePicking = true;
 
   public updatedGeometrySettings = new Subject<void>();
   public updatedCameraSettings = new Subject<void>();
