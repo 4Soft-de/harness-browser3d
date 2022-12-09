@@ -30,7 +30,7 @@ import {
 import { Harness } from '../../api/alias';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
 import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
-import { RenderService } from '../services/render.service';
+import { PassService } from '../services/pass.service';
 import { CameraService } from '../services/camera.service';
 import { AddHarnessesService } from '../services/add-harnesses.service';
 import { SelectionService } from '../services/selection.service';
@@ -41,6 +41,7 @@ import Stats from 'stats.js';
 import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { LightsService } from '../services/lights.service';
 import { PickingService } from '../services/picking.service';
+import { AnimateService } from '../services/animate.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -60,6 +61,7 @@ export class HarnessBrowser3dLibraryComponent
   constructor(
     private readonly ngZone: NgZone,
     private readonly addHarnessesService: AddHarnessesService,
+    private readonly animateService: AnimateService,
     private readonly api: HarnessBrowser3dLibraryAPI,
     private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
@@ -67,17 +69,16 @@ export class HarnessBrowser3dLibraryComponent
     private readonly enableService: EnableService,
     private readonly lightsService: LightsService,
     private readonly pickingService: PickingService,
-    private readonly renderService: RenderService,
+    private readonly passService: PassService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {}
 
   ngAfterViewInit(): void {
     const canvasElement = this.canvasElementRef.nativeElement;
-    this.renderService.initRenderer(canvasElement);
+    this.passService.initRenderer(canvasElement);
     this.cameraService.initControls(canvasElement);
     this.pickingService.initPickingEvents(canvasElement);
-    this.renderService.resizeRendererToCanvasSize();
     this.lightsService.addLights(this.bordnetMeshService.getScene());
     this.initialized.emit(this.api);
     this.isInitialized = true;
@@ -90,7 +91,8 @@ export class HarnessBrowser3dLibraryComponent
 
   private animateImplementation() {
     this.stats?.begin();
-    this.renderService.mainLoop();
+    this.animateService.animate();
+    this.passService.render();
     this.stats?.end();
     requestAnimationFrame(() => this.animateImplementation());
   }

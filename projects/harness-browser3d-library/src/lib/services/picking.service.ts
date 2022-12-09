@@ -17,23 +17,35 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { debounceTime, fromEvent, Subscription } from 'rxjs';
-import { BufferGeometry, Mesh, Raycaster, Scene, Vector2 } from 'three';
+import {
+  BufferGeometry,
+  Mesh,
+  NormalBlending,
+  Raycaster,
+  Scene,
+  Vector2,
+} from 'three';
 import { getMousePosition } from '../utils/mouse-utils';
 import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+import { PassService } from './pass.service';
+import { GeometryColors } from '../structs/colors';
 
 @Injectable()
 export class PickingService implements OnDestroy {
   private mousePosition?: Vector2;
   private previousMousePosition?: Vector2;
-  private previousHoverGeo?: BufferGeometry;
+  private previousHoverName?: string;
+  private outlinePass?: OutlinePass;
   private harnessElementGeos: BufferGeometry[] = [];
   private readonly scene = new Scene();
   private readonly subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
+    private readonly passService: PassService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
@@ -42,6 +54,12 @@ export class PickingService implements OnDestroy {
         this.clearGeos.bind(this)
       )
     );
+
+    if (this.settingsService.enablePicking) {
+      this.subscription.add(
+        passService.getSize().subscribe(this.initPass.bind(this))
+      );
+    }
   }
 
   ngOnDestroy(): void {
@@ -58,7 +76,7 @@ export class PickingService implements OnDestroy {
   public animate() {
     if (this.mousePosition !== this.previousMousePosition) {
       this.previousMousePosition = this.mousePosition;
-      this.hoverGeo(this.determineGeo(this.mousePosition));
+      this.hoverMesh(this.determineMesh(this.mousePosition));
     }
   }
 
@@ -79,7 +97,7 @@ export class PickingService implements OnDestroy {
   private initMouseEvents(canvas: HTMLCanvasElement): void {
     this.addEventListener(canvas, 'click', (event) => {
       const pos = getMousePosition(event, canvas);
-      this.pickGeo(this.determineGeo(pos));
+      this.pickMesh(this.determineMesh(pos));
     });
     this.addEventListener(
       canvas,
@@ -102,7 +120,7 @@ export class PickingService implements OnDestroy {
     this.addEventListener(canvas, 'touchstart', (event) => {
       event.preventDefault();
       const pos = getMousePosition(event, canvas);
-      this.pickGeo(this.determineGeo(pos));
+      this.pickMesh(this.determineMesh(pos));
     });
     this.addEventListener(
       canvas,
@@ -126,30 +144,59 @@ export class PickingService implements OnDestroy {
     );
   }
 
+  private initPass(size: Vector2): void {
+    if (this.outlinePass) {
+      this.outlinePass.resolution = size;
+    } else {
+      this.outlinePass = new OutlinePass(
+        size,
+        this.scene,
+        this.cameraService.getCamera()
+      );
+
+      this.outlinePass.edgeStrength = 100;
+      this.outlinePass.edgeGlow = 0;
+      this.outlinePass.edgeThickness = 1;
+      this.outlinePass.visibleEdgeColor = GeometryColors.selection;
+      this.outlinePass.hiddenEdgeColor = GeometryColors.selection;
+      this.outlinePass.overlayMaterial.blending = NormalBlending;
+
+      this.passService.addPass(this.outlinePass);
+    }
+  }
+
   private clearMousePosition(): void {
     this.mousePosition = undefined;
   }
 
-  private determineGeo(pos: Vector2 | undefined): BufferGeometry | undefined {
+  private determineMesh(pos: Vector2 | undefined): Mesh | undefined {
     if (pos) {
       const raycaster = new Raycaster();
       raycaster.setFromCamera(pos, this.cameraService.getCamera());
       const intersection = raycaster.intersectObjects(this.scene.children)[0];
-      return (intersection?.object as Mesh).geometry;
+      return intersection?.object as Mesh;
     }
     return undefined;
   }
 
-  private hoverGeo(geo?: BufferGeometry): void {
-    if (geo && geo.name !== this.previousHoverGeo?.name) {
-      this.previousHoverGeo = geo;
+  private hoverMesh(mesh?: Mesh): void {
+    if (mesh) {
+      if (mesh.geometry.name !== this.previousHoverName) {
+        this.previousHoverName = mesh.geometry.name;
+        if (this.outlinePass) {
+          this.outlinePass.selectedObjects = [mesh];
+        }
+      }
+    } else if (this.outlinePass) {
+      this.previousHoverName = undefined;
+      this.outlinePass.selectedObjects = [];
     }
   }
 
-  private pickGeo(geo?: BufferGeometry): void {
-    if (geo) {
+  private pickMesh(mesh?: Mesh): void {
+    if (mesh) {
       this.selectionService.selectElements(
-        [geo.name],
+        [mesh.geometry.name],
         this.settingsService.zoomPicking
       );
     }

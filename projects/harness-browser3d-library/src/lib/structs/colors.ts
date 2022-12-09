@@ -27,6 +27,7 @@ export class GeometryColors {
   public static readonly protection = new Color(0x3b3b3b);
   public static readonly notFound = new Color('black');
   public static readonly empty = new Color(0, 0, 0);
+  public static readonly selection = new Color('orange');
 
   public static getColor(type: string) {
     switch (PartType[type as keyof typeof PartType]) {

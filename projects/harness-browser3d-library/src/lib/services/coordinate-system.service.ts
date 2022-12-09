@@ -18,6 +18,7 @@
 import { Injectable } from '@angular/core';
 import {
   AxesHelper,
+  Camera,
   PerspectiveCamera,
   Scene,
   Vector2,
@@ -25,28 +26,16 @@ import {
   Vector4,
   WebGLRenderer,
 } from 'three';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 import { CameraService } from './camera.service';
+import { PassService } from './pass.service';
 
-@Injectable()
-export class CoordinateSystemService {
-  private axesHelper: AxesHelper;
-  private axesScene: Scene;
-  private axesCamera: PerspectiveCamera;
-
-  constructor(private readonly cameraService: CameraService) {
-    const mainCamera = this.cameraService.getCamera();
-    const size = new Vector3(1, 0, 0)
-      .unproject(mainCamera)
-      .sub(new Vector3(-1, 0, 0).unproject(mainCamera))
-      .length();
-
-    this.axesHelper = new AxesHelper(size);
-    this.axesScene = new Scene();
-    this.axesScene.add(this.axesHelper);
-    this.axesCamera = new PerspectiveCamera(50, 1, 0.1, 1 + size);
+class CoordinateSystemPass extends Pass {
+  constructor(private readonly scene: Scene, private readonly camera: Camera) {
+    super();
   }
 
-  render(renderer: WebGLRenderer) {
+  public override render(renderer: WebGLRenderer) {
     const oldViewport = renderer.getViewport(new Vector4());
     const oldScissor = renderer.getScissor(new Vector4());
 
@@ -56,14 +45,40 @@ export class CoordinateSystemService {
     renderer.setScissor(dimension);
 
     renderer.setScissorTest(true);
-    renderer.render(this.axesScene, this.axesCamera);
+    renderer.render(this.scene, this.camera);
     renderer.setScissorTest(false);
 
     renderer.setViewport(oldViewport);
     renderer.setScissor(oldScissor);
   }
+}
 
-  animate(target: Vector3) {
+@Injectable()
+export class CoordinateSystemService {
+  private axesHelper: AxesHelper;
+  private axesCamera: PerspectiveCamera;
+
+  constructor(
+    private readonly cameraService: CameraService,
+    passService: PassService
+  ) {
+    const mainCamera = this.cameraService.getCamera();
+    const size = new Vector3(1, 0, 0)
+      .unproject(mainCamera)
+      .sub(new Vector3(-1, 0, 0).unproject(mainCamera))
+      .length();
+
+    this.axesHelper = new AxesHelper(size);
+    this.axesCamera = new PerspectiveCamera(50, 1, 0.1, 1 + size);
+
+    const axesScene = new Scene();
+    axesScene.add(this.axesHelper);
+
+    passService.addPass(new CoordinateSystemPass(axesScene, this.axesCamera));
+  }
+
+  public animate(): void {
+    const target = this.cameraService.getControls()?.target ?? new Vector3();
     const mainCamera = this.cameraService.getCamera();
     this.axesCamera.rotation.copy(mainCamera.rotation);
     const position = mainCamera.position.clone().sub(target).normalize();

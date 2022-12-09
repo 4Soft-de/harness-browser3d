@@ -29,7 +29,7 @@ import { AddHarnessesService } from '../services/add-harnesses.service';
 import { LoadingService } from '../services/loading.service';
 import { MappingService } from '../services/mapping.service';
 import { PositionService } from '../services/position.service';
-import { RenderService } from '../services/render.service';
+import { PassService } from '../services/pass.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ViewService } from '../services/view.service';
@@ -39,6 +39,7 @@ import { PreprocessService } from '../services/preprocess.service';
 import { LightsService } from '../services/lights.service';
 import { DiffService } from '../services/diff.service';
 import { PickingService } from '../services/picking.service';
+import { AnimateService } from '../services/animate.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
@@ -46,6 +47,7 @@ import { PickingService } from '../services/picking.service';
   exports: [HarnessBrowser3dLibraryComponent],
   providers: [
     AddHarnessesService,
+    AnimateService,
     BuildingBlockService,
     BordnetMeshService,
     CameraService,
@@ -63,7 +65,7 @@ import { PickingService } from '../services/picking.service';
     PickingService,
     PositionService,
     PreprocessService,
-    RenderService,
+    PassService,
     SelectionService,
     SettingsService,
     ViewService,
