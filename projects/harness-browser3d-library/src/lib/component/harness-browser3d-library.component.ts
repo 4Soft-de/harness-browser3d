@@ -42,6 +42,7 @@ import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { LightsService } from '../services/lights.service';
 import { PickingService } from '../services/picking.service';
 import { AnimateService } from '../services/animate.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -55,8 +56,10 @@ export class HarnessBrowser3dLibraryComponent
   @ViewChild('harness3dBrowserCanvas')
   private canvasElementRef!: ElementRef<HTMLCanvasElement>;
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
+  @Output() pickedIds = new EventEmitter<string[]>();
   private isInitialized = false;
   private stats?: Stats;
+  private readonly subscription = new Subscription();
 
   constructor(
     private readonly ngZone: NgZone,
@@ -83,10 +86,16 @@ export class HarnessBrowser3dLibraryComponent
     this.initialized.emit(this.api);
     this.isInitialized = true;
     this.animate();
+
+    const sub = this.pickingService
+      .getPickedIds()
+      .subscribe((ids) => this.pickedIds.emit(ids));
+    this.subscription.add(sub);
   }
 
   ngOnDestroy(): void {
     this.api.clear();
+    this.subscription.unsubscribe();
   }
 
   private animateImplementation() {

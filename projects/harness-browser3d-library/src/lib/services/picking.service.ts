@@ -16,7 +16,13 @@
 */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { debounceTime, fromEvent, Subscription } from 'rxjs';
+import {
+  debounceTime,
+  fromEvent,
+  Observable,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import {
   BufferGeometry,
   Mesh,
@@ -41,6 +47,7 @@ export class PickingService implements OnDestroy {
   private outlinePass?: OutlinePass;
   private harnessElementGeos: BufferGeometry[] = [];
   private readonly scene = new Scene();
+  private readonly pickedIds$ = new Subject<string[]>();
   private readonly subscription = new Subscription();
 
   constructor(
@@ -56,9 +63,8 @@ export class PickingService implements OnDestroy {
     );
 
     if (this.settingsService.enablePicking) {
-      this.subscription.add(
-        passService.getSize().subscribe(this.initPass.bind(this))
-      );
+      const sub = passService.getSize().subscribe(this.initPass.bind(this));
+      this.subscription.add(sub);
     }
   }
 
@@ -92,6 +98,10 @@ export class PickingService implements OnDestroy {
     this.harnessElementGeos = [];
     this.clearMousePosition();
     this.scene.clear();
+  }
+
+  public getPickedIds(): Observable<string[]> {
+    return this.pickedIds$;
   }
 
   private initMouseEvents(canvas: HTMLCanvasElement): void {
@@ -195,10 +205,12 @@ export class PickingService implements OnDestroy {
 
   private pickMesh(mesh?: Mesh): void {
     if (mesh) {
+      const id = mesh.geometry.name;
       this.selectionService.selectElements(
-        [mesh.geometry.name],
+        [id],
         this.settingsService.zoomPicking
       );
+      this.pickedIds$.next([id]);
     }
   }
 }
