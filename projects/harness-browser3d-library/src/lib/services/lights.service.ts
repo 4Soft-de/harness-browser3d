@@ -27,8 +27,9 @@ export class LightsService {
     scene.add(ambientLight);
   }
 
-  public animate(target: Vector3) {
+  public animate() {
     const camera = this.cameraService.getCamera();
+    const target = this.cameraService.getControls()?.target ?? new Vector3();
 
     const axis = new Vector3(0, 1, 0)
       .unproject(camera)

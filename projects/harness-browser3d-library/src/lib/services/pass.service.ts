@@ -16,40 +16,28 @@
 */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Camera, Scene, WebGLRenderer } from 'three';
+import { Subject, Subscription } from 'rxjs';
+import { Renderer, Vector2, WebGLRenderer } from 'three';
 import {
   EffectComposer,
   Pass,
 } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ErrorUtils } from '../utils/error-utils';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
-import { CoordinateSystemService } from './coordinate-system.service';
-import { LightsService } from './lights.service';
-import { SceneService } from './scene.service';
-import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 
-class DefaultPass extends Pass {
-  constructor(private readonly scene: Scene, private readonly camera: Camera) {
-    super();
-  }
-  public override render(renderer: WebGLRenderer) {
-    renderer.render(this.scene, this.camera);
-  }
-}
-
 @Injectable()
-export class RenderService implements OnDestroy {
+export class PassService implements OnDestroy {
   private postProcessor?: EffectComposer;
+  private addedPasses: Pass[] = [];
   private subscription: Subscription = new Subscription();
+  private size$: Subject<Vector2> = new Subject();
 
   constructor(
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
-    private readonly coordinateSystemService: CoordinateSystemService,
-    private readonly lightsService: LightsService,
-    private readonly sceneService: SceneService,
-    private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
     this.subscription.add(
@@ -62,28 +50,42 @@ export class RenderService implements OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  initRenderer(canvas: HTMLCanvasElement): void {
+  public initRenderer(canvas: HTMLCanvasElement): void {
     const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
     renderer.setClearColor(this.settingsService.backgroundColor);
     renderer.autoClear = false;
     this.postProcessor = new EffectComposer(renderer);
-    this.postProcessor.addPass(
-      new DefaultPass(
-        this.sceneService.getScene(),
+    this.resizeRendererToCanvasSize();
+    this.addedPasses.unshift(
+      new RenderPass(
+        this.bordnetMeshService.getScene(),
         this.cameraService.getCamera()
       )
     );
+    this.addedPasses.forEach((pass, index) => {
+      pass.renderToScreen = index === this.addedPasses.length - 1;
+      pass.clear = index === 0;
+      this.postProcessor!.addPass(pass);
+    });
   }
 
-  public getRenderer() {
+  public getRenderer(): Renderer | undefined {
     return this.postProcessor?.renderer;
   }
 
-  public resizeRendererToCanvasSize() {
+  public getSize(): Subject<Vector2> {
+    return this.size$;
+  }
+
+  public addPass(pass: Pass): void {
+    this.addedPasses.push(pass);
+  }
+
+  public resizeRendererToCanvasSize(): void {
     if (this.postProcessor?.renderer) {
       const canvas = this.postProcessor.renderer.domElement;
       const width = canvas.clientWidth;
@@ -93,12 +95,17 @@ export class RenderService implements OnDestroy {
       this.cameraService.getCamera().updateProjectionMatrix();
 
       this.setResolution(width, height);
+      this.size$.next(new Vector2(width, height));
     } else {
       console.error(ErrorUtils.isUndefined('renderer or composer'));
     }
   }
 
-  private setResolution(width: number, height: number) {
+  public render(): void {
+    this.postProcessor?.render();
+  }
+
+  private setResolution(width: number, height: number): void {
     if (this.postProcessor?.renderer) {
       this.postProcessor.renderer.setPixelRatio(
         this.settingsService.pixelRatio
@@ -106,28 +113,6 @@ export class RenderService implements OnDestroy {
       this.postProcessor.renderer.setSize(width, height, false);
       this.postProcessor.setPixelRatio(this.settingsService.pixelRatio);
       this.postProcessor.setSize(width, height);
-    }
-  }
-
-  public mainLoop() {
-    const controls = this.cameraService.getControls();
-
-    if (controls) {
-      controls.update();
-      this.coordinateSystemService.animate(controls.target);
-      this.lightsService.animate(controls.target);
-    } else {
-      console.error(ErrorUtils.isUndefined('controls'));
-    }
-
-    if (this.postProcessor?.renderer) {
-      this.postProcessor.renderer.clear();
-      this.postProcessor.render();
-      this.postProcessor.renderer.clearDepth();
-      this.selectionService.render(this.postProcessor.renderer);
-      this.coordinateSystemService.render(this.postProcessor.renderer);
-    } else {
-      console.error(ErrorUtils.isUndefined('renderer or composer'));
     }
   }
 }

@@ -35,6 +35,7 @@ import {
   Occurrence,
   Harness,
   Bordnet,
+  BuildingBlock,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -73,7 +74,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   displayedColumns: string[] = ['actions', 'module'];
   dataSource = this.initializeDataSource();
-  selection: HarnessElement[] = [];
+  selection: string[] = [];
+  pick: string[] = [];
 
   selectableBordnets: BordnetSelectionStruct[];
   uploadedBordnet: BordnetSelectionStruct = new BordnetSelectionStruct(
@@ -177,15 +179,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     ) {
       return;
     }
-    const index = this.selection.indexOf(row);
+    const index = this.selection.indexOf(row.id);
     if (index > -1) {
       this.selection.splice(index, 1);
     } else {
-      this.selection.push(row);
+      this.selection.push(row.id);
     }
 
+    this.pick.forEach((id) => this.selection.push(id));
+    this.pick = [];
+
     if (this.selection.length > 0) {
-      this.selectedIds$.next(this.selection.map((module) => module.id));
+      this.selectedIds$.next(this.selection.map((id) => id));
     } else {
       this.selectedIds$.next([]);
     }
@@ -206,6 +211,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   resetSelection() {
     this.selectedIds$.next([]);
     this.selection = [];
+    this.pick = [];
   }
 
   geometry(event: MatSlideToggleChange) {
@@ -220,8 +226,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   set selectedBordnet(selectedBordnet: BordnetSelectionStruct | undefined) {
     if (selectedBordnet?.bordnet) {
       selectedBordnet.bordnet.harnesses
-        .flatMap((harness) => harness.buildingBlocks)
-        .forEach((buildingBlock) => {
+        .flatMap((harness: Harness) => harness.buildingBlocks)
+        .forEach((buildingBlock: BuildingBlock) => {
           if (!buildingBlock.position) {
             buildingBlock.position = { x: 0, y: 0, z: 0 };
           }
@@ -249,6 +255,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   addAPI(api: HarnessBrowser3dLibraryAPI) {
     this.api = api;
+  }
+
+  pickIds(ids: string[]) {
+    this.pick = ids;
+    this.selection = [];
   }
 
   setToColor1(module: HarnessElement) {

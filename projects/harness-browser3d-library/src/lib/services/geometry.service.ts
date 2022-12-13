@@ -69,8 +69,8 @@ export class GeometryService {
     this.defaultFixings = this.defaultGeometryCreationService.fixing;
   }
 
-  public processHarnesses(harnesses: Harness[]): Map<string, BufferGeometry> {
-    const geos = new Map<string, BufferGeometry>();
+  public processHarnesses(harnesses: Harness[]): BufferGeometry[] {
+    const geos: BufferGeometry[] = [];
     harnesses.forEach((harness) => {
       harness.nodes.forEach((node) => this.nodes.set(node.id, node));
       harness.segments.forEach(this.cacheSegment.bind(this));
@@ -122,24 +122,21 @@ export class GeometryService {
     );
   }
 
-  private positionGeometries(
-    harness: Harness,
-    result: Map<string, BufferGeometry>
-  ): void {
+  private positionGeometries(harness: Harness, result: BufferGeometry[]): void {
+    function addGeo(id: string, geo?: BufferGeometry) {
+      if (geo) {
+        geo.name = id;
+        result.push(geo);
+      }
+    }
     harness.nodes.forEach((node) => {
-      result.set(node.id, this.processNode(node));
+      addGeo(node.id, this.processNode(node));
     });
     harness.segments.forEach((segment) => {
-      const geo = this.processSegment(segment);
-      if (geo) {
-        result.set(segment.id, geo);
-      }
+      addGeo(segment.id, this.processSegment(segment));
     });
     harness.occurrences.forEach((occurrence) => {
-      const geo = this.processOccurrence(occurrence);
-      if (geo) {
-        result.set(occurrence.id, geo);
-      }
+      addGeo(occurrence.id, this.processOccurrence(occurrence));
     });
   }
 

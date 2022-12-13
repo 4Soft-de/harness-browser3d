@@ -20,44 +20,47 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
-import { BufferGeometry, Mesh, Scene, WebGLRenderer } from 'three';
+import { BufferGeometry, Mesh, Scene } from 'three';
 import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { dispose } from '../utils/dispose-utils';
 import { LightsService } from './lights.service';
+import { PassService } from './pass.service';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 
 @Injectable()
 export class SelectionService implements OnDestroy {
-  private scene: Scene;
-  private selectMesh: Mesh | undefined;
+  private scene: Scene = new Scene();
+  private selectMesh?: Mesh;
   private readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();
   private subscription: Subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
     lightsService: LightsService,
+    passService: PassService,
     private readonly settingsService: SettingsService
   ) {
-    this.scene = new Scene();
     lightsService.addLights(this.scene);
+    const pass = new RenderPass(this.scene, this.cameraService.getCamera());
+    pass.clearDepth = true;
+    passService.addPass(pass);
 
     this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(() => {
+      this.settingsService.updatedGeometrySettings.subscribe(() => {
         this.clearGeos();
         this.resetMesh();
       })
     );
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.resetMesh();
     this.subscription.unsubscribe();
   }
 
-  public addGeos(geos: Map<string, BufferGeometry>) {
-    for (const entry of geos) {
-      this.harnessElementGeos.set(entry[0], entry[1]);
-    }
+  public addGeos(geos: BufferGeometry[]) {
+    geos.forEach((geo) => this.harnessElementGeos.set(geo.name, geo));
   }
 
   public clearGeos() {
@@ -65,7 +68,10 @@ export class SelectionService implements OnDestroy {
     this.harnessElementGeos.clear();
   }
 
-  public selectElements(ids: string[]) {
+  public selectElements(
+    ids: string[],
+    zoom: boolean = this.settingsService.zoomSelection
+  ) {
     this.resetMesh();
 
     const selectedObjects: BufferGeometry[] = [];
@@ -82,7 +88,7 @@ export class SelectionService implements OnDestroy {
       this.selectMesh = new Mesh(selectGeo, GeometryMaterial.selection);
       this.scene.add(this.selectMesh);
     }
-    if (this.settingsService.zoomSelection) {
+    if (zoom) {
       this.zoomSelection();
     }
   }
@@ -101,9 +107,5 @@ export class SelectionService implements OnDestroy {
     } else {
       this.cameraService.resetCamera();
     }
-  }
-
-  render(renderer: WebGLRenderer) {
-    renderer.render(this.scene, this.cameraService.getCamera());
   }
 }

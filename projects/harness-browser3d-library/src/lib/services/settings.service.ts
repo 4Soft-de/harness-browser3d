@@ -34,6 +34,8 @@ export class SettingsService implements SettingsAPIStruct {
   public curveStepsFactor = 0.1;
   public backgroundColor = new Color(0xcccccc);
   public addHarnessResetCamera = true;
+  public enablePicking = true;
+  public zoomPicking = false;
   public zoomSelection = true;
 
   public updatedGeometrySettings = new Subject<void>();

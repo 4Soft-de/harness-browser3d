@@ -16,14 +16,18 @@
 */
 
 import { Injectable } from '@angular/core';
-import { BufferGeometry, Mesh } from 'three';
+import { BufferGeometry, Mesh, Scene } from 'three';
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 
 @Injectable()
-export class CacheService {
-  public readonly bordnetMeshName = 'bordnet_mesh';
+export class BordnetMeshService {
   private bordnetMesh?: Mesh;
+  private readonly scene: Scene;
+
+  constructor() {
+    this.scene = new Scene();
+  }
 
   public getBordnetGeo(): BufferGeometry | undefined {
     return this.bordnetMesh?.geometry;
@@ -37,26 +41,32 @@ export class CacheService {
     return this.bordnetMesh?.geometry?.attributes['position']?.count ?? 0;
   }
 
-  public addGeos(geos: Map<string, BufferGeometry>): void {
-    if (!geos.size) {
+  public addGeos(geos: BufferGeometry[]): void {
+    if (!geos.length) {
       console.error('geos are empty');
       return;
     }
-    const harnessGeos: BufferGeometry[] = [];
     if (this.bordnetMesh) {
       GeometryUtils.clean(this.bordnetMesh.geometry);
-      harnessGeos.push(this.bordnetMesh.geometry);
+      geos.unshift(this.bordnetMesh.geometry);
     }
-    geos.forEach((geo) => harnessGeos.push(geo));
-    const mergedHarnessGeo = GeometryUtils.mergeGeos(harnessGeos);
+    const mergedHarnessGeo = GeometryUtils.mergeGeos(geos);
+    if (this.bordnetMesh) {
+      geos.shift();
+    }
     this.bordnetMesh = new Mesh(mergedHarnessGeo);
-    this.bordnetMesh.name = this.bordnetMeshName;
+    this.scene.add(this.bordnetMesh);
   }
 
   public clear(): void {
     if (this.bordnetMesh) {
       dispose(this.bordnetMesh);
+      this.scene.remove(this.bordnetMesh);
       this.bordnetMesh = undefined;
     }
+  }
+
+  public getScene() {
+    return this.scene;
   }
 }
