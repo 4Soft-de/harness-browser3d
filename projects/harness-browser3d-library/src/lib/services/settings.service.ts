@@ -33,13 +33,16 @@ export class SettingsService implements SettingsAPIStruct {
   public segmentCount = 15;
   public curveStepsFactor = 0.1;
   public backgroundColor = new Color(0xcccccc);
+  public hoverColor = new Color('white');
   public addHarnessResetCamera = true;
-  public enablePicking = true;
   public zoomPicking = false;
   public zoomSelection = true;
+  // cannot be changed after init
+  public enablePicking = true;
 
   public updatedGeometrySettings = new Subject<void>();
   public updatedCameraSettings = new Subject<void>();
+  public updatedPickingSettings = new Subject<void>();
 
   private updatedSettings: string[] = [];
 
@@ -62,11 +65,17 @@ export class SettingsService implements SettingsAPIStruct {
     const cameraSetting = this.updatedSettings.find(
       (element) => element === 'pixelRatio' || element === 'backgroundColor'
     );
+    const pickingSettings = this.updatedSettings.find(
+      (element) => element === 'hoverColor' || element === 'zoomPicking'
+    );
     if (geoSetting) {
       this.updatedGeometrySettings.next();
     }
     if (cameraSetting) {
       this.updatedCameraSettings.next();
+    }
+    if (pickingSettings) {
+      this.updatedPickingSettings.next();
     }
     this.updatedSettings = [];
   }

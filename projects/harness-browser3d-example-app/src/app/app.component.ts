@@ -46,7 +46,6 @@ import {
   ViewSelectionStruct,
 } from '../structs';
 import { Subject, Subscription } from 'rxjs';
-import { Color } from 'three';
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
 
 type HarnessElement = Node | Segment | Occurrence;
@@ -68,7 +67,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   enableIds$: Subject<string[]> = new Subject();
   colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
   settings: SettingsAPIStruct = {
-    backgroundColor: new Color('white'),
     geometryParser: (data: string) => new VRMLLoader().parse(data, ''),
   };
 

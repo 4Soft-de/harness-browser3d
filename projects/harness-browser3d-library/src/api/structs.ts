@@ -25,10 +25,13 @@ export interface SettingsAPIStruct {
   curveStepsFactor?: number;
   pixelRatio?: number;
   backgroundColor?: Color;
+  hoverColor?: Color;
   addHarnessResetCamera?: boolean;
-  enablePicking?: boolean;
   zoomPicking?: boolean;
   zoomSelection?: boolean;
+
+  // cannot be changed after init
+  enablePicking?: boolean;
 }
 
 export interface SetColorAPIStruct {

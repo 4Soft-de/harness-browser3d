@@ -37,7 +37,6 @@ import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
 import { PassService } from './pass.service';
-import { GeometryColors } from '../structs/colors';
 
 @Injectable()
 export class PickingService implements OnDestroy {
@@ -56,14 +55,16 @@ export class PickingService implements OnDestroy {
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
-    this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(
-        this.clearGeos.bind(this)
-      )
-    );
+    let sub = settingsService.updatedPickingSettings.subscribe(() => {
+      if (this.outlinePass) {
+        this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
+        this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
+      }
+    });
+    this.subscription.add(sub);
 
     if (this.settingsService.enablePicking) {
-      const sub = passService.getSize().subscribe(this.initPass.bind(this));
+      sub = passService.getSize().subscribe(this.initPass.bind(this));
       this.subscription.add(sub);
     }
   }
@@ -167,8 +168,8 @@ export class PickingService implements OnDestroy {
       this.outlinePass.edgeStrength = 100;
       this.outlinePass.edgeGlow = 0;
       this.outlinePass.edgeThickness = 1;
-      this.outlinePass.visibleEdgeColor = GeometryColors.selection;
-      this.outlinePass.hiddenEdgeColor = GeometryColors.selection;
+      this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
+      this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
       this.outlinePass.overlayMaterial.blending = NormalBlending;
 
       this.passService.addPass(this.outlinePass);
