@@ -12,6 +12,7 @@ A high performance angular component for displaying 3D representations of bordne
   [settings]="settings"
   [showStats]="htmlElement"
   (initialized)="addAPI($event)"
+  (pickedIds)="pickIds($event)"
 ></lib-harness-browser3d>
 ```
 
@@ -25,6 +26,10 @@ class AppComponent {
 
   addAPI(api: HarnessBrowser3dLibraryAPI) {
     this.api = api;
+  }
+
+  pickIds(ids: string[]) {
+    this.pickedIds = ids;
   }
 }
 ```
@@ -40,6 +45,10 @@ Harness has been generated from `assets\geometry-api.yaml`.
 ### Select Ids
 
 Select harness elements by inserting an array of harness element ids into the `selectedIds` property.
+
+### Pick Ids
+
+Click on harness element geometries to pick them. Picking harness elements also selects them. Ids of the picked harness elements are passed in the `pickedIds` event.
 
 ### Set Colors
 
