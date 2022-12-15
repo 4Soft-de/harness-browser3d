@@ -67,28 +67,22 @@ export class EffectComposerService implements OnDestroy {
   public resizeRendererToCanvasSize(): void {
     if (this.effectComposer?.renderer) {
       const canvas = this.effectComposer.renderer.domElement;
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
+
+      let width = canvas.clientWidth;
+      let height = canvas.clientHeight;
 
       this.cameraService.getCamera().aspect = width / height;
       this.cameraService.getCamera().updateProjectionMatrix();
 
-      this.setResolution(width, height);
+      width *= this.settingsService.pixelRatio;
+      height *= this.settingsService.pixelRatio;
+
+      this.effectComposer.renderer.setSize(width, height, false);
+      this.effectComposer.setSize(width, height);
     }
   }
 
   public render(): void {
     this.effectComposer?.render();
-  }
-
-  private setResolution(width: number, height: number): void {
-    if (this.effectComposer?.renderer) {
-      this.effectComposer.renderer.setPixelRatio(
-        this.settingsService.pixelRatio
-      );
-      this.effectComposer.renderer.setSize(width, height, false);
-      this.effectComposer.setPixelRatio(this.settingsService.pixelRatio);
-      this.effectComposer.setSize(width, height);
-    }
   }
 }

@@ -24,6 +24,7 @@ export interface SettingsAPIStruct {
   segmentCount?: number;
   curveStepsFactor?: number;
   pixelRatio?: number;
+  enableAntiAliasing?: boolean;
   backgroundColor?: Color;
   hoverColor?: Color;
   addHarnessResetCamera?: boolean;

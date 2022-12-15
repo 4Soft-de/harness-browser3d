@@ -30,6 +30,7 @@ export class SettingsService implements SettingsAPIStruct {
   public geometryParser?: (data: string) => Scene = undefined;
   public splineMode = SplineModeAPIEnum.unclamped;
   public pixelRatio = window.devicePixelRatio;
+  public enableAntiAliasing = true;
   public segmentCount = 15;
   public curveStepsFactor = 0.1;
   public backgroundColor = new Color(0xcccccc);
@@ -63,7 +64,10 @@ export class SettingsService implements SettingsAPIStruct {
         element === 'curveStepsFactor'
     );
     const cameraSetting = this.updatedSettings.find(
-      (element) => element === 'pixelRatio' || element === 'backgroundColor'
+      (element) =>
+        element === 'pixelRatio' ||
+        element === 'enableAntiAliasing' ||
+        element === 'backgroundColor'
     );
     const pickingSettings = this.updatedSettings.find(
       (element) => element === 'hoverColor' || element === 'zoomPicking'
