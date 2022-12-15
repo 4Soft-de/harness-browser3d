@@ -36,14 +36,14 @@ import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
-import { PassService } from './pass.service';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 
 @Injectable()
 export class PickingService implements OnDestroy {
   private mousePosition?: Vector2;
   private previousMousePosition?: Vector2;
   private previousHoverName?: string;
-  private outlinePass?: OutlinePass;
+  private outlinePass: OutlinePass;
   private harnessElementGeos: BufferGeometry[] = [];
   private readonly scene = new Scene();
   private readonly pickedIds$ = new Subject<string[]>();
@@ -51,22 +51,15 @@ export class PickingService implements OnDestroy {
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly passService: PassService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
+    this.outlinePass = this.initPass();
     let sub = settingsService.updatedPickingSettings.subscribe(() => {
-      if (this.outlinePass) {
-        this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
-        this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
-      }
+      this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
+      this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
     });
     this.subscription.add(sub);
-
-    if (this.settingsService.enablePicking) {
-      sub = passService.getSize().subscribe(this.initPass.bind(this));
-      this.subscription.add(sub);
-    }
   }
 
   ngOnDestroy(): void {
@@ -103,6 +96,27 @@ export class PickingService implements OnDestroy {
 
   public getPickedIds(): Observable<string[]> {
     return this.pickedIds$;
+  }
+
+  public getPass(): Pass {
+    return this.outlinePass;
+  }
+
+  private initPass(): OutlinePass {
+    const outlinePass = new OutlinePass(
+      new Vector2(),
+      this.scene,
+      this.cameraService.getCamera()
+    );
+
+    outlinePass.edgeStrength = 100;
+    outlinePass.edgeGlow = 0;
+    outlinePass.edgeThickness = 1;
+    outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
+    outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
+    outlinePass.overlayMaterial.blending = NormalBlending;
+
+    return outlinePass;
   }
 
   private initMouseEvents(canvas: HTMLCanvasElement): void {
@@ -155,27 +169,6 @@ export class PickingService implements OnDestroy {
     );
   }
 
-  private initPass(size: Vector2): void {
-    if (this.outlinePass) {
-      this.outlinePass.resolution = size;
-    } else {
-      this.outlinePass = new OutlinePass(
-        size,
-        this.scene,
-        this.cameraService.getCamera()
-      );
-
-      this.outlinePass.edgeStrength = 100;
-      this.outlinePass.edgeGlow = 0;
-      this.outlinePass.edgeThickness = 1;
-      this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
-      this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
-      this.outlinePass.overlayMaterial.blending = NormalBlending;
-
-      this.passService.addPass(this.outlinePass);
-    }
-  }
-
   private clearMousePosition(): void {
     this.mousePosition = undefined;
   }
@@ -194,11 +187,9 @@ export class PickingService implements OnDestroy {
     if (mesh) {
       if (mesh.geometry.name !== this.previousHoverName) {
         this.previousHoverName = mesh.geometry.name;
-        if (this.outlinePass) {
-          this.outlinePass.selectedObjects = [mesh];
-        }
+        this.outlinePass.selectedObjects = [mesh];
       }
-    } else if (this.outlinePass) {
+    } else {
       this.previousHoverName = undefined;
       this.outlinePass.selectedObjects = [];
     }

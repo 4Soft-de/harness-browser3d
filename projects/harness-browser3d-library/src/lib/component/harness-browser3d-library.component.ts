@@ -30,7 +30,7 @@ import {
 import { Harness } from '../../api/alias';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
 import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
-import { PassService } from '../services/pass.service';
+import { EffectComposerService } from '../services/effect-composer.service';
 import { CameraService } from '../services/camera.service';
 import { AddHarnessesService } from '../services/add-harnesses.service';
 import { SelectionService } from '../services/selection.service';
@@ -43,6 +43,7 @@ import { LightsService } from '../services/lights.service';
 import { PickingService } from '../services/picking.service';
 import { AnimateService } from '../services/animate.service';
 import { Subscription } from 'rxjs';
+import { PassService } from '../services/pass.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -69,20 +70,23 @@ export class HarnessBrowser3dLibraryComponent
     private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
+    private readonly effectComposerService: EffectComposerService,
     private readonly enableService: EnableService,
     private readonly lightsService: LightsService,
-    private readonly pickingService: PickingService,
     private readonly passService: PassService,
+    private readonly pickingService: PickingService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {}
 
   ngAfterViewInit(): void {
     const canvasElement = this.canvasElementRef.nativeElement;
-    this.passService.initRenderer(canvasElement);
+    this.effectComposerService.initRenderer(canvasElement);
     this.cameraService.initControls(canvasElement);
     this.pickingService.initPickingEvents(canvasElement);
     this.lightsService.addLights(this.bordnetMeshService.getScene());
+    this.passService.setupPasses();
+    this.effectComposerService.resizeRendererToCanvasSize();
     this.initialized.emit(this.api);
     this.isInitialized = true;
     this.animate();
@@ -101,7 +105,7 @@ export class HarnessBrowser3dLibraryComponent
   private animateImplementation() {
     this.stats?.begin();
     this.animateService.animate();
-    this.passService.render();
+    this.effectComposerService.render();
     this.stats?.end();
     requestAnimationFrame(() => this.animateImplementation());
   }

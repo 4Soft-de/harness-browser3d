@@ -28,7 +28,6 @@ import {
 } from 'three';
 import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 import { CameraService } from './camera.service';
-import { PassService } from './pass.service';
 
 class CoordinateSystemPass extends Pass {
   constructor(private readonly scene: Scene, private readonly camera: Camera) {
@@ -38,6 +37,8 @@ class CoordinateSystemPass extends Pass {
   public override render(renderer: WebGLRenderer) {
     const oldViewport = renderer.getViewport(new Vector4());
     const oldScissor = renderer.getScissor(new Vector4());
+
+    renderer.clearDepth();
 
     const size = renderer.getSize(new Vector2()).x * 0.1;
     const dimension = new Vector4(0, 0, size, size);
@@ -57,11 +58,9 @@ class CoordinateSystemPass extends Pass {
 export class CoordinateSystemService {
   private axesHelper: AxesHelper;
   private axesCamera: PerspectiveCamera;
+  private axesScene: Scene;
 
-  constructor(
-    private readonly cameraService: CameraService,
-    passService: PassService
-  ) {
+  constructor(private readonly cameraService: CameraService) {
     const mainCamera = this.cameraService.getCamera();
     const size = new Vector3(1, 0, 0)
       .unproject(mainCamera)
@@ -71,10 +70,12 @@ export class CoordinateSystemService {
     this.axesHelper = new AxesHelper(size);
     this.axesCamera = new PerspectiveCamera(50, 1, 0.1, 1 + size);
 
-    const axesScene = new Scene();
-    axesScene.add(this.axesHelper);
+    this.axesScene = new Scene();
+    this.axesScene.add(this.axesHelper);
+  }
 
-    passService.addPass(new CoordinateSystemPass(axesScene, this.axesCamera));
+  public initPass(): Pass {
+    return new CoordinateSystemPass(this.axesScene, this.axesCamera);
   }
 
   public animate(): void {
