@@ -91,9 +91,11 @@ export class HarnessBrowser3dLibraryComponent
     this.isInitialized = true;
     this.animate();
 
-    const sub = this.pickingService
-      .getPickedIds()
-      .subscribe((ids) => this.pickedIds.emit(ids));
+    const sub = this.pickingService.getPickedIds().subscribe((ids) => {
+      const array: string[] = [];
+      ids.forEach((id) => array.push(id));
+      this.pickedIds.emit(array);
+    });
     this.subscription.add(sub);
   }
 
@@ -138,7 +140,7 @@ export class HarnessBrowser3dLibraryComponent
   set selectedIds(ids: string[] | null | undefined) {
     this.checkInput(
       this.selectionService.selectElements.bind(this.selectionService),
-      ids
+      new Set(ids)
     );
   }
 

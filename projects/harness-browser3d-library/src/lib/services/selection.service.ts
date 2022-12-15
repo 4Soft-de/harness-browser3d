@@ -71,7 +71,7 @@ export class SelectionService implements OnDestroy {
   }
 
   public selectElements(
-    ids: string[],
+    ids: Set<string>,
     zoom: boolean = this.settingsService.zoomSelection
   ) {
     this.resetMesh();

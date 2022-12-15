@@ -31,7 +31,7 @@ import {
   Scene,
   Vector2,
 } from 'three';
-import { getMousePosition } from '../utils/mouse-utils';
+import { getCtrlPressed, getMousePosition } from '../utils/input-utils';
 import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
@@ -44,8 +44,10 @@ export class PickingService implements OnDestroy {
   private previousHoverName?: string;
   private outlinePass?: OutlinePass;
   private harnessElementGeos: BufferGeometry[] = [];
+  private multiPickEnabled = false;
+  private pickedIds = new Set<string>();
   private readonly scene = new Scene();
-  private readonly pickedIds$ = new Subject<string[]>();
+  private readonly pickedIds$ = new Subject<Set<string>>();
   private readonly subscription = new Subscription();
 
   constructor(
@@ -68,6 +70,7 @@ export class PickingService implements OnDestroy {
     if (this.settingsService.enablePicking) {
       this.initMouseEvents(canvas);
       this.initTouchEvents(canvas);
+      this.initKeyboardEvents(canvas);
     }
   }
 
@@ -92,7 +95,7 @@ export class PickingService implements OnDestroy {
     this.scene.clear();
   }
 
-  public getPickedIds(): Observable<string[]> {
+  public getPickedIds(): Observable<Set<string>> {
     return this.pickedIds$;
   }
 
@@ -154,6 +157,19 @@ export class PickingService implements OnDestroy {
     );
   }
 
+  private initKeyboardEvents(canvas: HTMLCanvasElement): void {
+    this.addEventListener(
+      canvas,
+      'keydown',
+      (event) => (this.multiPickEnabled = getCtrlPressed(event))
+    );
+    this.addEventListener(
+      canvas,
+      'keyup',
+      (event) => (this.multiPickEnabled = getCtrlPressed(event))
+    );
+  }
+
   private addEventListener(
     canvas: HTMLCanvasElement,
     name: string,
@@ -193,11 +209,17 @@ export class PickingService implements OnDestroy {
   private pickMesh(mesh?: Mesh): void {
     if (mesh) {
       const id = mesh.geometry.name;
+      if (this.pickedIds.has(id) && this.multiPickEnabled) {
+        return;
+      }
+      this.multiPickEnabled
+        ? this.pickedIds.add(id)
+        : (this.pickedIds = new Set([id]));
       this.selectionService.selectElements(
-        [id],
+        this.pickedIds,
         this.settingsService.zoomPicking
       );
-      this.pickedIds$.next([id]);
+      this.pickedIds$.next(this.pickedIds);
     }
   }
 }

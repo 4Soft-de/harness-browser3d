@@ -40,3 +40,9 @@ function extractPosition(event: Event): Vector2 | undefined {
   }
   return undefined;
 }
+
+export function getCtrlPressed(event: Event): boolean {
+  return (
+    window.KeyboardEvent && event instanceof KeyboardEvent && event.ctrlKey
+  );
+}
