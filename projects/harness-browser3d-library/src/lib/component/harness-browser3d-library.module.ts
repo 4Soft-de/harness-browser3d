@@ -41,6 +41,7 @@ import { DiffService } from '../services/diff.service';
 import { PickingService } from '../services/picking.service';
 import { AnimateService } from '../services/animate.service';
 import { PassService } from '../services/pass.service';
+import { PickingPickerService } from '../services/picking-picker.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
@@ -66,6 +67,7 @@ import { PassService } from '../services/pass.service';
     MappingService,
     PassService,
     PickingService,
+    PickingPickerService,
     PositionService,
     PreprocessService,
     SelectionService,

@@ -44,6 +44,7 @@ import { PickingService } from '../services/picking.service';
 import { AnimateService } from '../services/animate.service';
 import { Subscription } from 'rxjs';
 import { PassService } from '../services/pass.service';
+import { PickingPickerService } from '../services/picking-picker.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -75,6 +76,7 @@ export class HarnessBrowser3dLibraryComponent
     private readonly lightsService: LightsService,
     private readonly passService: PassService,
     private readonly pickingService: PickingService,
+    private readonly pickingPickerService: PickingPickerService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {}
@@ -87,6 +89,7 @@ export class HarnessBrowser3dLibraryComponent
     this.lightsService.addLights(this.bordnetMeshService.getScene());
     this.passService.setupPasses();
     this.effectComposerService.resizeRendererToCanvasSize();
+    this.pickingPickerService.resizeRenderer(canvasElement);
     this.initialized.emit(this.api);
     this.isInitialized = true;
     this.animate();

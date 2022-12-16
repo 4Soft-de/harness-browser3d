@@ -45,6 +45,7 @@ export class EffectComposerService implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.effectComposer?.renderer.dispose();
     this.effectComposer?.passes.forEach((pass) => pass.dispose());
     this.effectComposer?.dispose();
   }
@@ -74,8 +75,8 @@ export class EffectComposerService implements OnDestroy {
       this.cameraService.getCamera().aspect = width / height;
       this.cameraService.getCamera().updateProjectionMatrix();
 
-      width *= this.settingsService.pixelRatio;
-      height *= this.settingsService.pixelRatio;
+      //width *= this.settingsService.pixelRatio;
+      //height *= this.settingsService.pixelRatio;
 
       this.effectComposer.renderer.setSize(width, height, false);
       this.effectComposer.setSize(width, height);

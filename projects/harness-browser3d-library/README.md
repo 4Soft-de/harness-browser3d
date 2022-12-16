@@ -150,4 +150,5 @@ MIT License
 
 https://threejs.org/manual/#en/picking
 
-- compute normalized mouse positions
+- compute mouse positions in pixels
+- gpu based picker

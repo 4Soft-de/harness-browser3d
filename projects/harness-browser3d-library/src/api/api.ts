@@ -22,6 +22,7 @@ import { AddHarnessesService } from '../lib/services/add-harnesses.service';
 import { EffectComposerService } from '../lib/services/effect-composer.service';
 import { ViewService } from '../lib/services/view.service';
 import { View } from '../views/view';
+import { PickingPickerService } from '../lib/services/picking-picker.service';
 
 @Injectable()
 export class HarnessBrowser3dLibraryAPI {
@@ -30,6 +31,7 @@ export class HarnessBrowser3dLibraryAPI {
     private readonly colorService: ColorService,
     private readonly harnessService: AddHarnessesService,
     private readonly effectComposerService: EffectComposerService,
+    private readonly pickingPickerService: PickingPickerService,
     private readonly viewService: ViewService
   ) {}
 
@@ -39,6 +41,8 @@ export class HarnessBrowser3dLibraryAPI {
 
   public resizeRendererToCanvasSize() {
     this.effectComposerService.resizeRendererToCanvasSize();
+    const domElement = this.effectComposerService.getRenderer()?.domElement;
+    if (domElement) this.pickingPickerService.resizeRenderer(domElement);
   }
 
   public resetColors() {

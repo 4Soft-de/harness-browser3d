@@ -23,19 +23,13 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import {
-  BufferGeometry,
-  Mesh,
-  NormalBlending,
-  Raycaster,
-  Scene,
-  Vector2,
-} from 'three';
+import { Mesh, NormalBlending, Vector2 } from 'three';
 import { getCtrlPressed, getMousePosition } from '../utils/input-utils';
 import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+import { PickingPickerService } from './picking-picker.service';
 
 @Injectable()
 export class PickingService implements OnDestroy {
@@ -43,15 +37,15 @@ export class PickingService implements OnDestroy {
   private previousMousePosition?: Vector2;
   private previousHoverName?: string;
   private outlinePass?: OutlinePass;
-  private harnessElementGeos: BufferGeometry[] = [];
+
   private multiPickEnabled = false;
   private pickedIds = new Set<string>();
-  private readonly scene = new Scene();
   private readonly pickedIds$ = new Subject<Set<string>>();
   private readonly subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
+    private readonly pickingPickerService: PickingPickerService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
@@ -77,22 +71,10 @@ export class PickingService implements OnDestroy {
   public animate() {
     if (this.mousePosition !== this.previousMousePosition) {
       this.previousMousePosition = this.mousePosition;
-      this.hoverMesh(this.determineMesh(this.mousePosition));
+      this.hoverMesh(
+        this.pickingPickerService.determineMesh(this.mousePosition)
+      );
     }
-  }
-
-  public addGeos(geos: BufferGeometry[]) {
-    this.harnessElementGeos = geos;
-    geos.forEach((geo) => {
-      this.scene.add(new Mesh(geo));
-    });
-  }
-
-  public clearGeos() {
-    this.harnessElementGeos.forEach((geo) => geo.dispose());
-    this.harnessElementGeos = [];
-    this.clearMousePosition();
-    this.scene.clear();
   }
 
   public getPickedIds(): Observable<Set<string>> {
@@ -103,7 +85,7 @@ export class PickingService implements OnDestroy {
     if (!this.outlinePass) {
       this.outlinePass = new OutlinePass(
         new Vector2(),
-        this.scene,
+        this.pickingPickerService.getScene(),
         this.cameraService.getCamera()
       );
 
@@ -122,7 +104,7 @@ export class PickingService implements OnDestroy {
   private initMouseEvents(canvas: HTMLCanvasElement): void {
     this.addEventListener(canvas, 'click', (event) => {
       const pos = getMousePosition(event, canvas);
-      this.pickMesh(this.determineMesh(pos));
+      this.pickMesh(this.pickingPickerService.determineMesh(pos));
     });
     this.addEventListener(
       canvas,
@@ -145,7 +127,7 @@ export class PickingService implements OnDestroy {
     this.addEventListener(canvas, 'touchstart', (event) => {
       event.preventDefault();
       const pos = getMousePosition(event, canvas);
-      this.pickMesh(this.determineMesh(pos));
+      this.pickMesh(this.pickingPickerService.determineMesh(pos));
     });
     this.addEventListener(
       canvas,
@@ -184,16 +166,6 @@ export class PickingService implements OnDestroy {
 
   private clearMousePosition(): void {
     this.mousePosition = undefined;
-  }
-
-  private determineMesh(pos: Vector2 | undefined): Mesh | undefined {
-    if (pos) {
-      const raycaster = new Raycaster();
-      raycaster.setFromCamera(pos, this.cameraService.getCamera());
-      const intersection = raycaster.intersectObjects(this.scene.children)[0];
-      return intersection?.object as Mesh;
-    }
-    return undefined;
   }
 
   private hoverMesh(mesh?: Mesh): void {
