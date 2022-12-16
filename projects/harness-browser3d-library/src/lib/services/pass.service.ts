@@ -18,6 +18,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Pass } from 'three/examples/jsm/postprocessing/Pass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
@@ -58,15 +60,18 @@ export class PassService implements OnDestroy {
     const passes = [
       this.bordnetMeshService.initPass(camera),
       this.selectionService.initPass(camera),
-      this.coordinateSystemService.initPass(),
-      // RenderPass cannot be last
       this.pickingService.getPass(),
+      this.coordinateSystemService.initPass(),
       this.getAntiAliasPass(),
+      // RenderPass cannot be last
+      new ShaderPass(CopyShader),
     ];
 
     passes.forEach((pass, index) => {
       pass.clear = index === 0;
-      pass.renderToScreen = index === passes.length - 1;
+      const isLast = index === passes.length - 1;
+      pass.renderToScreen = isLast;
+      pass.needsSwap = isLast;
     });
 
     this.effectComposerService.addPasses(passes);

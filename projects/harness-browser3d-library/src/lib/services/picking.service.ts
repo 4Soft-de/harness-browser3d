@@ -113,6 +113,8 @@ export class PickingService implements OnDestroy {
       this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
       this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
       this.outlinePass.overlayMaterial.blending = NormalBlending;
+
+      this.outlinePass.enabled = this.settingsService.enablePicking;
     }
     return this.outlinePass;
   }
