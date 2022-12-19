@@ -75,8 +75,8 @@ export class EffectComposerService implements OnDestroy {
       this.cameraService.getCamera().aspect = width / height;
       this.cameraService.getCamera().updateProjectionMatrix();
 
-      //width *= this.settingsService.pixelRatio;
-      //height *= this.settingsService.pixelRatio;
+      width *= this.settingsService.pixelRatio;
+      height *= this.settingsService.pixelRatio;
 
       this.effectComposer.renderer.setSize(width, height, false);
       this.effectComposer.setSize(width, height);

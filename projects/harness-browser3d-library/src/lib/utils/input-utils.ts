@@ -21,12 +21,8 @@ export function getMousePosition(
   event: Event,
   canvas: HTMLCanvasElement
 ): Vector2 | undefined {
-  const pos = extractPosition(event);
   const rect = canvas.getBoundingClientRect();
-  return pos
-    ?.sub(new Vector2(rect.left, rect.top))
-    .multiply(new Vector2(canvas.width, canvas.height))
-    .divide(new Vector2(rect.width, rect.height));
+  return extractPosition(event)?.sub(new Vector2(rect.left, rect.top));
 }
 
 function extractPosition(event: Event): Vector2 | undefined {
