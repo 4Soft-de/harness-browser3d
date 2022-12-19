@@ -10,7 +10,7 @@ A high performance angular component for displaying 3D representations of bordne
   [selectedIds]="selectedIds"
   [colors]="colors"
   [settings]="settings"
-  [showStats]="htmlElement"
+  [hooks]="hooks"
   (initialized)="addAPI($event)"
   (pickedIds)="pickIds($event)"
 ></lib-harness-browser3d>
@@ -22,6 +22,7 @@ class AppComponent {
   selectedIds: string[];
   colors: SetColorAPIStruct[];
   settings: SettingsAPIStruct;
+  hooks: HooksAPIStruct;
   api: HarnessBrowser3dLibraryAPI;
 
   addAPI(api: HarnessBrowser3dLibraryAPI) {
@@ -56,7 +57,17 @@ Set arbitrary colors for harness elements by inserting an array of `SetColorAPIS
 
 ### Apply Settings
 
-Apply settings by inserting an array of `SettingsAPIStruct` objects into the `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
+Apply settings by setting a `SettingsAPIStruct` object as `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
+
+### Set Hooks
+
+Hooks are functions that are called during certain points in execution.
+
+- `geometryParser` parses a geometry string into a scene object
+- `animateBegin` is called before each frame
+- `animateEnd` is called after each frame
+
+Set hooks by setting a `HooksAPIStruct` object as `hooks` property. Include HooksAPIStruct from `api\structs.ts`.
 
 ### Load Geometries
 
