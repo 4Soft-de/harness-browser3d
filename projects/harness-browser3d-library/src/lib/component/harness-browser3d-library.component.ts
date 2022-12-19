@@ -29,7 +29,11 @@ import {
 } from '@angular/core';
 import { Harness } from '../../api/alias';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
-import { SetColorAPIStruct, SettingsAPIStruct } from '../../api/structs';
+import {
+  HooksAPIStruct,
+  SetColorAPIStruct,
+  SettingsAPIStruct,
+} from '../../api/structs';
 import { EffectComposerService } from '../services/effect-composer.service';
 import { CameraService } from '../services/camera.service';
 import { AddHarnessesService } from '../services/add-harnesses.service';
@@ -37,7 +41,6 @@ import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ColorService } from '../services/color.service';
 import { EnableService } from '../services/enable.service';
-import Stats from 'stats.js';
 import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { LightsService } from '../services/lights.service';
 import { PickingService } from '../services/picking.service';
@@ -45,6 +48,7 @@ import { AnimateService } from '../services/animate.service';
 import { Subscription } from 'rxjs';
 import { PassService } from '../services/pass.service';
 import { PickingPickerService } from '../services/picking-picker.service';
+import { HooksService } from '../services/hooks.service';
 
 @Component({
   selector: 'lib-harness-browser3d',
@@ -60,7 +64,6 @@ export class HarnessBrowser3dLibraryComponent
   @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
   @Output() pickedIds = new EventEmitter<string[]>();
   private isInitialized = false;
-  private stats?: Stats;
   private readonly subscription = new Subscription();
 
   constructor(
@@ -73,6 +76,7 @@ export class HarnessBrowser3dLibraryComponent
     private readonly colorService: ColorService,
     private readonly effectComposerService: EffectComposerService,
     private readonly enableService: EnableService,
+    private readonly hooksService: HooksService,
     private readonly lightsService: LightsService,
     private readonly passService: PassService,
     private readonly pickingService: PickingService,
@@ -108,10 +112,14 @@ export class HarnessBrowser3dLibraryComponent
   }
 
   private animateImplementation() {
-    this.stats?.begin();
+    if (this.hooksService.animateBegin) {
+      this.hooksService.animateBegin();
+    }
     this.animateService.animate();
     this.effectComposerService.render();
-    this.stats?.end();
+    if (this.hooksService.animateEnd) {
+      this.hooksService.animateEnd();
+    }
     requestAnimationFrame(() => this.animateImplementation());
   }
 
@@ -182,14 +190,9 @@ export class HarnessBrowser3dLibraryComponent
   }
 
   @Input()
-  set showStats(parent: HTMLElement | null | undefined) {
-    if (parent && !this.stats) {
-      this.stats = new Stats();
-      this.stats.dom.style.position = 'inherit';
-      this.stats.dom.style.removeProperty('top');
-      this.stats.dom.style.removeProperty('left');
-      parent.appendChild(this.stats.dom);
-      this.stats.showPanel(0);
+  set hooks(additionalHooks: HooksAPIStruct | null | undefined) {
+    if (additionalHooks) {
+      this.hooksService.add(additionalHooks);
     }
   }
 }

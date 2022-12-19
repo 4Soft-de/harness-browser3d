@@ -42,6 +42,7 @@ import { PickingService } from '../services/picking.service';
 import { AnimateService } from '../services/animate.service';
 import { PassService } from '../services/pass.service';
 import { PickingPickerService } from '../services/picking-picker.service';
+import { HooksService } from '../services/hooks.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
@@ -62,6 +63,7 @@ import { PickingPickerService } from '../services/picking-picker.service';
     EnableService,
     GeometryService,
     HarnessBrowser3dLibraryAPI,
+    HooksService,
     LightsService,
     LoadingService,
     MappingService,

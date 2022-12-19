@@ -20,7 +20,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
+  ViewChild,
 } from '@angular/core';
 import {
   GeometryModeAPIEnum,
@@ -36,6 +38,7 @@ import {
   Harness,
   Bordnet,
   BuildingBlock,
+  HooksAPIStruct,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
@@ -47,6 +50,7 @@ import {
 } from '../structs';
 import { Subject, Subscription } from 'rxjs';
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
+import Stats from 'stats.js';
 
 type HarnessElement = Node | Segment | Occurrence;
 
@@ -59,6 +63,9 @@ type HarnessElement = Node | Segment | Occurrence;
 export class AppComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription = new Subscription();
 
+  @ViewChild('stats')
+  private stats!: ElementRef<HTMLDivElement>;
+
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
   addHarnesses$: Subject<Harness[]> = new Subject();
@@ -66,7 +73,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   disableIds$: Subject<string[]> = new Subject();
   enableIds$: Subject<string[]> = new Subject();
   colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
-  settings: SettingsAPIStruct = {
+  settings?: SettingsAPIStruct;
+  hooks: HooksAPIStruct = {
     geometryParser: (data: string) => new VRMLLoader().parse(data, ''),
   };
 
@@ -116,6 +124,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.stats;
+    const stats = new Stats();
+    stats.dom.style.position = 'inherit';
+    stats.dom.style.removeProperty('top');
+    stats.dom.style.removeProperty('left');
+    this.stats.nativeElement.appendChild(stats.dom);
+    stats.showPanel(0);
+    this.hooks = {
+      animateBegin: () => stats.begin(),
+      animateEnd: () => stats.end(),
+    };
+
     this.selectedBordnet = this.selectableBordnets[0];
     this.changeDetectorRef.detectChanges();
   }

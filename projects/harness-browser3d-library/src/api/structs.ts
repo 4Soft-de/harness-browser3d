@@ -19,7 +19,6 @@ import { Color, Scene } from 'three';
 
 export interface SettingsAPIStruct {
   geometryMode?: GeometryModeAPIEnum;
-  geometryParser?: (data: string) => Scene;
   splineMode?: SplineModeAPIEnum;
   segmentCount?: number;
   curveStepsFactor?: number;
@@ -33,6 +32,12 @@ export interface SettingsAPIStruct {
 
   // cannot be changed after init
   enablePicking?: boolean;
+}
+
+export interface HooksAPIStruct {
+  geometryParser?: (data: string) => Scene;
+  animateBegin?: () => void;
+  animateEnd?: () => void;
 }
 
 export interface SetColorAPIStruct {
