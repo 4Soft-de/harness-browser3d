@@ -151,7 +151,7 @@ export class HarnessBrowser3dLibraryComponent
   set selectedIds(ids: string[] | null | undefined) {
     this.checkInput(
       this.selectionService.selectElements.bind(this.selectionService),
-      new Set(ids)
+      ids ? new Set(ids) : undefined
     );
   }
 
