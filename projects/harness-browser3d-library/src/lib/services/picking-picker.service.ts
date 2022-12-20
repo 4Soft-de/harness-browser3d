@@ -17,37 +17,73 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import {
+  BufferAttribute,
   BufferGeometry,
   Color,
-  DoubleSide,
   Mesh,
-  MeshLambertMaterial,
-  NoBlending,
   Scene,
+  ShaderLib,
+  ShaderMaterial,
   Vector2,
   WebGLRenderer,
   WebGLRenderTarget,
 } from 'three';
 import { dispose } from '../utils/dispose-utils';
+import { GeometryUtils } from '../utils/geometry-utils';
 import { CameraService } from './camera.service';
 
 @Injectable()
 export class PickingPickerService implements OnDestroy {
   private readonly scene = new Scene();
   private meshes: Mesh[] = [];
-  private readonly renderer = new WebGLRenderer({ alpha: true });
+  private readonly renderer = new WebGLRenderer();
   private readonly renderTarget = new WebGLRenderTarget(1, 1);
   private readonly pixelBuffer = new Uint8Array(4);
+  private readonly material: ShaderMaterial;
 
   constructor(private readonly cameraService: CameraService) {
     this.scene.background = new Color(0);
+    this.material = new ShaderMaterial({
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader,
+    });
     this.renderer.setRenderTarget(this.renderTarget);
+  }
+
+  get vertexShader(): string {
+    let shader = ShaderLib.basic.vertexShader;
+
+    const declarations = `
+      attribute vec3 pIdColor;
+      varying vec4 vIdColor;
+    `;
+
+    const code = `
+      vIdColor = vec4(pIdColor, 0) / vec4(255);
+    `;
+
+    let anchor = `#include <common>`;
+    shader = shader.replace(anchor, anchor + declarations);
+    anchor = `#include <fog_vertex>`;
+    shader = shader.replace(anchor, anchor + code);
+
+    return shader;
+  }
+
+  get fragmentShader(): string {
+    return `
+      varying vec4 vIdColor;
+      void main() {
+        gl_FragColor = vIdColor;
+      }
+    `;
   }
 
   public ngOnDestroy(): void {
     this.clear();
     this.renderer.clear();
     this.renderTarget.dispose();
+    this.material.dispose();
   }
 
   public resizeRenderer(canvas: HTMLCanvasElement) {
@@ -57,16 +93,23 @@ export class PickingPickerService implements OnDestroy {
   public addGeos(geos: BufferGeometry[]) {
     geos.forEach((geo) => {
       // 0 is reserved for no pick
-      const id = this.meshes.length + 1;
-      const material = new MeshLambertMaterial({
-        emissive: new Color(id),
-        color: new Color(0, 0, 0),
-        transparent: true,
-        side: DoubleSide,
-        alphaTest: 0.5,
-        blending: NoBlending,
-      });
-      const mesh = new Mesh(geo, material);
+      const idColor = new Color(this.meshes.length + 1)
+        .toArray()
+        .map((color) => color * 255);
+      const vertexCount = geo.attributes['position']?.count;
+      const itemSize = 3;
+      const array = new Uint8Array(itemSize * vertexCount);
+      for (let i = 0; i < vertexCount; i++) {
+        idColor.forEach(
+          (color, index) => (array[itemSize * i + index] = color)
+        );
+      }
+      GeometryUtils.applyGeoAttribute(
+        geo,
+        'pIdColor',
+        new BufferAttribute(array, itemSize)
+      );
+      const mesh = new Mesh(geo);
       this.scene.add(mesh);
       this.meshes.push(mesh);
     });
@@ -83,6 +126,7 @@ export class PickingPickerService implements OnDestroy {
     if (pos) {
       const size = this.renderer.getSize(new Vector2());
       camera.setViewOffset(size.x, size.y, pos.x, pos.y, 1, 1);
+      this.scene.overrideMaterial = this.material;
       this.renderer.render(this.scene, camera);
       camera.clearViewOffset();
       this.renderer.readRenderTargetPixels(
