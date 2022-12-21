@@ -31,23 +31,25 @@ import {
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { CameraService } from './camera.service';
+import { EffectComposerService } from './effect-composer.service';
 
 @Injectable()
 export class PickingPickerService implements OnDestroy {
   private readonly scene = new Scene();
   private meshes: Mesh[] = [];
-  private readonly renderer = new WebGLRenderer();
   private readonly renderTarget = new WebGLRenderTarget(1, 1);
   private readonly pixelBuffer = new Uint8Array(4);
   private readonly material: ShaderMaterial;
 
-  constructor(private readonly cameraService: CameraService) {
+  constructor(
+    private readonly cameraService: CameraService,
+    private readonly effectComposerService: EffectComposerService
+  ) {
     this.scene.background = new Color(0);
     this.material = new ShaderMaterial({
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader,
     });
-    this.renderer.setRenderTarget(this.renderTarget);
   }
 
   get vertexShader(): string {
@@ -81,13 +83,8 @@ export class PickingPickerService implements OnDestroy {
 
   public ngOnDestroy(): void {
     this.clear();
-    this.renderer.clear();
     this.renderTarget.dispose();
     this.material.dispose();
-  }
-
-  public resizeRenderer(canvas: HTMLCanvasElement) {
-    this.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
   }
 
   public addGeos(geos: BufferGeometry[]) {
@@ -122,14 +119,11 @@ export class PickingPickerService implements OnDestroy {
   }
 
   public determineMesh(pos: Vector2 | undefined): Mesh | undefined {
-    const camera = this.cameraService.getCamera();
-    if (pos) {
-      const size = this.renderer.getSize(new Vector2());
-      camera.setViewOffset(size.x, size.y, pos.x, pos.y, 1, 1);
+    const renderer = this.effectComposerService.getRenderer();
+    if (pos && renderer) {
       this.scene.overrideMaterial = this.material;
-      this.renderer.render(this.scene, camera);
-      camera.clearViewOffset();
-      this.renderer.readRenderTargetPixels(
+      this.render(pos, renderer);
+      renderer.readRenderTargetPixels(
         this.renderTarget,
         0,
         0,
@@ -137,13 +131,34 @@ export class PickingPickerService implements OnDestroy {
         1,
         this.pixelBuffer
       );
-      const id =
-        (this.pixelBuffer[0] << 16) |
-        (this.pixelBuffer[1] << 8) |
-        this.pixelBuffer[2];
+      const id = this.extractId();
       return id <= this.meshes.length ? this.meshes[id - 1] : undefined;
     }
     return undefined;
+  }
+
+  private render(pos: Vector2, renderer: WebGLRenderer): void {
+    const size = renderer.getSize(new Vector2());
+    const camera = this.cameraService.getCamera();
+
+    const oldRenderTarget = renderer.getRenderTarget();
+    const oldClearColor = renderer.getClearColor(new Color());
+
+    camera.setViewOffset(size.x, size.y, pos.x, pos.y, 1, 1);
+    renderer.setRenderTarget(this.renderTarget);
+    renderer.render(this.scene, camera);
+
+    renderer.setRenderTarget(oldRenderTarget);
+    renderer.setClearColor(oldClearColor);
+    camera.clearViewOffset();
+  }
+
+  private extractId(): number {
+    return (
+      (this.pixelBuffer[0] << 16) |
+      (this.pixelBuffer[1] << 8) |
+      this.pixelBuffer[2]
+    );
   }
 
   public getScene(): Scene {
