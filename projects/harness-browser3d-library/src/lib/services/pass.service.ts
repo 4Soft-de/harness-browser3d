@@ -57,24 +57,33 @@ export class PassService implements OnDestroy {
 
   public setupPasses(): void {
     const camera = this.cameraService.getCamera();
-    const passes = [
+
+    const rendering = [
       this.bordnetMeshService.initPass(camera),
       this.selectionService.initPass(camera),
       this.pickingService.getPass(),
       this.coordinateSystemService.initPass(),
+    ];
+
+    const postProcessing = [
       this.getAntiAliasPass(),
       // RenderPass cannot be last
       new ShaderPass(CopyShader),
     ];
 
-    passes.forEach((pass, index) => {
+    rendering.forEach((pass, index) => {
       pass.clear = index === 0;
-      const isLast = index === passes.length - 1;
-      pass.renderToScreen = isLast;
-      pass.needsSwap = isLast;
+      pass.renderToScreen = false;
+      pass.needsSwap = false;
     });
 
-    this.effectComposerService.addPasses(passes);
+    postProcessing.forEach((pass) => {
+      pass.renderToScreen = true;
+      pass.needsSwap = true;
+    });
+
+    this.effectComposerService.addPasses(rendering);
+    this.effectComposerService.addPasses(postProcessing);
   }
 
   public getAntiAliasPass(): Pass {
