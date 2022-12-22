@@ -15,7 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Harness } from '../../api/alias';
+import { Graphic, Harness } from '../../api/alias';
 import { Injectable, OnDestroy } from '@angular/core';
 import { GeometryService } from './geometry.service';
 import { SelectionService } from './selection.service';
@@ -84,8 +84,9 @@ export class AddHarnessesService implements OnDestroy {
       this.preprocessService.preprocessHarnesses(notLoadedHarnesses);
 
     if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
-      const graphics = preprocessedHarnesses.flatMap(
-        (harness) => harness.graphics ?? []
+      const graphics: Graphic[] = [];
+      preprocessedHarnesses.forEach((harness) =>
+        harness.graphics?.forEach((graphic) => graphics.push(graphic))
       );
       this.loadingService.loadGraphics(graphics);
     }
