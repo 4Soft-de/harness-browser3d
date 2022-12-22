@@ -37,7 +37,6 @@ import {
   Occurrence,
   Harness,
   Bordnet,
-  BuildingBlock,
   HooksAPIStruct,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
@@ -244,8 +243,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   set selectedBordnet(selectedBordnet: BordnetSelectionStruct | undefined) {
     if (selectedBordnet?.bordnet) {
       selectedBordnet.bordnet.harnesses
-        .flatMap((harness: Harness) => harness.buildingBlocks)
-        .forEach((buildingBlock: BuildingBlock) => {
+        .flatMap((harness) => harness.buildingBlocks)
+        .forEach((buildingBlock) => {
           if (!buildingBlock.position) {
             buildingBlock.position = { x: 0, y: 0, z: 0 };
           }
