@@ -33,6 +33,7 @@ import { LoadingService } from './loading.service';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { DiffService } from './diff.service';
 import { PickingPickerService } from './picking-picker.service';
+import { PickingService } from './picking.service';
 
 @Injectable()
 export class AddHarnessesService implements OnDestroy {
@@ -48,6 +49,7 @@ export class AddHarnessesService implements OnDestroy {
     private readonly geometryService: GeometryService,
     private readonly loadingService: LoadingService,
     private readonly mappingService: MappingService,
+    private readonly pickingService: PickingService,
     private readonly pickingPickerService: PickingPickerService,
     private readonly preprocessService: PreprocessService,
     private readonly selectionService: SelectionService,
@@ -96,7 +98,8 @@ export class AddHarnessesService implements OnDestroy {
     this.bordnetMeshService.addGeos(harnessElementGeos);
     this.colorService.initializeDefaultColors(preprocessedHarnesses);
     this.selectionService.addGeos(harnessElementGeos);
-    this.pickingPickerService.addGeos(harnessElementGeos);
+    this.pickingService.addGeos(harnessElementGeos);
+    this.pickingPickerService.initializePickingIndices(preprocessedHarnesses);
     this.enableService.enableHarnesses(preprocessedHarnesses);
     this.diffService.applyDiffState(preprocessedHarnesses);
     this.viewService.setCurrentView(preprocessedHarnesses);
@@ -111,6 +114,7 @@ export class AddHarnessesService implements OnDestroy {
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
     this.pickingPickerService.clear();
+    this.pickingService.clear();
     this.colorService.clear();
     this.enableService.clear();
     this.bordnetMeshService.clear();

@@ -23,7 +23,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import { Mesh, NormalBlending, Vector2 } from 'three';
+import { BufferGeometry, Mesh, NormalBlending, Scene, Vector2 } from 'three';
 import { getCtrlPressed, getMousePosition } from '../utils/input-utils';
 import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
@@ -40,6 +40,7 @@ export class PickingService implements OnDestroy {
 
   private multiPickEnabled = false;
   private pickedIds = new Set<string>();
+  private scene = new Scene();
   private readonly pickedIds$ = new Subject<Set<string>>();
   private readonly subscription = new Subscription();
 
@@ -58,6 +59,8 @@ export class PickingService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.clear();
+    this.outlinePass?.dispose();
   }
 
   public initPickingEvents(canvas: HTMLCanvasElement): void {
@@ -68,12 +71,25 @@ export class PickingService implements OnDestroy {
     }
   }
 
+  public addGeos(geos: BufferGeometry[]) {
+    geos.forEach((geo) => {
+      const mesh = new Mesh(geo);
+      mesh.name = geo.name;
+      this.scene.add(mesh);
+    });
+  }
+
+  public clear() {
+    this.scene.clear();
+  }
+
   public animate() {
     if (this.mousePosition !== this.previousMousePosition) {
       this.previousMousePosition = this.mousePosition;
-      this.hoverMesh(
-        this.pickingPickerService.determineMesh(this.mousePosition)
+      const id = this.pickingPickerService.determineHarnessElementId(
+        this.mousePosition
       );
+      this.hoverId(id);
     }
   }
 
@@ -85,7 +101,7 @@ export class PickingService implements OnDestroy {
     if (!this.outlinePass) {
       this.outlinePass = new OutlinePass(
         new Vector2(),
-        this.pickingPickerService.getScene(),
+        this.scene,
         this.cameraService.getCamera()
       );
 
@@ -104,7 +120,7 @@ export class PickingService implements OnDestroy {
   private initMouseEvents(canvas: HTMLCanvasElement): void {
     this.addEventListener(canvas, 'click', (event) => {
       const pos = getMousePosition(event, canvas);
-      this.pickMesh(this.pickingPickerService.determineMesh(pos));
+      this.pickId(this.pickingPickerService.determineHarnessElementId(pos));
     });
     this.addEventListener(
       canvas,
@@ -127,7 +143,8 @@ export class PickingService implements OnDestroy {
     this.addEventListener(canvas, 'touchstart', (event) => {
       event.preventDefault();
       const pos = getMousePosition(event, canvas);
-      this.pickMesh(this.pickingPickerService.determineMesh(pos));
+      const id = this.pickingPickerService.determineHarnessElementId(pos);
+      this.pickId(id);
     });
     this.addEventListener(
       canvas,
@@ -168,21 +185,26 @@ export class PickingService implements OnDestroy {
     this.mousePosition = undefined;
   }
 
-  private hoverMesh(mesh?: Mesh): void {
-    if (mesh) {
-      if (mesh.geometry.name !== this.previousHoverName) {
+  private getMesh(name: string): Mesh | undefined {
+    const object = this.scene.getObjectByName(name);
+    return object && 'isMesh' in object ? (object as Mesh) : undefined;
+  }
+
+  private hoverId(id?: string): void {
+    if (id) {
+      const mesh = this.getMesh(id);
+      if (mesh && mesh.geometry.name !== this.previousHoverName) {
         this.previousHoverName = mesh.geometry.name;
         this.getPass().selectedObjects = [mesh];
       }
-    } else {
+    } else if (this.previousHoverName) {
       this.previousHoverName = undefined;
       this.getPass().selectedObjects = [];
     }
   }
 
-  private pickMesh(mesh?: Mesh): void {
-    if (mesh) {
-      const id = mesh.geometry.name;
+  private pickId(id?: string): void {
+    if (id) {
       if (this.pickedIds.has(id) && this.multiPickEnabled) {
         return;
       }

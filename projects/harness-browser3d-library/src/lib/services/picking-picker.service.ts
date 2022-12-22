@@ -17,35 +17,35 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import {
-  BufferAttribute,
-  BufferGeometry,
   Color,
-  Mesh,
-  Scene,
+  Float32BufferAttribute,
   ShaderLib,
   ShaderMaterial,
   Vector2,
   WebGLRenderer,
   WebGLRenderTarget,
 } from 'three';
-import { dispose } from '../utils/dispose-utils';
+import { Node, Segment, Occurrence, Harness } from '../../api/alias';
 import { GeometryUtils } from '../utils/geometry-utils';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
 import { EffectComposerService } from './effect-composer.service';
+import { MappingService } from './mapping.service';
 
 @Injectable()
 export class PickingPickerService implements OnDestroy {
-  private readonly scene = new Scene();
-  private meshes: Mesh[] = [];
+  private harnessElementIndices: string[] = [];
+  private readonly harnessElementIndexColors = new Map<string, Color>();
   private readonly renderTarget = new WebGLRenderTarget(1, 1);
   private readonly pixelBuffer = new Uint8Array(4);
   private readonly material: ShaderMaterial;
 
   constructor(
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
-    private readonly effectComposerService: EffectComposerService
+    private readonly effectComposerService: EffectComposerService,
+    private readonly mappingService: MappingService
   ) {
-    this.scene.background = new Color(0);
     this.material = new ShaderMaterial({
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader,
@@ -56,12 +56,12 @@ export class PickingPickerService implements OnDestroy {
     let shader = ShaderLib.basic.vertexShader;
 
     const declarations = `
-      attribute vec3 pIdColor;
-      varying vec4 vIdColor;
+      attribute vec3 pIndexColor;
+      varying vec4 vIndexColor;
     `;
 
     const code = `
-      vIdColor = vec4(pIdColor, 0) / vec4(255);
+      vIndexColor = vec4(pIndexColor, 0);
     `;
 
     let anchor = `#include <common>`;
@@ -74,9 +74,9 @@ export class PickingPickerService implements OnDestroy {
 
   get fragmentShader(): string {
     return `
-      varying vec4 vIdColor;
+      varying vec4 vIndexColor;
       void main() {
-        gl_FragColor = vIdColor;
+        gl_FragColor = vIndexColor;
       }
     `;
   }
@@ -87,41 +87,50 @@ export class PickingPickerService implements OnDestroy {
     this.material.dispose();
   }
 
-  public addGeos(geos: BufferGeometry[]) {
-    geos.forEach((geo) => {
-      // 0 is reserved for no pick
-      const idColor = new Color(this.meshes.length + 1)
-        .toArray()
-        .map((color) => color * 255);
-      const vertexCount = geo.attributes['position']?.count;
-      const itemSize = 3;
-      const array = new Uint8Array(itemSize * vertexCount);
-      for (let i = 0; i < vertexCount; i++) {
-        idColor.forEach(
-          (color, index) => (array[itemSize * i + index] = color)
-        );
-      }
-      GeometryUtils.applyGeoAttribute(
-        geo,
-        'pIdColor',
-        new BufferAttribute(array, itemSize)
+  public initializePickingIndices(harnesses: Harness[]) {
+    const geo = this.bordnetMeshService.getBordnetGeo();
+    if (!geo) {
+      return;
+    }
+
+    harnesses.forEach((harness) => {
+      harness.nodes.forEach((node) => this.addHarnessElement(node));
+      harness.segments.forEach((segment) => this.addHarnessElement(segment));
+      harness.occurrences.forEach((occurrence) =>
+        this.addHarnessElement(occurrence)
       );
-      const mesh = new Mesh(geo);
-      this.scene.add(mesh);
-      this.meshes.push(mesh);
     });
+
+    const array: number[] = [];
+    this.mappingService
+      .applyMapping(new Color(0), this.harnessElementIndexColors)
+      .forEach((color) => array.push(color.r, color.g, color.b));
+
+    GeometryUtils.applyGeoAttribute(
+      geo,
+      'pIndexColor',
+      new Float32BufferAttribute(array, 3)
+    );
+  }
+
+  private addHarnessElement(harnessElement: Node | Segment | Occurrence) {
+    // 0 is reserved for no pick
+    const index = this.harnessElementIndices.length + 1;
+    this.harnessElementIndices.push(harnessElement.id);
+    const indexColor = new Color(index);
+    this.harnessElementIndexColors.set(harnessElement.id, indexColor);
   }
 
   public clear() {
-    this.meshes.forEach((mesh) => dispose(mesh));
-    this.meshes = [];
-    this.scene.clear();
+    this.harnessElementIndices = [];
+    this.harnessElementIndexColors.clear();
   }
 
-  public determineMesh(pos: Vector2 | undefined): Mesh | undefined {
+  public determineHarnessElementId(
+    pos: Vector2 | undefined
+  ): string | undefined {
     const renderer = this.effectComposerService.getRenderer();
     if (pos && renderer) {
-      this.scene.overrideMaterial = this.material;
       this.render(pos, renderer);
       renderer.readRenderTargetPixels(
         this.renderTarget,
@@ -131,8 +140,10 @@ export class PickingPickerService implements OnDestroy {
         1,
         this.pixelBuffer
       );
-      const id = this.extractId();
-      return id <= this.meshes.length ? this.meshes[id - 1] : undefined;
+      const index = this.extractIndex();
+      return index <= this.harnessElementIndices.length && index > 0
+        ? this.harnessElementIndices[index - 1]
+        : undefined;
     }
     return undefined;
   }
@@ -140,28 +151,30 @@ export class PickingPickerService implements OnDestroy {
   private render(pos: Vector2, renderer: WebGLRenderer): void {
     const size = renderer.getSize(new Vector2());
     const camera = this.cameraService.getCamera();
+    const scene = this.bordnetMeshService.getScene();
 
     const oldRenderTarget = renderer.getRenderTarget();
     const oldClearColor = renderer.getClearColor(new Color());
 
+    renderer.setClearColor(new Color(0));
     camera.setViewOffset(size.x, size.y, pos.x, pos.y, 1, 1);
     renderer.setRenderTarget(this.renderTarget);
-    renderer.render(this.scene, camera);
+    scene.overrideMaterial = this.material;
 
+    renderer.clear();
+    renderer.render(scene, camera);
+
+    scene.overrideMaterial = null;
     renderer.setRenderTarget(oldRenderTarget);
     renderer.setClearColor(oldClearColor);
     camera.clearViewOffset();
   }
 
-  private extractId(): number {
+  private extractIndex(): number {
     return (
       (this.pixelBuffer[0] << 16) |
       (this.pixelBuffer[1] << 8) |
       this.pixelBuffer[2]
     );
-  }
-
-  public getScene(): Scene {
-    return this.scene;
   }
 }
