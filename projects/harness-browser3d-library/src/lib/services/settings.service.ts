@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Color, Scene } from 'three';
+import { Color } from 'three';
 import {
   GeometryModeAPIEnum,
   SettingsAPIStruct,
@@ -27,19 +27,22 @@ import {
 @Injectable()
 export class SettingsService implements SettingsAPIStruct {
   public geometryMode = GeometryModeAPIEnum.default;
-  public geometryParser?: (data: string) => Scene = undefined;
   public splineMode = SplineModeAPIEnum.unclamped;
   public pixelRatio = window.devicePixelRatio;
+  public enableAntiAliasing = true;
   public segmentCount = 15;
   public curveStepsFactor = 0.1;
   public backgroundColor = new Color(0xcccccc);
+  public hoverColor = new Color('white');
   public addHarnessResetCamera = true;
-  public enablePicking = true;
   public zoomPicking = false;
   public zoomSelection = true;
+  // cannot be changed after init
+  public enablePicking = true;
 
   public updatedGeometrySettings = new Subject<void>();
   public updatedCameraSettings = new Subject<void>();
+  public updatedPickingSettings = new Subject<void>();
 
   private updatedSettings: string[] = [];
 
@@ -54,19 +57,27 @@ export class SettingsService implements SettingsAPIStruct {
     const geoSetting = this.updatedSettings.find(
       (element) =>
         element === 'geometryMode' ||
-        element === 'geometryParser' ||
         element === 'splineMode' ||
         element === 'segmentCount' ||
         element === 'curveStepsFactor'
     );
     const cameraSetting = this.updatedSettings.find(
-      (element) => element === 'pixelRatio' || element === 'backgroundColor'
+      (element) =>
+        element === 'pixelRatio' ||
+        element === 'enableAntiAliasing' ||
+        element === 'backgroundColor'
+    );
+    const pickingSettings = this.updatedSettings.find(
+      (element) => element === 'hoverColor' || element === 'zoomPicking'
     );
     if (geoSetting) {
       this.updatedGeometrySettings.next();
     }
     if (cameraSetting) {
       this.updatedCameraSettings.next();
+    }
+    if (pickingSettings) {
+      this.updatedPickingSettings.next();
     }
     this.updatedSettings = [];
   }

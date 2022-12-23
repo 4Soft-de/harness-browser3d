@@ -16,103 +16,81 @@
 */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
-import { Renderer, Vector2, WebGLRenderer } from 'three';
-import {
-  EffectComposer,
-  Pass,
-} from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { ErrorUtils } from '../utils/error-utils';
+import { Subscription } from 'rxjs';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
+import { CoordinateSystemService } from './coordinate-system.service';
+import { EffectComposerService } from './effect-composer.service';
+import { PickingService } from './picking.service';
+import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 
 @Injectable()
 export class PassService implements OnDestroy {
-  private postProcessor?: EffectComposer;
-  private addedPasses: Pass[] = [];
-  private subscription: Subscription = new Subscription();
-  private size$: Subject<Vector2> = new Subject();
+  private antiAliasPass?: Pass;
+  private subscription = new Subscription();
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
+    private readonly coordinateSystemService: CoordinateSystemService,
+    private readonly effectComposerService: EffectComposerService,
+    private readonly pickingService: PickingService,
+    private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
-    this.subscription.add(
-      this.settingsService.updatedCameraSettings.subscribe(() => {
-        this.resizeRendererToCanvasSize();
-        this.postProcessor?.renderer.setClearColor(
-          this.settingsService.backgroundColor
-        );
-      })
+    const sub = settingsService.updatedCameraSettings.subscribe(
+      () =>
+        (this.getAntiAliasPass().enabled =
+          this.settingsService.enableAntiAliasing)
     );
+    this.subscription.add(sub);
   }
 
   public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  public initRenderer(canvas: HTMLCanvasElement): void {
-    const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
-    renderer.setClearColor(this.settingsService.backgroundColor);
-    renderer.autoClear = false;
-    this.postProcessor = new EffectComposer(renderer);
-    this.resizeRendererToCanvasSize();
-    this.addedPasses.unshift(
-      new RenderPass(
-        this.bordnetMeshService.getScene(),
-        this.cameraService.getCamera()
-      )
-    );
-    this.addedPasses.forEach((pass, index) => {
-      pass.renderToScreen = index === this.addedPasses.length - 1;
+  public setupPasses(): void {
+    const camera = this.cameraService.getCamera();
+
+    const rendering = [
+      this.bordnetMeshService.initPass(camera),
+      this.selectionService.initPass(camera),
+      this.pickingService.getPass(),
+      this.coordinateSystemService.initPass(),
+    ];
+
+    const postProcessing = [
+      this.getAntiAliasPass(),
+      // RenderPass cannot be last
+      new ShaderPass(CopyShader),
+    ];
+
+    rendering.forEach((pass, index) => {
       pass.clear = index === 0;
-      this.postProcessor!.addPass(pass);
+      pass.renderToScreen = false;
+      pass.needsSwap = false;
     });
+
+    postProcessing.forEach((pass) => {
+      pass.renderToScreen = true;
+      pass.needsSwap = true;
+    });
+
+    this.effectComposerService.addPasses(rendering);
+    this.effectComposerService.addPasses(postProcessing);
   }
 
-  public getRenderer(): Renderer | undefined {
-    return this.postProcessor?.renderer;
-  }
-
-  public getSize(): Subject<Vector2> {
-    return this.size$;
-  }
-
-  public addPass(pass: Pass): void {
-    this.addedPasses.push(pass);
-  }
-
-  public resizeRendererToCanvasSize(): void {
-    if (this.postProcessor?.renderer) {
-      const canvas = this.postProcessor.renderer.domElement;
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-
-      this.cameraService.getCamera().aspect = width / height;
-      this.cameraService.getCamera().updateProjectionMatrix();
-
-      this.setResolution(width, height);
-      this.size$.next(new Vector2(width, height));
-    } else {
-      console.error(ErrorUtils.isUndefined('renderer or composer'));
+  public getAntiAliasPass(): Pass {
+    if (!this.antiAliasPass) {
+      this.antiAliasPass = new SMAAPass(0, 0);
+      this.antiAliasPass.enabled = this.settingsService.enableAntiAliasing;
     }
-  }
-
-  public render(): void {
-    this.postProcessor?.render();
-  }
-
-  private setResolution(width: number, height: number): void {
-    if (this.postProcessor?.renderer) {
-      this.postProcessor.renderer.setPixelRatio(
-        this.settingsService.pixelRatio
-      );
-      this.postProcessor.renderer.setSize(width, height, false);
-      this.postProcessor.setPixelRatio(this.settingsService.pixelRatio);
-      this.postProcessor.setSize(width, height);
-    }
+    return this.antiAliasPass;
   }
 }

@@ -21,13 +21,11 @@ export function getMousePosition(
   event: Event,
   canvas: HTMLCanvasElement
 ): Vector2 | undefined {
-  const pos = extractPosition(event);
   const rect = canvas.getBoundingClientRect();
-  return pos
+  return extractPosition(event)
     ?.sub(new Vector2(rect.left, rect.top))
-    .divide(new Vector2(rect.width, rect.height))
-    .multiply(new Vector2(2, -2))
-    .add(new Vector2(-1, 1));
+    .multiply(new Vector2(canvas.width, canvas.height))
+    .divide(new Vector2(rect.width, rect.height));
 }
 
 function extractPosition(event: Event): Vector2 | undefined {
@@ -39,4 +37,10 @@ function extractPosition(event: Event): Vector2 | undefined {
     return new Vector2(touch.clientX, touch.clientY);
   }
   return undefined;
+}
+
+export function getCtrlPressed(event: Event): boolean {
+  return (
+    window.KeyboardEvent && event instanceof KeyboardEvent && event.ctrlKey
+  );
 }

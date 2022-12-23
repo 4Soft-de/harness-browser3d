@@ -20,13 +20,13 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
-import { BufferGeometry, Mesh, Scene } from 'three';
+import { BufferGeometry, Camera, Mesh, Scene } from 'three';
 import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { dispose } from '../utils/dispose-utils';
 import { LightsService } from './lights.service';
-import { PassService } from './pass.service';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 
 @Injectable()
 export class SelectionService implements OnDestroy {
@@ -38,13 +38,9 @@ export class SelectionService implements OnDestroy {
   constructor(
     private readonly cameraService: CameraService,
     lightsService: LightsService,
-    passService: PassService,
     private readonly settingsService: SettingsService
   ) {
     lightsService.addLights(this.scene);
-    const pass = new RenderPass(this.scene, this.cameraService.getCamera());
-    pass.clearDepth = true;
-    passService.addPass(pass);
 
     this.subscription.add(
       this.settingsService.updatedGeometrySettings.subscribe(() => {
@@ -59,6 +55,12 @@ export class SelectionService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  public initPass(camera: Camera): Pass {
+    const pass = new RenderPass(this.scene, camera);
+    pass.clearDepth = true;
+    return pass;
+  }
+
   public addGeos(geos: BufferGeometry[]) {
     geos.forEach((geo) => this.harnessElementGeos.set(geo.name, geo));
   }
@@ -69,7 +71,7 @@ export class SelectionService implements OnDestroy {
   }
 
   public selectElements(
-    ids: string[],
+    ids: Set<string>,
     zoom: boolean = this.settingsService.zoomSelection
   ) {
     this.resetMesh();

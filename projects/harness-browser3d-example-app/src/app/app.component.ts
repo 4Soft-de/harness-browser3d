@@ -20,7 +20,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
+  ViewChild,
 } from '@angular/core';
 import {
   GeometryModeAPIEnum,
@@ -35,6 +37,7 @@ import {
   Occurrence,
   Harness,
   Bordnet,
+  HooksAPIStruct,
   BuildingBlock,
 } from 'harness-browser3d-library';
 import { MatTableDataSource } from '@angular/material/table';
@@ -46,8 +49,8 @@ import {
   ViewSelectionStruct,
 } from '../structs';
 import { Subject, Subscription } from 'rxjs';
-import { Color } from 'three';
 import { VRMLLoader } from 'three/examples/jsm/loaders/VRMLLoader';
+import Stats from 'stats.js';
 
 type HarnessElement = Node | Segment | Occurrence;
 
@@ -60,6 +63,9 @@ type HarnessElement = Node | Segment | Occurrence;
 export class AppComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription = new Subscription();
 
+  @ViewChild('stats')
+  private stats!: ElementRef<HTMLDivElement>;
+
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
   addHarnesses$: Subject<Harness[]> = new Subject();
@@ -67,8 +73,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   disableIds$: Subject<string[]> = new Subject();
   enableIds$: Subject<string[]> = new Subject();
   colors$: Subject<SetColorAPIStruct[] | undefined> = new Subject();
-  settings: SettingsAPIStruct = {
-    backgroundColor: new Color('white'),
+  settings?: SettingsAPIStruct;
+  hooks: HooksAPIStruct = {
     geometryParser: (data: string) => new VRMLLoader().parse(data, ''),
   };
 
@@ -118,6 +124,17 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    const stats = new Stats();
+    stats.dom.style.position = 'inherit';
+    stats.dom.style.removeProperty('top');
+    stats.dom.style.removeProperty('left');
+    this.stats.nativeElement.appendChild(stats.dom);
+    stats.showPanel(0);
+    this.hooks = {
+      animateBegin: () => stats.begin(),
+      animateEnd: () => stats.end(),
+    };
+
     this.selectedBordnet = this.selectableBordnets[0];
     this.changeDetectorRef.detectChanges();
   }
@@ -225,14 +242,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   set selectedBordnet(selectedBordnet: BordnetSelectionStruct | undefined) {
     if (selectedBordnet?.bordnet) {
-      selectedBordnet.bordnet.harnesses
-        .flatMap((harness: Harness) => harness.buildingBlocks)
-        .forEach((buildingBlock: BuildingBlock) => {
-          if (!buildingBlock.position) {
-            buildingBlock.position = { x: 0, y: 0, z: 0 };
-          }
-          buildingBlock.position.z += this.addedBordnets * 100;
-        });
+      const buildingBlocks: BuildingBlock[] = [];
+      selectedBordnet.bordnet.harnesses.forEach((harness) =>
+        harness.buildingBlocks.forEach((buildingBlock) =>
+          buildingBlocks.push(buildingBlock)
+        )
+      );
+      buildingBlocks.forEach((buildingBlock) => {
+        if (!buildingBlock.position) {
+          buildingBlock.position = { x: 0, y: 0, z: 0 };
+        }
+        buildingBlock.position.z += this.addedBordnets * 100;
+      });
       this.addTableData(selectedBordnet?.bordnet);
       this.addedBordnets++;
     }

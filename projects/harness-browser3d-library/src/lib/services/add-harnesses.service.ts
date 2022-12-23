@@ -15,7 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Harness } from '../../api/alias';
+import { Graphic, Harness } from '../../api/alias';
 import { Injectable, OnDestroy } from '@angular/core';
 import { GeometryService } from './geometry.service';
 import { SelectionService } from './selection.service';
@@ -32,6 +32,7 @@ import { PreprocessService } from './preprocess.service';
 import { LoadingService } from './loading.service';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { DiffService } from './diff.service';
+import { PickingPickerService } from './picking-picker.service';
 import { PickingService } from './picking.service';
 
 @Injectable()
@@ -49,6 +50,7 @@ export class AddHarnessesService implements OnDestroy {
     private readonly loadingService: LoadingService,
     private readonly mappingService: MappingService,
     private readonly pickingService: PickingService,
+    private readonly pickingPickerService: PickingPickerService,
     private readonly preprocessService: PreprocessService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
@@ -82,8 +84,9 @@ export class AddHarnessesService implements OnDestroy {
       this.preprocessService.preprocessHarnesses(notLoadedHarnesses);
 
     if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
-      const graphics = preprocessedHarnesses.flatMap(
-        (harness) => harness.graphics ?? []
+      const graphics: Graphic[] = [];
+      preprocessedHarnesses.forEach((harness) =>
+        harness.graphics?.forEach((graphic) => graphics.push(graphic))
       );
       this.loadingService.loadGraphics(graphics);
     }
@@ -97,6 +100,7 @@ export class AddHarnessesService implements OnDestroy {
     this.colorService.initializeDefaultColors(preprocessedHarnesses);
     this.selectionService.addGeos(harnessElementGeos);
     this.pickingService.addGeos(harnessElementGeos);
+    this.pickingPickerService.initializePickingIndices(preprocessedHarnesses);
     this.enableService.enableHarnesses(preprocessedHarnesses);
     this.diffService.applyDiffState(preprocessedHarnesses);
     this.viewService.setCurrentView(preprocessedHarnesses);
@@ -110,7 +114,8 @@ export class AddHarnessesService implements OnDestroy {
     this.loadingService.clear();
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
-    this.pickingService.clearGeos();
+    this.pickingPickerService.clear();
+    this.pickingService.clear();
     this.colorService.clear();
     this.enableService.clear();
     this.bordnetMeshService.clear();

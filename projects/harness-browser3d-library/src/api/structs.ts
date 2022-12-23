@@ -19,16 +19,25 @@ import { Color, Scene } from 'three';
 
 export interface SettingsAPIStruct {
   geometryMode?: GeometryModeAPIEnum;
-  geometryParser?: (data: string) => Scene;
   splineMode?: SplineModeAPIEnum;
   segmentCount?: number;
   curveStepsFactor?: number;
   pixelRatio?: number;
+  enableAntiAliasing?: boolean;
   backgroundColor?: Color;
+  hoverColor?: Color;
   addHarnessResetCamera?: boolean;
-  enablePicking?: boolean;
   zoomPicking?: boolean;
   zoomSelection?: boolean;
+
+  // cannot be changed after init
+  enablePicking?: boolean;
+}
+
+export interface HooksAPIStruct {
+  geometryParser?: (data: string) => Scene;
+  animateBegin?: () => void;
+  animateEnd?: () => void;
 }
 
 export interface SetColorAPIStruct {

@@ -16,7 +16,9 @@
 */
 
 import { Injectable } from '@angular/core';
-import { BufferGeometry, Mesh, Scene } from 'three';
+import { BufferGeometry, Camera, Mesh, Scene } from 'three';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 
@@ -27,6 +29,10 @@ export class BordnetMeshService {
 
   constructor() {
     this.scene = new Scene();
+  }
+
+  public initPass(camera: Camera): Pass {
+    return new RenderPass(this.scene, camera);
   }
 
   public getBordnetGeo(): BufferGeometry | undefined {

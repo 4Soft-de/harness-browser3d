@@ -20,13 +20,13 @@ import { BufferGeometry, Mesh, Scene } from 'three';
 import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { Graphic } from '../../api/alias';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { SettingsService } from './settings.service';
+import { HooksService } from './hooks.service';
 
 @Injectable()
 export class LoadingService {
   private readonly geometries: Map<string, BufferGeometry> = new Map();
 
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(private readonly hooksService: HooksService) {}
 
   public getGeometries(): Map<string, BufferGeometry> {
     return this.geometries;
@@ -58,13 +58,13 @@ export class LoadingService {
   }
 
   private parseGraphic(graphic: Graphic): Scene | undefined {
-    if (!this.settingsService.geometryParser) {
+    if (!this.hooksService.geometryParser) {
       console.error(`no geometry loader specified`);
       return undefined;
     }
 
     try {
-      return this.settingsService.geometryParser(graphic.data);
+      return this.hooksService.geometryParser(graphic.data);
     } catch (e) {
       console.error(
         `exception during geometry loading for part number ${graphic.partNumber}\n\n${e}`

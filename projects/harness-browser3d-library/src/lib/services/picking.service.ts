@@ -23,21 +23,13 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
-import {
-  BufferGeometry,
-  Mesh,
-  NormalBlending,
-  Raycaster,
-  Scene,
-  Vector2,
-} from 'three';
-import { getMousePosition } from '../utils/mouse-utils';
+import { BufferGeometry, Mesh, NormalBlending, Scene, Vector2 } from 'three';
+import { getCtrlPressed, getMousePosition } from '../utils/input-utils';
 import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
-import { PassService } from './pass.service';
-import { GeometryColors } from '../structs/colors';
+import { PickingPickerService } from './picking-picker.service';
 
 @Injectable()
 export class PickingService implements OnDestroy {
@@ -45,69 +37,90 @@ export class PickingService implements OnDestroy {
   private previousMousePosition?: Vector2;
   private previousHoverName?: string;
   private outlinePass?: OutlinePass;
-  private harnessElementGeos: BufferGeometry[] = [];
-  private readonly scene = new Scene();
-  private readonly pickedIds$ = new Subject<string[]>();
+
+  private multiPickEnabled = false;
+  private pickedIds = new Set<string>();
+  private scene = new Scene();
+  private readonly pickedIds$ = new Subject<Set<string>>();
   private readonly subscription = new Subscription();
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly passService: PassService,
+    private readonly pickingPickerService: PickingPickerService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService
   ) {
-    this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(
-        this.clearGeos.bind(this)
-      )
-    );
-
-    if (this.settingsService.enablePicking) {
-      const sub = passService.getSize().subscribe(this.initPass.bind(this));
-      this.subscription.add(sub);
-    }
+    let sub = settingsService.updatedPickingSettings.subscribe(() => {
+      this.getPass().visibleEdgeColor = this.settingsService.hoverColor;
+      this.getPass().hiddenEdgeColor = this.settingsService.hoverColor;
+    });
+    this.subscription.add(sub);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.clear();
+    this.outlinePass?.dispose();
   }
 
   public initPickingEvents(canvas: HTMLCanvasElement): void {
     if (this.settingsService.enablePicking) {
       this.initMouseEvents(canvas);
       this.initTouchEvents(canvas);
+      this.initKeyboardEvents(canvas);
     }
+  }
+
+  public addGeos(geos: BufferGeometry[]) {
+    geos.forEach((geo) => {
+      const mesh = new Mesh(geo);
+      mesh.name = geo.name;
+      this.scene.add(mesh);
+    });
+  }
+
+  public clear() {
+    this.scene.clear();
   }
 
   public animate() {
     if (this.mousePosition !== this.previousMousePosition) {
       this.previousMousePosition = this.mousePosition;
-      this.hoverMesh(this.determineMesh(this.mousePosition));
+      const id = this.pickingPickerService.determineHarnessElementId(
+        this.mousePosition
+      );
+      this.hoverId(id);
     }
   }
 
-  public addGeos(geos: BufferGeometry[]) {
-    this.harnessElementGeos = geos;
-    geos.forEach((geo) => {
-      this.scene.add(new Mesh(geo));
-    });
-  }
-
-  public clearGeos() {
-    this.harnessElementGeos.forEach((geo) => geo.dispose());
-    this.harnessElementGeos = [];
-    this.clearMousePosition();
-    this.scene.clear();
-  }
-
-  public getPickedIds(): Observable<string[]> {
+  public getPickedIds(): Observable<Set<string>> {
     return this.pickedIds$;
+  }
+
+  public getPass(): OutlinePass {
+    if (!this.outlinePass) {
+      this.outlinePass = new OutlinePass(
+        new Vector2(),
+        this.scene,
+        this.cameraService.getCamera()
+      );
+
+      this.outlinePass.edgeStrength = 100;
+      this.outlinePass.edgeGlow = 0;
+      this.outlinePass.edgeThickness = 1;
+      this.outlinePass.visibleEdgeColor = this.settingsService.hoverColor;
+      this.outlinePass.hiddenEdgeColor = this.settingsService.hoverColor;
+      this.outlinePass.overlayMaterial.blending = NormalBlending;
+
+      this.outlinePass.enabled = this.settingsService.enablePicking;
+    }
+    return this.outlinePass;
   }
 
   private initMouseEvents(canvas: HTMLCanvasElement): void {
     this.addEventListener(canvas, 'click', (event) => {
       const pos = getMousePosition(event, canvas);
-      this.pickMesh(this.determineMesh(pos));
+      this.pickId(this.pickingPickerService.determineHarnessElementId(pos));
     });
     this.addEventListener(
       canvas,
@@ -130,7 +143,8 @@ export class PickingService implements OnDestroy {
     this.addEventListener(canvas, 'touchstart', (event) => {
       event.preventDefault();
       const pos = getMousePosition(event, canvas);
-      this.pickMesh(this.determineMesh(pos));
+      const id = this.pickingPickerService.determineHarnessElementId(pos);
+      this.pickId(id);
     });
     this.addEventListener(
       canvas,
@@ -144,6 +158,19 @@ export class PickingService implements OnDestroy {
     );
   }
 
+  private initKeyboardEvents(canvas: HTMLCanvasElement): void {
+    this.addEventListener(
+      canvas,
+      'keydown',
+      (event) => (this.multiPickEnabled = getCtrlPressed(event))
+    );
+    this.addEventListener(
+      canvas,
+      'keyup',
+      (event) => (this.multiPickEnabled = getCtrlPressed(event))
+    );
+  }
+
   private addEventListener(
     canvas: HTMLCanvasElement,
     name: string,
@@ -154,63 +181,41 @@ export class PickingService implements OnDestroy {
     );
   }
 
-  private initPass(size: Vector2): void {
-    if (this.outlinePass) {
-      this.outlinePass.resolution = size;
-    } else {
-      this.outlinePass = new OutlinePass(
-        size,
-        this.scene,
-        this.cameraService.getCamera()
-      );
-
-      this.outlinePass.edgeStrength = 100;
-      this.outlinePass.edgeGlow = 0;
-      this.outlinePass.edgeThickness = 1;
-      this.outlinePass.visibleEdgeColor = GeometryColors.selection;
-      this.outlinePass.hiddenEdgeColor = GeometryColors.selection;
-      this.outlinePass.overlayMaterial.blending = NormalBlending;
-
-      this.passService.addPass(this.outlinePass);
-    }
-  }
-
   private clearMousePosition(): void {
     this.mousePosition = undefined;
   }
 
-  private determineMesh(pos: Vector2 | undefined): Mesh | undefined {
-    if (pos) {
-      const raycaster = new Raycaster();
-      raycaster.setFromCamera(pos, this.cameraService.getCamera());
-      const intersection = raycaster.intersectObjects(this.scene.children)[0];
-      return intersection?.object as Mesh;
-    }
-    return undefined;
+  private getMesh(name: string): Mesh | undefined {
+    const object = this.scene.getObjectByName(name);
+    return object && 'isMesh' in object ? (object as Mesh) : undefined;
   }
 
-  private hoverMesh(mesh?: Mesh): void {
-    if (mesh) {
-      if (mesh.geometry.name !== this.previousHoverName) {
+  private hoverId(id?: string): void {
+    if (id) {
+      const mesh = this.getMesh(id);
+      if (mesh && mesh.geometry.name !== this.previousHoverName) {
         this.previousHoverName = mesh.geometry.name;
-        if (this.outlinePass) {
-          this.outlinePass.selectedObjects = [mesh];
-        }
+        this.getPass().selectedObjects = [mesh];
       }
-    } else if (this.outlinePass) {
+    } else if (this.previousHoverName) {
       this.previousHoverName = undefined;
-      this.outlinePass.selectedObjects = [];
+      this.getPass().selectedObjects = [];
     }
   }
 
-  private pickMesh(mesh?: Mesh): void {
-    if (mesh) {
-      const id = mesh.geometry.name;
+  private pickId(id?: string): void {
+    if (id) {
+      if (this.pickedIds.has(id) && this.multiPickEnabled) {
+        return;
+      }
+      this.multiPickEnabled
+        ? this.pickedIds.add(id)
+        : (this.pickedIds = new Set([id]));
       this.selectionService.selectElements(
-        [id],
+        this.pickedIds,
         this.settingsService.zoomPicking
       );
-      this.pickedIds$.next([id]);
+      this.pickedIds$.next(this.pickedIds);
     }
   }
 }

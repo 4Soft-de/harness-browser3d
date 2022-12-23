@@ -29,7 +29,7 @@ import { AddHarnessesService } from '../services/add-harnesses.service';
 import { LoadingService } from '../services/loading.service';
 import { MappingService } from '../services/mapping.service';
 import { PositionService } from '../services/position.service';
-import { PassService } from '../services/pass.service';
+import { EffectComposerService } from '../services/effect-composer.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ViewService } from '../services/view.service';
@@ -40,6 +40,9 @@ import { LightsService } from '../services/lights.service';
 import { DiffService } from '../services/diff.service';
 import { PickingService } from '../services/picking.service';
 import { AnimateService } from '../services/animate.service';
+import { PassService } from '../services/pass.service';
+import { PickingPickerService } from '../services/picking-picker.service';
+import { HooksService } from '../services/hooks.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
@@ -56,16 +59,19 @@ import { AnimateService } from '../services/animate.service';
     CurveService,
     DefaultGeometryCreationService,
     DiffService,
+    EffectComposerService,
     EnableService,
     GeometryService,
     HarnessBrowser3dLibraryAPI,
+    HooksService,
     LightsService,
     LoadingService,
     MappingService,
+    PassService,
     PickingService,
+    PickingPickerService,
     PositionService,
     PreprocessService,
-    PassService,
     SelectionService,
     SettingsService,
     ViewService,

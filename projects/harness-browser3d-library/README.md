@@ -10,8 +10,9 @@ A high performance angular component for displaying 3D representations of bordne
   [selectedIds]="selectedIds"
   [colors]="colors"
   [settings]="settings"
-  [showStats]="htmlElement"
+  [hooks]="hooks"
   (initialized)="addAPI($event)"
+  (pickedIds)="pickIds($event)"
 ></lib-harness-browser3d>
 ```
 
@@ -21,10 +22,15 @@ class AppComponent {
   selectedIds: string[];
   colors: SetColorAPIStruct[];
   settings: SettingsAPIStruct;
+  hooks: HooksAPIStruct;
   api: HarnessBrowser3dLibraryAPI;
 
   addAPI(api: HarnessBrowser3dLibraryAPI) {
     this.api = api;
+  }
+
+  pickIds(ids: string[]) {
+    this.pickedIds = ids;
   }
 }
 ```
@@ -41,13 +47,27 @@ Harness has been generated from `assets\geometry-api.yaml`.
 
 Select harness elements by inserting an array of harness element ids into the `selectedIds` property.
 
+### Pick Ids
+
+Click on harness element geometries to pick them. Picking harness elements also selects them. Ids of the picked harness elements are passed in the `pickedIds` event.
+
 ### Set Colors
 
 Set arbitrary colors for harness elements by inserting an array of `SetColorAPIStruct` objects into the `colors` property. Include SetColorAPIStruct from `api\structs.ts`.
 
 ### Apply Settings
 
-Apply settings by inserting an array of `SettingsAPIStruct` objects into the `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
+Apply settings by setting a `SettingsAPIStruct` object as `settings` property. Include SettingsAPIStruct from `api\structs.ts`.
+
+### Set Hooks
+
+Hooks are functions that are called during certain points in execution.
+
+- `geometryParser` parses a geometry string into a scene object
+- `animateBegin` is called before each frame
+- `animateEnd` is called after each frame
+
+Set hooks by setting a `HooksAPIStruct` object as `hooks` property. Include HooksAPIStruct from `api\structs.ts`.
 
 ### Load Geometries
 
@@ -141,4 +161,5 @@ MIT License
 
 https://threejs.org/manual/#en/picking
 
-- compute normalized mouse positions
+- compute mouse positions in pixels
+- gpu based picker
