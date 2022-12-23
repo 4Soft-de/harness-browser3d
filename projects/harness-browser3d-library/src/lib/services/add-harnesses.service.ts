@@ -15,10 +15,9 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { Harness } from '../../api/alias';
+import { Graphic, Harness } from '../../api/alias';
 import { Injectable, OnDestroy } from '@angular/core';
 import { GeometryService } from './geometry.service';
-import { SceneService } from './scene.service';
 import { SelectionService } from './selection.service';
 import { BufferGeometry } from 'three';
 import { MappingService } from './mapping.service';
@@ -27,20 +26,22 @@ import { ColorService } from './color.service';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
 import { EnableService } from './enable.service';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { Subscription } from 'rxjs';
 import { PreprocessService } from './preprocess.service';
 import { LoadingService } from './loading.service';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { DiffService } from './diff.service';
+import { PickingPickerService } from './picking-picker.service';
+import { PickingService } from './picking.service';
 
 @Injectable()
-export class HarnessService implements OnDestroy {
+export class AddHarnessesService implements OnDestroy {
   private loadedHarnesses = new Set<string>();
   private subscription: Subscription = new Subscription();
 
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
     private readonly diffService: DiffService,
@@ -48,16 +49,15 @@ export class HarnessService implements OnDestroy {
     private readonly geometryService: GeometryService,
     private readonly loadingService: LoadingService,
     private readonly mappingService: MappingService,
+    private readonly pickingService: PickingService,
+    private readonly pickingPickerService: PickingPickerService,
     private readonly preprocessService: PreprocessService,
-    private readonly sceneService: SceneService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
     private readonly viewService: ViewService
   ) {
     this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(() => {
-        this.clear();
-      })
+      settingsService.updatedGeometrySettings.subscribe(this.clear.bind(this))
     );
   }
 
@@ -84,8 +84,9 @@ export class HarnessService implements OnDestroy {
       this.preprocessService.preprocessHarnesses(notLoadedHarnesses);
 
     if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
-      const graphics = preprocessedHarnesses.flatMap(
-        (harness) => harness.graphics ?? []
+      const graphics: Graphic[] = [];
+      preprocessedHarnesses.forEach((harness) =>
+        harness.graphics?.forEach((graphic) => graphics.push(graphic))
       );
       this.loadingService.loadGraphics(graphics);
     }
@@ -95,10 +96,11 @@ export class HarnessService implements OnDestroy {
     );
 
     this.createHarnessElementMappings(harnessElementGeos);
-    this.cacheService.addGeos(harnessElementGeos);
+    this.bordnetMeshService.addGeos(harnessElementGeos);
     this.colorService.initializeDefaultColors(preprocessedHarnesses);
     this.selectionService.addGeos(harnessElementGeos);
-    this.sceneService.replaceMesh();
+    this.pickingService.addGeos(harnessElementGeos);
+    this.pickingPickerService.initializePickingIndices(preprocessedHarnesses);
     this.enableService.enableHarnesses(preprocessedHarnesses);
     this.diffService.applyDiffState(preprocessedHarnesses);
     this.viewService.setCurrentView(preprocessedHarnesses);
@@ -110,18 +112,19 @@ export class HarnessService implements OnDestroy {
 
   public clear(): void {
     this.loadingService.clear();
-    this.sceneService.removeMesh();
     this.selectionService.clearGeos();
     this.selectionService.resetMesh();
+    this.pickingPickerService.clear();
+    this.pickingService.clear();
     this.colorService.clear();
     this.enableService.clear();
-    this.cacheService.clear();
+    this.bordnetMeshService.clear();
     this.mappingService.clear();
     this.loadedHarnesses.clear();
   }
 
   private createHarnessElementMappings(
-    harnessElementGeos: Map<string, BufferGeometry>
+    harnessElementGeos: BufferGeometry[]
   ): void {
     const harnessGeos: BufferGeometry[] = [];
     harnessElementGeos.forEach((geo) => harnessGeos.push(geo));

@@ -15,23 +15,17 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { FrontSide, MeshLambertMaterial } from 'three';
-import { GeometryColors } from './colors';
+import { Injectable } from '@angular/core';
+import { Scene } from 'three';
+import { HooksAPIStruct } from '../../public-api';
 
-export class GeometryMaterial {
-  public static get defaultHarness() {
-    return new MeshLambertMaterial({
-      vertexColors: true,
-      side: FrontSide,
-      wireframe: false,
-    });
-  }
+@Injectable()
+export class HooksService {
+  public geometryParser?: (data: string) => Scene;
+  public animateBegin?: () => void;
+  public animateEnd?: () => void;
 
-  public static get selection() {
-    return new MeshLambertMaterial({
-      color: GeometryColors.selection,
-      side: FrontSide,
-      wireframe: false,
-    });
+  public add(additionalHooks: HooksAPIStruct) {
+    Object.assign(this, additionalHooks);
   }
 }

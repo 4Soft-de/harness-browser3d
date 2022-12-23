@@ -17,7 +17,7 @@
 
 import { NgModule } from '@angular/core';
 import { BuildingBlockService } from '../services/building-block.service';
-import { CacheService } from '../services/cache.service';
+import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { CameraService } from '../services/camera.service';
 import { ColorService } from '../services/color.service';
 import { CoordinateSystemService } from '../services/coordinate-system.service';
@@ -25,12 +25,11 @@ import { CurveService } from '../services/curve.service';
 import { DefaultGeometryCreationService } from '../services/default-geometries.service';
 import { GeometryService } from '../services/geometry.service';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
-import { HarnessService } from '../services/harness.service';
+import { AddHarnessesService } from '../services/add-harnesses.service';
 import { LoadingService } from '../services/loading.service';
 import { MappingService } from '../services/mapping.service';
 import { PositionService } from '../services/position.service';
-import { RenderService } from '../services/render.service';
-import { SceneService } from '../services/scene.service';
+import { EffectComposerService } from '../services/effect-composer.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ViewService } from '../services/view.service';
@@ -39,31 +38,40 @@ import { EnableService } from '../services/enable.service';
 import { PreprocessService } from '../services/preprocess.service';
 import { LightsService } from '../services/lights.service';
 import { DiffService } from '../services/diff.service';
+import { PickingService } from '../services/picking.service';
+import { AnimateService } from '../services/animate.service';
+import { PassService } from '../services/pass.service';
+import { PickingPickerService } from '../services/picking-picker.service';
+import { HooksService } from '../services/hooks.service';
 
 @NgModule({
   declarations: [HarnessBrowser3dLibraryComponent],
   imports: [],
   exports: [HarnessBrowser3dLibraryComponent],
   providers: [
+    AddHarnessesService,
+    AnimateService,
     BuildingBlockService,
-    CacheService,
+    BordnetMeshService,
     CameraService,
     ColorService,
     CoordinateSystemService,
     CurveService,
     DefaultGeometryCreationService,
     DiffService,
+    EffectComposerService,
     EnableService,
     GeometryService,
     HarnessBrowser3dLibraryAPI,
-    HarnessService,
+    HooksService,
     LightsService,
     LoadingService,
     MappingService,
+    PassService,
+    PickingService,
+    PickingPickerService,
     PositionService,
     PreprocessService,
-    RenderService,
-    SceneService,
     SelectionService,
     SettingsService,
     ViewService,

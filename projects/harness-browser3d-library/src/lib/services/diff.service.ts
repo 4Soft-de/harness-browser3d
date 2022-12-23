@@ -3,7 +3,7 @@ import { Int8BufferAttribute } from 'three';
 import { Harness, Occurrence, Segment, Node } from '../../api/alias';
 import { DiffStateAPIEnum } from '../../api/structs';
 import { GeometryUtils } from '../utils/geometry-utils';
-import { CacheService } from './cache.service';
+import { BordnetMeshService } from './bordnet-mesh.service';
 import { MappingService } from './mapping.service';
 
 @Injectable()
@@ -12,12 +12,12 @@ export class DiffService {
   private readonly shaderKey = 'pDiffState';
 
   constructor(
-    private readonly cacheService: CacheService,
+    private readonly bordnetMeshService: BordnetMeshService,
     private readonly mappingService: MappingService
   ) {}
 
   public applyDiffState(harnesses: Harness[]) {
-    const geo = this.cacheService.getBordnetGeo();
+    const geo = this.bordnetMeshService.getBordnetGeo();
     if (geo) {
       const map = this.createDiffStateMapping(harnesses);
       const array = this.mappingService.applyMapping(

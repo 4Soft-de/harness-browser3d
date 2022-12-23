@@ -18,6 +18,7 @@
 import { Injectable } from '@angular/core';
 import {
   AxesHelper,
+  Camera,
   PerspectiveCamera,
   Scene,
   Vector2,
@@ -25,13 +26,39 @@ import {
   Vector4,
   WebGLRenderer,
 } from 'three';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 import { CameraService } from './camera.service';
+
+class CoordinateSystemPass extends Pass {
+  constructor(private readonly scene: Scene, private readonly camera: Camera) {
+    super();
+  }
+
+  public override render(renderer: WebGLRenderer) {
+    const oldViewport = renderer.getViewport(new Vector4());
+    const oldScissor = renderer.getScissor(new Vector4());
+
+    renderer.clearDepth();
+
+    const size = renderer.getSize(new Vector2()).x * 0.1;
+    const dimension = new Vector4(0, 0, size, size);
+    renderer.setViewport(dimension);
+    renderer.setScissor(dimension);
+
+    renderer.setScissorTest(true);
+    renderer.render(this.scene, this.camera);
+    renderer.setScissorTest(false);
+
+    renderer.setViewport(oldViewport);
+    renderer.setScissor(oldScissor);
+  }
+}
 
 @Injectable()
 export class CoordinateSystemService {
   private axesHelper: AxesHelper;
-  private axesScene: Scene;
   private axesCamera: PerspectiveCamera;
+  private axesScene: Scene;
 
   constructor(private readonly cameraService: CameraService) {
     const mainCamera = this.cameraService.getCamera();
@@ -41,29 +68,18 @@ export class CoordinateSystemService {
       .length();
 
     this.axesHelper = new AxesHelper(size);
+    this.axesCamera = new PerspectiveCamera(50, 1, 0.1, 1 + size);
+
     this.axesScene = new Scene();
     this.axesScene.add(this.axesHelper);
-    this.axesCamera = new PerspectiveCamera(50, 1, 0.1, 1 + size);
   }
 
-  render(renderer: WebGLRenderer) {
-    const oldViewport = renderer.getViewport(new Vector4());
-    const oldScissor = renderer.getScissor(new Vector4());
-
-    const size = renderer.getSize(new Vector2()).x * 0.1;
-    const dimension = new Vector4(0, 0, size, size);
-    renderer.setViewport(dimension);
-    renderer.setScissor(dimension);
-
-    renderer.setScissorTest(true);
-    renderer.render(this.axesScene, this.axesCamera);
-    renderer.setScissorTest(false);
-
-    renderer.setViewport(oldViewport);
-    renderer.setScissor(oldScissor);
+  public initPass(): Pass {
+    return new CoordinateSystemPass(this.axesScene, this.axesCamera);
   }
 
-  animate(target: Vector3) {
+  public animate(): void {
+    const target = this.cameraService.getControls()?.target ?? new Vector3();
     const mainCamera = this.cameraService.getCamera();
     this.axesCamera.rotation.copy(mainCamera.rotation);
     const position = mainCamera.position.clone().sub(target).normalize();

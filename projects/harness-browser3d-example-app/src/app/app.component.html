@@ -112,7 +112,9 @@
               <tr
                 mat-row
                 (click)="toggleRowHighlighting(row, $event)"
-                [class.highlighted-row]="selection.includes(row)"
+                [class.highlighted-row]="
+                  selection.includes(row.id) || pick.includes(row.id)
+                "
                 *matRowDef="let row; columns: displayedColumns"
               ></tr>
 
@@ -224,13 +226,14 @@
       <lib-harness-browser3d
         class="browser_panel"
         (initialized)="addAPI($event)"
+        (pickedIds)="pickIds($event)"
         [addHarnesses]="addHarnesses$ | async"
         [selectedIds]="selectedIds$ | async"
         [disableIds]="disableIds$ | async"
         [enableIds]="enableIds$ | async"
         [colors]="colors$ | async"
         [settings]="settings"
-        [showStats]="stats"
+        [hooks]="hooks"
       ></lib-harness-browser3d>
     </div>
   </div>

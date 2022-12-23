@@ -18,8 +18,8 @@
 import { Injectable } from '@angular/core';
 import { CameraService } from '../lib/services/camera.service';
 import { ColorService } from '../lib/services/color.service';
-import { HarnessService } from '../lib/services/harness.service';
-import { RenderService } from '../lib/services/render.service';
+import { AddHarnessesService } from '../lib/services/add-harnesses.service';
+import { EffectComposerService } from '../lib/services/effect-composer.service';
 import { ViewService } from '../lib/services/view.service';
 import { View } from '../views/view';
 
@@ -28,8 +28,8 @@ export class HarnessBrowser3dLibraryAPI {
   constructor(
     private readonly cameraService: CameraService,
     private readonly colorService: ColorService,
-    private readonly harnessService: HarnessService,
-    private readonly renderService: RenderService,
+    private readonly harnessService: AddHarnessesService,
+    private readonly effectComposerService: EffectComposerService,
     private readonly viewService: ViewService
   ) {}
 
@@ -38,7 +38,7 @@ export class HarnessBrowser3dLibraryAPI {
   }
 
   public resizeRendererToCanvasSize() {
-    this.renderService.resizeRendererToCanvasSize();
+    this.effectComposerService.resizeRendererToCanvasSize();
   }
 
   public resetColors() {
