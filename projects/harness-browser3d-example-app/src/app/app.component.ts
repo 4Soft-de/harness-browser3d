@@ -124,7 +124,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.stats;
     const stats = new Stats();
     stats.dom.style.position = 'inherit';
     stats.dom.style.removeProperty('top');
