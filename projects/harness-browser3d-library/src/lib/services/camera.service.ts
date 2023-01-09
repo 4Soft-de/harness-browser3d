@@ -19,7 +19,7 @@ import { Injectable } from '@angular/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { BordnetMeshService } from './bordnet-mesh.service';
 import { ErrorUtils } from '../utils/error-utils';
-import { Box3, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } from 'three';
+import { Box3, Mesh, PerspectiveCamera, Sphere, Vector3 } from 'three';
 
 @Injectable()
 export class CameraService {
@@ -39,10 +39,6 @@ export class CameraService {
 
   public initControls(canvas: HTMLCanvasElement) {
     this.controls = new OrbitControls(this.camera, canvas);
-    this.controls.mouseButtons = {
-      LEFT: MOUSE.PAN,
-      RIGHT: MOUSE.ROTATE,
-    };
     this.controls.listenToKeyEvents(canvas);
   }
 
