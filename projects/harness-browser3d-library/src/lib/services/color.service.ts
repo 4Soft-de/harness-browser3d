@@ -73,7 +73,11 @@ export class ColorService {
       color = GeometryColors.segment;
     }
     if (isOccurrence(harnessElement)) {
-      color = GeometryColors.getColor(harnessElement.partType);
+      if (harnessElement.overrideDefaultColor) {
+        color = new Color().setHex(harnessElement.overrideDefaultColor);
+      } else {
+        color = GeometryColors.getColor(harnessElement.partType);
+      }
     }
     return color;
   }
