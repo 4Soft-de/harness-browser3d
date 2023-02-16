@@ -225,6 +225,8 @@ components:
           type: string
         numberOfCavities:
           type: integer
+        overrideDefaultColor:
+          type: integer
         placement:
           $ref: "#/components/schemas/Placement"
         graphicPosition:
