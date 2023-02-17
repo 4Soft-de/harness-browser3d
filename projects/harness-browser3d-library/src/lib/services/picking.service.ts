@@ -118,7 +118,7 @@ export class PickingService implements OnDestroy {
   }
 
   private initMouseEvents(canvas: HTMLCanvasElement): void {
-    this.addEventListener(canvas, 'click', (event) => {
+    this.addEventListener(canvas, 'mousedown', (event) => {
       const pos = getMousePosition(event, canvas);
       this.pickId(this.pickingPickerService.determineHarnessElementId(pos));
     });
