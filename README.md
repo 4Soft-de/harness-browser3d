@@ -17,9 +17,9 @@ Open in Visual Studio Code and run these tasks:
 ## Command Line Alternative
 
 ```shell
-cd projects\harness-browser3d-library
+cd projects/harness-browser3d-library
 
-npx openapi-typescript assets\geometry-api.yaml --output src\generated\geometry.ts
+npx openapi-typescript assets/geometry-api.yaml --output src/generated/geometry.ts
 
 ng build harness-browser3d-library --configuration production
 
@@ -33,8 +33,8 @@ To publish the lib:
 1. Checkout master + merge develop into master
 2. Update version in package.json in root and in package.json in projects/harness-browser3d-library to the new version
 3. Create tag with version (e.g. `0.3.4`)
-4. IMPORTANT: Re-build project completely 
-5. Use the following commands to publish to npm 
+4. IMPORTANT: Re-build project completely
+5. Use the following commands to publish to npm
 
 ```shell
 cd dist\harness-browser3d-library
