@@ -7,7 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build library": "ng build harness-browser3d-library --configuration development"
+    "build:library": "npm run generate:api && ng build harness-browser3d-library --configuration development",
+    "watch:library": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch",
+    "generate:api": "npx openapi-typescript projects/harness-browser3d-library/assets/geometry-api.yaml --output projects/harness-browser3d-library/src/generated/geometry.ts"
   },
   "dependencies": {
     "@angular/animations": "14.x",
