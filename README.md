@@ -17,13 +17,8 @@ Open in Visual Studio Code and run these tasks:
 ## Command Line Alternative
 
 ```shell
-cd projects/harness-browser3d-library
-
-npx openapi-typescript assets/geometry-api.yaml --output src/generated/geometry.ts
-
-ng build harness-browser3d-library --configuration production
-
-ng serve --open
+npm run watch:library
+npm start
 ```
 
 # Publishing
