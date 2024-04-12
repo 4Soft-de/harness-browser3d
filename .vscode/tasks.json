@@ -8,16 +8,18 @@
       "problemMatcher": []
     },
     {
+      "type": "npm",
+      "script": "build:library",
+      "group": "build",
+      "problemMatcher": [],
       "label": "build library",
-      "type": "shell",
-      "command": "ng build harness-browser3d-library --configuration ${input:configuration}",
-      "problemMatcher": []
+      "detail": "npm run generate:api && ng build harness-browser3d-library --configuration development"
     },
     {
-      "label": "build and watch library",
-      "type": "shell",
+      "type": "npm",
       "isBackground": true,
-      "command": "ng build harness-browser3d-library --configuration development --watch",
+      "script": "watch:library",
+      "group": "build",
       "problemMatcher": {
         "base": "$tsc",
         "background": {
@@ -25,7 +27,9 @@
           "beginsPattern": "^Building Angular Package",
           "endsPattern": "^Compilation complete\\. Watching for file changes\\.\\.\\."
         }
-      }
+      },
+      "label": "build and watch library",
+      "detail": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch"
     },
     {
       "label": "build and run",
@@ -34,10 +38,11 @@
       "problemMatcher": []
     },
     {
+      "type": "npm",
+      "script": "generate:api",
+      "problemMatcher": [],
       "label": "generate geometry typescript classes",
-      "type": "shell",
-      "command": "cd projects\\harness-browser3d-library; npx openapi-typescript assets\\geometry-api.yaml --output src\\generated\\geometry.ts",
-      "problemMatcher": []
+      "detail": "npx openapi-typescript projects/harness-browser3d-library/assets/geometry-api.yaml --output projects/harness-browser3d-library/src/generated/geometry.ts"
     }
   ],
   "inputs": [
