@@ -99,6 +99,15 @@ table {
   background-color: #cccccc;
 }
 
+.list-item {
+  display: flex;
+  direction: row;
+}
+
+.item-span {
+  flex: 1 0;
+}
+
 .color1 {
   background-color: rgb(6, 111, 223);
 }

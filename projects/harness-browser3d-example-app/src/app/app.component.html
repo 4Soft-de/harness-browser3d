@@ -66,7 +66,7 @@
     >
       <mat-card fxFlex fxLayout="column" class="side-panel">
         <ng-container *ngIf="selectedView.name === 'Default'">
-          <mat-form-field appearance="standard">
+          <mat-form-field>
             <input
               matInput
               (keyup)="applyFilter($event)"
@@ -93,17 +93,17 @@
                     <button
                       mat-mini-fab
                       class="my-fab color1"
-                      (click)="setToColor1(module)"
+                      (click)="setToColor(1, module, $event)"
                     ></button>
                     <button
                       mat-mini-fab
                       class="my-fab color2"
-                      (click)="setToColor2(module)"
+                      (click)="setToColor(2, module, $event)"
                     ></button>
                     <button
                       mat-mini-fab
                       class="my-fab color3"
-                      (click)="setToColor3(module)"
+                      (click)="setToColor(3, module, $event)"
                     ></button>
                   </ng-container>
                 </td>
@@ -174,10 +174,13 @@
         >
           <mat-list dense>
             <mat-list-item *ngFor="let module of colorService.color1Modules">
-              <h3 mat-line>{{ module["id"] }}</h3>
-              <button mat-icon-button (click)="removeColor(module)">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <div matListItemLine class="list-item">
+                <h3>{{ module["id"] }}</h3>
+                <span class="item-span"></span>
+                <button mat-icon-button (click)="removeColor(module)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </mat-list-item>
           </mat-list>
         </mat-card>
@@ -187,10 +190,13 @@
         >
           <mat-list dense>
             <mat-list-item *ngFor="let module of colorService.color2Modules">
-              <h3 mat-line>{{ module["id"] }}</h3>
-              <button mat-icon-button (click)="removeColor(module)">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <div matListItemLine class="list-item">
+                <h3>{{ module["id"] }}</h3>
+                <span class="item-span"></span>
+                <button mat-icon-button (click)="removeColor(module)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </mat-list-item>
           </mat-list>
         </mat-card>
@@ -200,10 +206,13 @@
         >
           <mat-list dense>
             <mat-list-item *ngFor="let module of colorService.color3Modules">
-              <h3 mat-line>{{ module["id"] }}</h3>
-              <button mat-icon-button (click)="removeColor(module)">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <div matListItemLine class="list-item">
+                <h3>{{ module["id"] }}</h3>
+                <span class="item-span"></span>
+                <button mat-icon-button (click)="removeColor(module)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </mat-list-item>
           </mat-list>
         </mat-card>

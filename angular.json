@@ -134,7 +134,6 @@
       }
     }
   },
-  "defaultProject": "harness-browser3d-example-app",
   "cli": {
     "analytics": false
   }

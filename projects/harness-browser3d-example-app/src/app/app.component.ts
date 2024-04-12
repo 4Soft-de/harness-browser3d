@@ -283,16 +283,28 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.selection = [];
   }
 
-  setToColor1(module: HarnessElement) {
-    this.colorService.addToColorArray(this.colorService.color1Modules, module);
-  }
-
-  setToColor2(module: HarnessElement) {
-    this.colorService.addToColorArray(this.colorService.color2Modules, module);
-  }
-
-  setToColor3(module: HarnessElement) {
-    this.colorService.addToColorArray(this.colorService.color3Modules, module);
+  setToColor(index: number, module: HarnessElement, event: Event) {
+    switch (index) {
+      case 1:
+        this.colorService.addToColorArray(
+          this.colorService.color1Modules,
+          module
+        );
+        break;
+      case 2:
+        this.colorService.addToColorArray(
+          this.colorService.color2Modules,
+          module
+        );
+        break;
+      case 3:
+        this.colorService.addToColorArray(
+          this.colorService.color3Modules,
+          module
+        );
+        break;
+    }
+    event.stopPropagation();
   }
 
   setColors() {

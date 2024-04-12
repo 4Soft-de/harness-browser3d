@@ -10,14 +10,13 @@
 
 Open in Visual Studio Code and run these tasks:
 
-- `generate geometry typescript classes`
 - `build library`
 - `run example`
 
 ## Command Line Alternative
 
 ```shell
-npm run watch:library
+npm run build:library
 npm start
 ```
 
