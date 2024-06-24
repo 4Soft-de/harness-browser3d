@@ -15,12 +15,12 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { Node, Occurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { BufferAttribute, BufferGeometry } from 'three';
 import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 export class GeometryUtils {
   public static applyGeoAttribute(
@@ -47,7 +47,7 @@ export class GeometryUtils {
     if (!geos.length) {
       return new BufferGeometry();
     }
-    const geo = mergeBufferGeometries(geos);
+    const geo = mergeGeometries(geos);
     if (geo) {
       geos.forEach((geo) => geo.dispose());
       return geo;

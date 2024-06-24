@@ -16,7 +16,7 @@
 */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
@@ -86,7 +86,7 @@ export class SelectionService implements OnDestroy {
       }
     });
     if (selectedObjects.length > 0) {
-      const selectGeo = mergeBufferGeometries(selectedObjects);
+      const selectGeo = mergeGeometries(selectedObjects);
       this.selectMesh = new Mesh(selectGeo, GeometryMaterial.selection);
       this.scene.add(this.selectMesh);
     }

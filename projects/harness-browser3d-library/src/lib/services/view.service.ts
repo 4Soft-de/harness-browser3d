@@ -99,16 +99,16 @@ export class ViewService {
   }
 
   private setProperty(harnessElement: Node | Segment | Occurrence) {
-    if (harnessElement.viewProperties) {
-      Object.entries(harnessElement.viewProperties).forEach((entry) => {
-        const key = entry[0];
-        const value = entry[1];
-        if (!this.propertiesCache.has(key)) {
-          this.propertiesCache.set(key, new Map<string, string>());
-        }
-        this.propertiesCache.get(key)!.set(harnessElement.id, value);
-      });
-    }
+    if (harnessElement.viewProperties === undefined) return;
+    Object.entries(harnessElement.viewProperties).forEach((entry) => {
+      const key = entry[0];
+      const value = entry[1];
+      if (value === undefined) return;
+      if (!this.propertiesCache.has(key)) {
+        this.propertiesCache.set(key, new Map<string, string>());
+      }
+      this.propertiesCache.get(key)!.set(harnessElement.id, value);
+    });
   }
 
   public clear(): void {

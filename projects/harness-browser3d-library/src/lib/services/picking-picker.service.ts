@@ -19,6 +19,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import {
   Color,
   Float32BufferAttribute,
+  NoColorSpace,
   ShaderLib,
   ShaderMaterial,
   Vector2,
@@ -103,7 +104,10 @@ export class PickingPickerService implements OnDestroy {
 
     const array: number[] = [];
     this.mappingService
-      .applyMapping(new Color(0), this.harnessElementIndexColors)
+      .applyMapping(
+        new Color().setHex(0, NoColorSpace),
+        this.harnessElementIndexColors,
+      )
       .forEach((color) => array.push(color.r, color.g, color.b));
 
     GeometryUtils.applyGeoAttribute(
@@ -117,7 +121,7 @@ export class PickingPickerService implements OnDestroy {
     // 0 is reserved for no pick
     const index = this.harnessElementIndices.length + 1;
     this.harnessElementIndices.push(harnessElement.id);
-    const indexColor = new Color(index);
+    const indexColor = new Color().setHex(index, NoColorSpace);
     this.harnessElementIndexColors.set(harnessElement.id, indexColor);
   }
 
@@ -156,7 +160,7 @@ export class PickingPickerService implements OnDestroy {
     const oldRenderTarget = renderer.getRenderTarget();
     const oldClearColor = renderer.getClearColor(new Color());
 
-    renderer.setClearColor(new Color(0));
+    renderer.setClearColor(new Color().setHex(0, NoColorSpace));
     camera.setViewOffset(size.x, size.y, pos.x, pos.y, 1, 1);
     renderer.setRenderTarget(this.renderTarget);
     scene.overrideMaterial = this.material;

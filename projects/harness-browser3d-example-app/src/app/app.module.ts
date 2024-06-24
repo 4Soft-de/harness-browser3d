@@ -17,7 +17,6 @@
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HarnessBrowser3dLibraryModule } from 'harness-browser3d-library';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
@@ -33,12 +32,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
+import { HarnessBrowser3dLibraryComponent } from 'harness-browser3d-library';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    HarnessBrowser3dLibraryComponent,
     BrowserModule,
-    HarnessBrowser3dLibraryModule,
     BrowserAnimationsModule,
     MatCardModule,
     FlexLayoutModule,

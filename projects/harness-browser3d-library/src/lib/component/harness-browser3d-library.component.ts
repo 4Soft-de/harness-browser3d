@@ -20,12 +20,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   NgZone,
   OnDestroy,
-  Output,
-  ViewChild,
+  output,
+  viewChild,
 } from '@angular/core';
 import { Harness } from '../../api/alias';
 import { HarnessBrowser3dLibraryAPI } from '../../api/api';
@@ -48,20 +47,24 @@ import { AnimateService } from '../services/animate.service';
 import { Subscription } from 'rxjs';
 import { PassService } from '../services/pass.service';
 import { HooksService } from '../services/hooks.service';
+import harnessBrowser3dLibraryProviders from './harness-browser3d-library.providers';
 
 @Component({
   selector: 'lib-harness-browser3d',
   templateUrl: './harness-browser3d-library.component.html',
   styleUrls: ['./harness-browser3d-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  providers: harnessBrowser3dLibraryProviders,
 })
 export class HarnessBrowser3dLibraryComponent
   implements AfterViewInit, OnDestroy
 {
-  @ViewChild('harness3dBrowserCanvas')
-  private canvasElementRef!: ElementRef<HTMLCanvasElement>;
-  @Output() initialized = new EventEmitter<HarnessBrowser3dLibraryAPI>();
-  @Output() pickedIds = new EventEmitter<string[]>();
+  private canvasElementRef = viewChild.required<ElementRef<HTMLCanvasElement>>(
+    'harness3dBrowserCanvas',
+  );
+  initialized = output<HarnessBrowser3dLibraryAPI>();
+  pickedIds = output<string[]>();
   private isInitialized = false;
   private readonly subscription = new Subscription();
 
@@ -84,7 +87,7 @@ export class HarnessBrowser3dLibraryComponent
   ) {}
 
   ngAfterViewInit(): void {
-    const canvasElement = this.canvasElementRef.nativeElement;
+    const canvasElement = this.canvasElementRef().nativeElement;
     this.effectComposerService.initRenderer(canvasElement);
     this.cameraService.initControls(canvasElement);
     this.pickingService.initPickingEvents(canvasElement);

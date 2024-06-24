@@ -53,12 +53,11 @@ export class DiffService {
   private readDiffState(
     harnessElement: Node | Segment | Occurrence,
   ): DiffStateAPIEnum {
-    let result = DiffStateAPIEnum.unmodified;
-    if (harnessElement.viewProperties) {
-      const stateString = harnessElement.viewProperties[this.propertyKey];
-      result = this.getDiffState(stateString) ?? DiffStateAPIEnum.unmodified;
+    const stateString = harnessElement.viewProperties?.[this.propertyKey];
+    if (stateString === undefined) {
+      return DiffStateAPIEnum.unmodified;
     }
-    return result;
+    return this.getDiffState(stateString) ?? DiffStateAPIEnum.unmodified;
   }
 
   private getDiffState(property: string): DiffStateAPIEnum | undefined {

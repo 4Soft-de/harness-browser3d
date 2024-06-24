@@ -45,8 +45,8 @@ chrome-profiler-events*.json
 npm-debug.log
 yarn-error.log
 testem.log
-package-lock.json
 /typings
+.npmrc
 
 # System Files
 .DS_Store
