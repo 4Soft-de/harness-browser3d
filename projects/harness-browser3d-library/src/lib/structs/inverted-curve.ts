@@ -31,7 +31,7 @@ export class InvertedCurve implements Curve<Vector3> {
 
   computeFrenetFrames(
     segments: number,
-    closed?: boolean
+    closed?: boolean,
   ): { tangents: Vector3[]; normals: Vector3[]; binormals: Vector3[] } {
     return this.curve.computeFrenetFrames(segments, closed);
   }

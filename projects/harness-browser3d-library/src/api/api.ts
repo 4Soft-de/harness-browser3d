@@ -30,7 +30,7 @@ export class HarnessBrowser3dLibraryAPI {
     private readonly colorService: ColorService,
     private readonly harnessService: AddHarnessesService,
     private readonly effectComposerService: EffectComposerService,
-    private readonly viewService: ViewService
+    private readonly viewService: ViewService,
   ) {}
 
   public resetCamera() {

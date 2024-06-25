@@ -27,7 +27,7 @@ export class AnimateService {
     private readonly cameraService: CameraService,
     private readonly coordinateSystemService: CoordinateSystemService,
     private readonly lightsService: LightsService,
-    private readonly pickingService: PickingService
+    private readonly pickingService: PickingService,
   ) {}
 
   public animate() {

@@ -38,7 +38,7 @@ export class SelectionService implements OnDestroy {
   constructor(
     private readonly cameraService: CameraService,
     lightsService: LightsService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     lightsService.addLights(this.scene);
 
@@ -46,7 +46,7 @@ export class SelectionService implements OnDestroy {
       this.settingsService.updatedGeometrySettings.subscribe(() => {
         this.clearGeos();
         this.resetMesh();
-      })
+      }),
     );
   }
 
@@ -72,7 +72,7 @@ export class SelectionService implements OnDestroy {
 
   public selectElements(
     ids: Set<string>,
-    zoom: boolean = this.settingsService.zoomSelection
+    zoom: boolean = this.settingsService.zoomSelection,
   ) {
     this.resetMesh();
 

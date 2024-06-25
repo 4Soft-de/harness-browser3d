@@ -16,7 +16,10 @@
 */
 
 export class VertexRange {
-  constructor(public readonly high: number, public readonly low: number) {}
+  constructor(
+    public readonly high: number,
+    public readonly low: number,
+  ) {}
 
   public toArray() {
     const array: number[] = [];

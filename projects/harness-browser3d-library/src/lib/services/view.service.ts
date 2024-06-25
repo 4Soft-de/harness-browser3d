@@ -31,7 +31,7 @@ export class ViewService {
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {}
 
   public setView(view: View): void {
@@ -54,7 +54,7 @@ export class ViewService {
     this.applyMapping(
       this.currentView,
       this.bordnetMeshService.getBordnetMesh()?.material !==
-        this.currentView.material
+        this.currentView.material,
     );
   }
 
@@ -68,12 +68,12 @@ export class ViewService {
         const array = this.mappingService.applyMapping(
           view.defaultValue,
           this.propertiesCache.get(view.propertyKey) ??
-            new Map<string, string>()
+            new Map<string, string>(),
         );
         GeometryUtils.applyGeoAttribute(
           mesh.geometry,
           view.propertyKey,
-          view.mapper(array)
+          view.mapper(array),
         );
       }
     }

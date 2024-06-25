@@ -80,7 +80,7 @@ export class HarnessBrowser3dLibraryComponent
     private readonly passService: PassService,
     private readonly pickingService: PickingService,
     private readonly selectionService: SelectionService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {}
 
   ngAfterViewInit(): void {
@@ -126,7 +126,7 @@ export class HarnessBrowser3dLibraryComponent
 
   private checkInput<Input>(
     exec: (input: Input) => void,
-    input: Input | null | undefined
+    input: Input | null | undefined,
   ) {
     if (!this.isInitialized && input) {
       console.warn('harness-browser3d is not initialized yet');
@@ -140,7 +140,7 @@ export class HarnessBrowser3dLibraryComponent
   set addHarnesses(harnesses: Harness[] | null | undefined) {
     this.checkInput(
       this.addHarnessesService.addHarnesses.bind(this.addHarnessesService),
-      harnesses
+      harnesses,
     );
   }
 
@@ -148,7 +148,7 @@ export class HarnessBrowser3dLibraryComponent
   set selectedIds(ids: string[] | null | undefined) {
     this.checkInput(
       this.selectionService.selectElements.bind(this.selectionService),
-      ids ? new Set(ids) : undefined
+      ids ? new Set(ids) : undefined,
     );
   }
 
@@ -156,7 +156,7 @@ export class HarnessBrowser3dLibraryComponent
   set enableIds(ids: string[] | null | undefined) {
     this.checkInput(
       this.enableService.enableElements.bind(this.enableService),
-      ids
+      ids,
     );
   }
 
@@ -164,7 +164,7 @@ export class HarnessBrowser3dLibraryComponent
   set disableIds(ids: string[] | null | undefined) {
     this.checkInput(
       this.enableService.disableElements.bind(this.enableService),
-      ids
+      ids,
     );
   }
 
@@ -172,7 +172,7 @@ export class HarnessBrowser3dLibraryComponent
   set colors(colors: SetColorAPIStruct[] | null | undefined) {
     this.checkInput(
       this.colorService.setColors.bind(this.colorService),
-      colors
+      colors,
     );
   }
 

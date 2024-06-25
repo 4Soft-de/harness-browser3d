@@ -54,10 +54,10 @@ export class AddHarnessesService implements OnDestroy {
     private readonly preprocessService: PreprocessService,
     private readonly selectionService: SelectionService,
     private readonly settingsService: SettingsService,
-    private readonly viewService: ViewService
+    private readonly viewService: ViewService,
   ) {
     this.subscription.add(
-      settingsService.updatedGeometrySettings.subscribe(this.clear.bind(this))
+      settingsService.updatedGeometrySettings.subscribe(this.clear.bind(this)),
     );
   }
 
@@ -86,13 +86,13 @@ export class AddHarnessesService implements OnDestroy {
     if (this.settingsService.geometryMode === GeometryModeAPIEnum.loaded) {
       const graphics: Graphic[] = [];
       preprocessedHarnesses.forEach((harness) =>
-        harness.graphics?.forEach((graphic) => graphics.push(graphic))
+        harness.graphics?.forEach((graphic) => graphics.push(graphic)),
       );
       this.loadingService.loadGraphics(graphics);
     }
 
     const harnessElementGeos = this.geometryService.processHarnesses(
-      preprocessedHarnesses
+      preprocessedHarnesses,
     );
 
     this.createHarnessElementMappings(harnessElementGeos);
@@ -124,7 +124,7 @@ export class AddHarnessesService implements OnDestroy {
   }
 
   private createHarnessElementMappings(
-    harnessElementGeos: BufferGeometry[]
+    harnessElementGeos: BufferGeometry[],
   ): void {
     const harnessGeos: BufferGeometry[] = [];
     harnessElementGeos.forEach((geo) => harnessGeos.push(geo));

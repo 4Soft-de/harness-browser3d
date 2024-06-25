@@ -39,7 +39,7 @@ export class ColorService {
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {}
 
   public setColors(colors: SetColorAPIStruct[]): void {
@@ -58,7 +58,7 @@ export class ColorService {
     const set = (harnessElement: Node | Segment | Occurrence) => {
       this.defaultColors.set(
         harnessElement.id,
-        this.getDefaultColor(harnessElement)
+        this.getDefaultColor(harnessElement),
       );
     };
     harness.nodes.forEach(set);
@@ -92,7 +92,7 @@ export class ColorService {
       GeometryUtils.applyGeoAttribute(
         geo,
         key,
-        new Float32BufferAttribute(array, 3)
+        new Float32BufferAttribute(array, 3),
       );
     }
   }

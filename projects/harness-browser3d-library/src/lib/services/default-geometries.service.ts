@@ -34,7 +34,7 @@ export class DefaultGeometryCreationService {
     const node = new SphereGeometry(
       4,
       this.settingsService.segmentCount,
-      this.settingsService.segmentCount
+      this.settingsService.segmentCount,
     );
     GeometryUtils.clean(node);
     return node;
@@ -55,7 +55,7 @@ export class DefaultGeometryCreationService {
       10,
       10,
       20,
-      this.settingsService.segmentCount
+      this.settingsService.segmentCount,
     ).rotateX(MathUtils.degToRad(90));
     GeometryUtils.clean(accessory);
     return accessory;
@@ -65,7 +65,7 @@ export class DefaultGeometryCreationService {
     const fixing = new SphereGeometry(
       10,
       this.settingsService.segmentCount,
-      this.settingsService.segmentCount
+      this.settingsService.segmentCount,
     );
     GeometryUtils.clean(fixing);
     return fixing;

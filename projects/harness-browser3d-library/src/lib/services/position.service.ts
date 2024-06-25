@@ -34,12 +34,12 @@ export class PositionService {
   public positionGeometry(
     position: Vector3,
     rotation: Quaternion,
-    geo: BufferGeometry
+    geo: BufferGeometry,
   ): void {
     const matrix = new Matrix4().compose(
       position,
       rotation,
-      new Vector3(1, 1, 1)
+      new Vector3(1, 1, 1),
     );
     geo.applyMatrix4(matrix);
   }
@@ -47,14 +47,14 @@ export class PositionService {
   public positionTubeGeometry(
     curve: Curve<Vector3>,
     length: number,
-    radius: number
+    radius: number,
   ): BufferGeometry {
     const geo = new TubeGeometry(
       curve,
       Math.ceil(length * this.settingsService.curveStepsFactor),
       radius,
       this.settingsService.segmentCount,
-      false
+      false,
     );
     GeometryUtils.clean(geo);
     return geo;

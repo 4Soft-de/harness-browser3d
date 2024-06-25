@@ -22,6 +22,6 @@ export class View {
     public readonly material: Material,
     public readonly propertyKey?: string | undefined,
     public readonly defaultValue?: string,
-    public readonly mapper?: (properties: string[]) => BufferAttribute
+    public readonly mapper?: (properties: string[]) => BufferAttribute,
   ) {}
 }

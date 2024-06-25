@@ -49,7 +49,7 @@ export class SettingsService implements SettingsAPIStruct {
   public set(additionalSettings: SettingsAPIStruct) {
     Object.assign(this, additionalSettings);
     this.updatedSettings = Object.entries(additionalSettings).map(
-      (entry) => entry[0]
+      (entry) => entry[0],
     );
   }
 
@@ -59,16 +59,16 @@ export class SettingsService implements SettingsAPIStruct {
         element === 'geometryMode' ||
         element === 'splineMode' ||
         element === 'segmentCount' ||
-        element === 'curveStepsFactor'
+        element === 'curveStepsFactor',
     );
     const cameraSetting = this.updatedSettings.find(
       (element) =>
         element === 'pixelRatio' ||
         element === 'enableAntiAliasing' ||
-        element === 'backgroundColor'
+        element === 'backgroundColor',
     );
     const pickingSettings = this.updatedSettings.find(
-      (element) => element === 'hoverColor' || element === 'zoomPicking'
+      (element) => element === 'hoverColor' || element === 'zoomPicking',
     );
     if (geoSetting) {
       this.updatedGeometrySettings.next();

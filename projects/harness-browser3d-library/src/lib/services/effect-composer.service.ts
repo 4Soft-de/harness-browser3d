@@ -32,12 +32,12 @@ export class EffectComposerService implements OnDestroy {
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     const sub = this.settingsService.updatedCameraSettings.subscribe(() => {
       this.resizeRendererToCanvasSize();
       this.effectComposer?.renderer.setClearColor(
-        this.settingsService.backgroundColor
+        this.settingsService.backgroundColor,
       );
     });
     this.subscription.add(sub);

@@ -30,7 +30,10 @@ import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 import { CameraService } from './camera.service';
 
 class CoordinateSystemPass extends Pass {
-  constructor(private readonly scene: Scene, private readonly camera: Camera) {
+  constructor(
+    private readonly scene: Scene,
+    private readonly camera: Camera,
+  ) {
     super();
   }
 

@@ -19,7 +19,7 @@ import { Vector2 } from 'three';
 
 export function getMousePosition(
   event: Event,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
 ): Vector2 | undefined {
   const rect = canvas.getBoundingClientRect();
   return extractPosition(event)

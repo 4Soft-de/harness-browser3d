@@ -44,7 +44,7 @@ export class DataService {
             partNumber: filename.substring(0, filename.length - 4),
             data: data,
           };
-        })
+        }),
       );
   }
 
@@ -64,10 +64,10 @@ export class DataService {
         this.exampleBordnetInternal = exampleBordnet;
         this.exampleBordnetInternal.harnesses.forEach(
           (harness: Harness) =>
-            (harness.graphics = this.filterGeos(harness, geos))
+            (harness.graphics = this.filterGeos(harness, geos)),
         );
         return this.exampleBordnetInternal;
-      })
+      }),
     );
   }
 

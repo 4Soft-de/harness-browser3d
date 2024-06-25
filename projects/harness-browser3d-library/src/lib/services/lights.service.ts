@@ -39,11 +39,11 @@ export class LightsService {
     const dir = new Vector3()
       .subVectors(target, camera.position)
       .applyMatrix4(
-        new Matrix4().makeRotationAxis(axis, MathUtils.degToRad(45))
+        new Matrix4().makeRotationAxis(axis, MathUtils.degToRad(45)),
       );
 
     this.lightA.forEach((lightA) =>
-      lightA.position.copy(dir).multiplyScalar(-1).normalize()
+      lightA.position.copy(dir).multiplyScalar(-1).normalize(),
     );
     this.lightB.forEach((lightB) => lightB.position.copy(dir).normalize());
   }

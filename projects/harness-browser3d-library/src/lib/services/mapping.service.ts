@@ -31,7 +31,7 @@ export class MappingService {
    */
   public applyMapping<PROPERTY>(
     defaultValue: PROPERTY,
-    values: Map<string, PROPERTY>
+    values: Map<string, PROPERTY>,
   ): PROPERTY[] {
     const map = this.initializeMap(defaultValue);
     values.forEach((value, key) => {
@@ -46,7 +46,7 @@ export class MappingService {
   }
 
   private initializeMap<PROPERTY>(
-    defaultValue: PROPERTY
+    defaultValue: PROPERTY,
   ): Map<number, PROPERTY> {
     const size = this.bordnetMeshService.getVerticesCount();
     const map: Map<number, PROPERTY> = new Map();
@@ -69,7 +69,7 @@ export class MappingService {
    * The mapping is filled according to this information.
    */
   public addHarnessElementVertexMappings(
-    harnessElementGeos: BufferGeometry[]
+    harnessElementGeos: BufferGeometry[],
   ): void {
     let index = this.bordnetMeshService.getVerticesCount();
     harnessElementGeos.forEach((geo) => {

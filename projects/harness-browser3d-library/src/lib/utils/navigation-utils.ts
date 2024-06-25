@@ -34,7 +34,7 @@ export function getNodeId(occurrence: Occurrence): string | undefined {
 }
 
 export function getOnPointSegmentLocations(
-  occurrence: Occurrence
+  occurrence: Occurrence,
 ): SegmentLocation[] {
   const placement = occurrence.placement;
   if (isOnPointPlacement(placement)) {

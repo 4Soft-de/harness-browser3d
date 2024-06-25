@@ -33,13 +33,13 @@ export class BuildingBlockService {
 
     position = HarnessUtils.convertPointToVector(buildingBlock.position!);
     rotation = HarnessUtils.computeQuaternionFromRotation(
-      buildingBlock.rotation!
+      buildingBlock.rotation!,
     );
 
     const matrix = new Matrix4().compose(
       position,
       rotation,
-      new Vector3(1, 1, 1)
+      new Vector3(1, 1, 1),
     );
 
     this.buildingBlockMatrixCache.set(buildingBlock.id, matrix);

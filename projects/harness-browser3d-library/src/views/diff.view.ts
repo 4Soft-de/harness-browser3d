@@ -31,7 +31,10 @@ export const diffViewSettings = {
 class State {
   public readonly colorString: string;
   public readonly idString: string;
-  constructor(public readonly id: number, colorName: string) {
+  constructor(
+    public readonly id: number,
+    colorName: string,
+  ) {
     this.idString = `float(${id})`;
     const color = new Color(colorName);
     this.colorString = `vec4(${color.r}, ${color.g}, ${color.b}, ${1})`;

@@ -41,12 +41,12 @@ export class PassService implements OnDestroy {
     private readonly effectComposerService: EffectComposerService,
     private readonly pickingService: PickingService,
     private readonly selectionService: SelectionService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     const sub = settingsService.updatedCameraSettings.subscribe(
       () =>
         (this.getAntiAliasPass().enabled =
-          this.settingsService.enableAntiAliasing)
+          this.settingsService.enableAntiAliasing),
     );
     this.subscription.add(sub);
   }

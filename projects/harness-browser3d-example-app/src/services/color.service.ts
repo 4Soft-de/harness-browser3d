@@ -68,7 +68,7 @@ export class ColorService {
 
   private static checkIfExistsAndDelete(
     array: HarnessElement[],
-    module: HarnessElement
+    module: HarnessElement,
   ): boolean {
     const index = array.indexOf(module);
     if (index > -1) {
@@ -80,13 +80,13 @@ export class ColorService {
 
   setColors() {
     const color1ChangeList = this.color1Modules.map((module) =>
-      ColorService.convertToApiColorArray(module, this.color1)
+      ColorService.convertToApiColorArray(module, this.color1),
     );
     const color2ChangeList = this.color2Modules.map((module) =>
-      ColorService.convertToApiColorArray(module, this.color2)
+      ColorService.convertToApiColorArray(module, this.color2),
     );
     const color3ChangeList = this.color3Modules.map((module) =>
-      ColorService.convertToApiColorArray(module, this.color3)
+      ColorService.convertToApiColorArray(module, this.color3),
     );
 
     return [...color1ChangeList, ...color2ChangeList, ...color3ChangeList];

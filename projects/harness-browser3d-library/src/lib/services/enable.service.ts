@@ -12,7 +12,7 @@ export class EnableService {
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {}
 
   public enableElements(ids: string[]): void {
@@ -28,13 +28,13 @@ export class EnableService {
   public enableHarnesses(harnesses: Harness[]) {
     harnesses.forEach((harness) => {
       harness.nodes.forEach((node) =>
-        this.enabledHarnessElementsCache.set(node.id, true)
+        this.enabledHarnessElementsCache.set(node.id, true),
       );
       harness.segments.forEach((segment) =>
-        this.enabledHarnessElementsCache.set(segment.id, true)
+        this.enabledHarnessElementsCache.set(segment.id, true),
       );
       harness.occurrences.forEach((occurrence) =>
-        this.enabledHarnessElementsCache.set(occurrence.id, true)
+        this.enabledHarnessElementsCache.set(occurrence.id, true),
       );
     });
 
@@ -50,7 +50,7 @@ export class EnableService {
       GeometryUtils.applyGeoAttribute(
         geo,
         this.key,
-        new Int8BufferAttribute(array, 1)
+        new Int8BufferAttribute(array, 1),
       );
     }
   }
