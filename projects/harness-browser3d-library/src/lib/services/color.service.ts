@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -39,7 +39,7 @@ export class ColorService {
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {}
 
   public setColors(colors: SetColorAPIStruct[]): void {
@@ -58,7 +58,7 @@ export class ColorService {
     const set = (harnessElement: Node | Segment | Occurrence) => {
       this.defaultColors.set(
         harnessElement.id,
-        this.getDefaultColor(harnessElement)
+        this.getDefaultColor(harnessElement),
       );
     };
     harness.nodes.forEach(set);
@@ -92,7 +92,7 @@ export class ColorService {
       GeometryUtils.applyGeoAttribute(
         geo,
         key,
-        new Float32BufferAttribute(array, 3)
+        new Float32BufferAttribute(array, 3),
       );
     }
   }

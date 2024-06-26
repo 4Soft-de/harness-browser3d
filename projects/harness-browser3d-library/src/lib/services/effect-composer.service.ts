@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -32,12 +32,12 @@ export class EffectComposerService implements OnDestroy {
 
   constructor(
     private readonly cameraService: CameraService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     const sub = this.settingsService.updatedCameraSettings.subscribe(() => {
       this.resizeRendererToCanvasSize();
       this.effectComposer?.renderer.setClearColor(
-        this.settingsService.backgroundColor
+        this.settingsService.backgroundColor,
       );
     });
     this.subscription.add(sub);

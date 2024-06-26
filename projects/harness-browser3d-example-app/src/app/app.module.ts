@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -17,7 +17,6 @@
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HarnessBrowser3dLibraryModule } from 'harness-browser3d-library';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
@@ -33,12 +32,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
+import { HarnessBrowser3dLibraryComponent } from 'harness-browser3d-library';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    HarnessBrowser3dLibraryComponent,
     BrowserModule,
-    HarnessBrowser3dLibraryModule,
     BrowserAnimationsModule,
     MatCardModule,
     FlexLayoutModule,

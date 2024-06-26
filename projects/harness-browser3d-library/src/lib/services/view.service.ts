@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -31,7 +31,7 @@ export class ViewService {
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {}
 
   public setView(view: View): void {
@@ -54,7 +54,7 @@ export class ViewService {
     this.applyMapping(
       this.currentView,
       this.bordnetMeshService.getBordnetMesh()?.material !==
-        this.currentView.material
+        this.currentView.material,
     );
   }
 
@@ -68,12 +68,12 @@ export class ViewService {
         const array = this.mappingService.applyMapping(
           view.defaultValue,
           this.propertiesCache.get(view.propertyKey) ??
-            new Map<string, string>()
+            new Map<string, string>(),
         );
         GeometryUtils.applyGeoAttribute(
           mesh.geometry,
           view.propertyKey,
-          view.mapper(array)
+          view.mapper(array),
         );
       }
     }
@@ -99,16 +99,16 @@ export class ViewService {
   }
 
   private setProperty(harnessElement: Node | Segment | Occurrence) {
-    if (harnessElement.viewProperties) {
-      Object.entries(harnessElement.viewProperties).forEach((entry) => {
-        const key = entry[0];
-        const value = entry[1];
-        if (!this.propertiesCache.has(key)) {
-          this.propertiesCache.set(key, new Map<string, string>());
-        }
-        this.propertiesCache.get(key)!.set(harnessElement.id, value);
-      });
-    }
+    if (harnessElement.viewProperties === undefined) return;
+    Object.entries(harnessElement.viewProperties).forEach((entry) => {
+      const key = entry[0];
+      const value = entry[1];
+      if (value === undefined) return;
+      if (!this.propertiesCache.has(key)) {
+        this.propertiesCache.set(key, new Map<string, string>());
+      }
+      this.propertiesCache.get(key)!.set(harnessElement.id, value);
+    });
   }
 
   public clear(): void {

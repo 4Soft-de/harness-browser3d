@@ -4,7 +4,7 @@
     {
       "label": "run example",
       "type": "shell",
-      "command": "ng serve --open",
+      "command": "npm run start",
       "problemMatcher": []
     },
     {

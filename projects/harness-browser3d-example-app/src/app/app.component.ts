@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -85,7 +85,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   selectableBordnets: BordnetSelectionStruct[];
   uploadedBordnet: BordnetSelectionStruct = new BordnetSelectionStruct(
-    'Uploaded'
+    'Uploaded',
   );
   selectedBordnetInternal?: BordnetSelectionStruct;
   addedBordnets = 0;
@@ -101,7 +101,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   constructor(
     public readonly colorService: ColorService,
     public readonly dataService: DataService,
-    private readonly changeDetectorRef: ChangeDetectorRef
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
     this.selectableBordnets = [
       new BordnetSelectionStruct('Debug', dataService.debugHarness),
@@ -113,9 +113,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.subscription.add(
       dataService.exampleBordnet.subscribe((bordnet) =>
         this.selectableBordnets.push(
-          new BordnetSelectionStruct('Example', bordnet)
-        )
-      )
+          new BordnetSelectionStruct('Example', bordnet),
+        ),
+      ),
     );
   }
 
@@ -174,7 +174,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       harness.nodes.forEach((node) => harnessElements.push(node));
       harness.segments.forEach((segment) => harnessElements.push(segment));
       harness.occurrences.forEach((occurrence) =>
-        harnessElements.push(occurrence)
+        harnessElements.push(occurrence),
       );
     });
     this.dataSource = this.initializeDataSource(harnessElements);
@@ -245,8 +245,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       const buildingBlocks: BuildingBlock[] = [];
       selectedBordnet.bordnet.harnesses.forEach((harness) =>
         harness.buildingBlocks.forEach((buildingBlock) =>
-          buildingBlocks.push(buildingBlock)
-        )
+          buildingBlocks.push(buildingBlock),
+        ),
       );
       buildingBlocks.forEach((buildingBlock) => {
         if (!buildingBlock.position) {
@@ -288,19 +288,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       case 1:
         this.colorService.addToColorArray(
           this.colorService.color1Modules,
-          module
+          module,
         );
         break;
       case 2:
         this.colorService.addToColorArray(
           this.colorService.color2Modules,
-          module
+          module,
         );
         break;
       case 3:
         this.colorService.addToColorArray(
           this.colorService.color3Modules,
-          module
+          module,
         );
         break;
     }

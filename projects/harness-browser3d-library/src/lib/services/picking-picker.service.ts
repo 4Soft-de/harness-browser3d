@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -19,6 +19,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import {
   Color,
   Float32BufferAttribute,
+  NoColorSpace,
   ShaderLib,
   ShaderMaterial,
   Vector2,
@@ -44,7 +45,7 @@ export class PickingPickerService implements OnDestroy {
     private readonly bordnetMeshService: BordnetMeshService,
     private readonly cameraService: CameraService,
     private readonly effectComposerService: EffectComposerService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {
     this.material = new ShaderMaterial({
       vertexShader: this.vertexShader,
@@ -97,19 +98,22 @@ export class PickingPickerService implements OnDestroy {
       harness.nodes.forEach((node) => this.addHarnessElement(node));
       harness.segments.forEach((segment) => this.addHarnessElement(segment));
       harness.occurrences.forEach((occurrence) =>
-        this.addHarnessElement(occurrence)
+        this.addHarnessElement(occurrence),
       );
     });
 
     const array: number[] = [];
     this.mappingService
-      .applyMapping(new Color(0), this.harnessElementIndexColors)
+      .applyMapping(
+        new Color().setHex(0, NoColorSpace),
+        this.harnessElementIndexColors,
+      )
       .forEach((color) => array.push(color.r, color.g, color.b));
 
     GeometryUtils.applyGeoAttribute(
       geo,
       'pIndexColor',
-      new Float32BufferAttribute(array, 3)
+      new Float32BufferAttribute(array, 3),
     );
   }
 
@@ -117,7 +121,7 @@ export class PickingPickerService implements OnDestroy {
     // 0 is reserved for no pick
     const index = this.harnessElementIndices.length + 1;
     this.harnessElementIndices.push(harnessElement.id);
-    const indexColor = new Color(index);
+    const indexColor = new Color().setHex(index, NoColorSpace);
     this.harnessElementIndexColors.set(harnessElement.id, indexColor);
   }
 
@@ -127,7 +131,7 @@ export class PickingPickerService implements OnDestroy {
   }
 
   public determineHarnessElementId(
-    pos: Vector2 | undefined
+    pos: Vector2 | undefined,
   ): string | undefined {
     const renderer = this.effectComposerService.getRenderer();
     if (pos && renderer) {
@@ -138,7 +142,7 @@ export class PickingPickerService implements OnDestroy {
         0,
         1,
         1,
-        this.pixelBuffer
+        this.pixelBuffer,
       );
       const index = this.extractIndex();
       return index <= this.harnessElementIndices.length && index > 0
@@ -156,7 +160,7 @@ export class PickingPickerService implements OnDestroy {
     const oldRenderTarget = renderer.getRenderTarget();
     const oldClearColor = renderer.getClearColor(new Color());
 
-    renderer.setClearColor(new Color(0));
+    renderer.setClearColor(new Color().setHex(0, NoColorSpace));
     camera.setViewOffset(size.x, size.y, pos.x, pos.y, 1, 1);
     renderer.setRenderTarget(this.renderTarget);
     scene.overrideMaterial = this.material;

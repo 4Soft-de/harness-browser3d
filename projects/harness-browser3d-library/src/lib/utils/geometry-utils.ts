@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -15,18 +15,18 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { Node, Occurrence } from '../../api/alias';
 import { GeometryModeAPIEnum } from '../../api/structs';
 import { BufferAttribute, BufferGeometry } from 'three';
 import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 export class GeometryUtils {
   public static applyGeoAttribute(
     harnessGeo: BufferGeometry,
     name: string,
-    bufferAttribute: BufferAttribute
+    bufferAttribute: BufferAttribute,
   ): void {
     const attributeSize =
       bufferAttribute.array.length / bufferAttribute.itemSize;
@@ -36,7 +36,7 @@ export class GeometryUtils {
     }
     if (harnessGeo.attributes['position'].count != attributeSize) {
       console.error(
-        `vertex count ${harnessGeo.attributes['position'].count} and buffer attribute size ${attributeSize} must be same`
+        `vertex count ${harnessGeo.attributes['position'].count} and buffer attribute size ${attributeSize} must be same`,
       );
       return;
     }
@@ -47,7 +47,7 @@ export class GeometryUtils {
     if (!geos.length) {
       return new BufferGeometry();
     }
-    const geo = mergeBufferGeometries(geos);
+    const geo = mergeGeometries(geos);
     if (geo) {
       geos.forEach((geo) => geo.dispose());
       return geo;
@@ -70,7 +70,7 @@ export class GeometryUtils {
     element: Occurrence | Node,
     defaultGeo: BufferGeometry,
     settingsService: SettingsService,
-    loadingService: LoadingService
+    loadingService: LoadingService,
   ): BufferGeometry {
     let loadedGeo =
       'partNumber' in element && element.partNumber

@@ -31,12 +31,12 @@ export class PreprocessService {
     const result = {
       id: harness.id,
       buildingBlocks: harness.buildingBlocks.map(
-        this.preprocessBuildingBlock.bind(this)
+        this.preprocessBuildingBlock.bind(this),
       ),
       nodes: harness.nodes.filter(this.preprocessNode.bind(this)),
       segments: harness.segments.filter(this.preprocessSegment.bind(this)),
       occurrences: harness.occurrences.filter(
-        this.preprocessOccurrence.bind(this)
+        this.preprocessOccurrence.bind(this),
       ),
       graphics: harness.graphics?.filter(this.preprocessGraphic.bind(this)),
     };
@@ -67,7 +67,7 @@ export class PreprocessService {
     const defined = this.defined(
       node,
       ['id', 'position', 'buildingBlockId'],
-      'node'
+      'node',
     );
     if (!defined) {
       return false;
@@ -76,7 +76,7 @@ export class PreprocessService {
     const correct = this.correctBuildingBlock(
       node.id,
       node.buildingBlockId,
-      'node'
+      'node',
     );
     if (correct) {
       this.nodes.add(node.id);
@@ -96,7 +96,7 @@ export class PreprocessService {
         'endNodeId',
         'buildingBlockId',
       ],
-      'segment'
+      'segment',
     );
     if (!defined) {
       return false;
@@ -106,17 +106,17 @@ export class PreprocessService {
       this.correctBuildingBlock(
         segment.id,
         segment.buildingBlockId,
-        'segment'
+        'segment',
       ) &&
       this.correctNode(segment.id, segment.startNodeId, 'segment') &&
       this.correctNode(segment.id, segment.endNodeId, 'segment') &&
       this.correctLength(
         segment.virtualLength!,
-        `segment ${segment.id} has virtualLength ${segment.virtualLength}`
+        `segment ${segment.id} has virtualLength ${segment.virtualLength}`,
       ) &&
       this.correctLength(
         segment.crossSectionArea!,
-        `segment ${segment.id} has crossSectionArea ${segment.crossSectionArea}`
+        `segment ${segment.id} has crossSectionArea ${segment.crossSectionArea}`,
       ) &&
       this.preprocessCurves(segment, segment.curves);
 
@@ -136,7 +136,7 @@ export class PreprocessService {
       .map((curve) => {
         if (curve.controlPoints.length === 0) {
           console.warn(
-            `segment ${segment.id} has a curve with no control points`
+            `segment ${segment.id} has a curve with no control points`,
           );
           return false;
         }
@@ -151,12 +151,12 @@ export class PreprocessService {
       this.defined(
         occurrence,
         ['id', 'partType', 'partNumber', 'placement', 'buildingBlockId'],
-        'occurrence'
+        'occurrence',
       ) &&
       this.correctBuildingBlock(
         occurrence.id,
         occurrence.buildingBlockId,
-        'occurrence'
+        'occurrence',
       );
     if (!defined) {
       return false;
@@ -200,7 +200,7 @@ export class PreprocessService {
       !isSegmentLocation(placement.endLocation)
     ) {
       console.warn(
-        `protection ${occurrence.id} does not have an OnWayPlacement with SegmentLocations`
+        `protection ${occurrence.id} does not have an OnWayPlacement with SegmentLocations`,
       );
       return false;
     }
@@ -214,30 +214,30 @@ export class PreprocessService {
         endLocation.segmentId
     ) {
       console.warn(
-        `protection ${occurrence.id} has incorrect segment path ${placement.segmentPath}`
+        `protection ${occurrence.id} has incorrect segment path ${placement.segmentPath}`,
       );
       return false;
     }
 
     const correctPath = placement.segmentPath
       .map((segmentId) =>
-        this.correctSegment(occurrence.id, segmentId, 'protection')
+        this.correctSegment(occurrence.id, segmentId, 'protection'),
       )
       .reduce((pre, next) => pre && next, true);
 
     return (
       this.correctLength(
         startLocation.segmentOffsetLength,
-        `protection ${occurrence.id} has segmentOffsetLength ${startLocation.segmentOffsetLength}`
+        `protection ${occurrence.id} has segmentOffsetLength ${startLocation.segmentOffsetLength}`,
       ) &&
       this.correctLength(
         endLocation.segmentOffsetLength,
-        `protection ${occurrence.id} has segmentOffsetLength ${endLocation.segmentOffsetLength}`
+        `protection ${occurrence.id} has segmentOffsetLength ${endLocation.segmentOffsetLength}`,
       ) &&
       this.correctSegment(
         occurrence.id,
         startLocation.segmentId,
-        'protection'
+        'protection',
       ) &&
       this.correctSegment(occurrence.id, endLocation.segmentId, 'protection') &&
       correctPath
@@ -248,14 +248,14 @@ export class PreprocessService {
     const segmentLocations = getOnPointSegmentLocations(occurrence);
     if (segmentLocations.length === 0) {
       console.warn(
-        `fixing ${occurrence.id} does not have OnPointPlacements with SegmentLocations`
+        `fixing ${occurrence.id} does not have OnPointPlacements with SegmentLocations`,
       );
       return false;
     }
 
     const allSegmentsCorrect = segmentLocations
       .map((segmentLocation) =>
-        this.correctSegment(occurrence.id, segmentLocation.segmentId, 'fixing')
+        this.correctSegment(occurrence.id, segmentLocation.segmentId, 'fixing'),
       )
       .reduce((pre, next) => pre && next, true);
     return allSegmentsCorrect;
@@ -279,7 +279,7 @@ export class PreprocessService {
   private defined(
     object: any,
     key: string[] | string,
-    prefix: string
+    prefix: string,
   ): boolean {
     const keys = typeof key === 'string' ? [key] : key;
     return keys
@@ -297,12 +297,12 @@ export class PreprocessService {
   private correctBuildingBlock(
     id: string,
     buildingBlockId: string,
-    prefix: string
+    prefix: string,
   ): boolean {
     const correct = this.buildingBlocks.has(buildingBlockId);
     if (!correct) {
       console.warn(
-        `${prefix} ${id} has non existent or invalid building block ${buildingBlockId}`
+        `${prefix} ${id} has non existent or invalid building block ${buildingBlockId}`,
       );
     }
     return correct;
@@ -312,7 +312,7 @@ export class PreprocessService {
     const correct = this.nodes.has(nodeId);
     if (!correct) {
       console.warn(
-        `${prefix} ${id} has non existent or invalid node ${nodeId}`
+        `${prefix} ${id} has non existent or invalid node ${nodeId}`,
       );
     }
     return correct;
@@ -321,12 +321,12 @@ export class PreprocessService {
   private correctSegment(
     id: string,
     segmentId: string,
-    prefix: string
+    prefix: string,
   ): boolean {
     const correct = this.segments.has(segmentId);
     if (!correct) {
       console.warn(
-        `${prefix} ${id} has non existent or invalid segment ${segmentId}`
+        `${prefix} ${id} has non existent or invalid segment ${segmentId}`,
       );
     }
     return correct;

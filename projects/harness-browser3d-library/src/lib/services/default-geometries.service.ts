@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -34,7 +34,7 @@ export class DefaultGeometryCreationService {
     const node = new SphereGeometry(
       4,
       this.settingsService.segmentCount,
-      this.settingsService.segmentCount
+      this.settingsService.segmentCount,
     );
     GeometryUtils.clean(node);
     return node;
@@ -55,7 +55,7 @@ export class DefaultGeometryCreationService {
       10,
       10,
       20,
-      this.settingsService.segmentCount
+      this.settingsService.segmentCount,
     ).rotateX(MathUtils.degToRad(90));
     GeometryUtils.clean(accessory);
     return accessory;
@@ -65,7 +65,7 @@ export class DefaultGeometryCreationService {
     const fixing = new SphereGeometry(
       10,
       this.settingsService.segmentCount,
-      this.settingsService.segmentCount
+      this.settingsService.segmentCount,
     );
     GeometryUtils.clean(fixing);
     return fixing;

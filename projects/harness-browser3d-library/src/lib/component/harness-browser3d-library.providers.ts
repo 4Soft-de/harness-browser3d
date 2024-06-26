@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -15,7 +15,7 @@
   http://www.gnu.org/licenses/lgpl-2.1.html.
 */
 
-import { NgModule } from '@angular/core';
+import { EnvironmentProviders, Provider } from '@angular/core';
 import { BuildingBlockService } from '../services/building-block.service';
 import { BordnetMeshService } from '../services/bordnet-mesh.service';
 import { CameraService } from '../services/camera.service';
@@ -33,7 +33,6 @@ import { EffectComposerService } from '../services/effect-composer.service';
 import { SelectionService } from '../services/selection.service';
 import { SettingsService } from '../services/settings.service';
 import { ViewService } from '../services/view.service';
-import { HarnessBrowser3dLibraryComponent } from './harness-browser3d-library.component';
 import { EnableService } from '../services/enable.service';
 import { PreprocessService } from '../services/preprocess.service';
 import { LightsService } from '../services/lights.service';
@@ -44,37 +43,31 @@ import { PassService } from '../services/pass.service';
 import { PickingPickerService } from '../services/picking-picker.service';
 import { HooksService } from '../services/hooks.service';
 
-@NgModule({
-  declarations: [HarnessBrowser3dLibraryComponent],
-  imports: [],
-  exports: [HarnessBrowser3dLibraryComponent],
-  providers: [
-    AddHarnessesService,
-    AnimateService,
-    BuildingBlockService,
-    BordnetMeshService,
-    CameraService,
-    ColorService,
-    CoordinateSystemService,
-    CurveService,
-    DefaultGeometryCreationService,
-    DiffService,
-    EffectComposerService,
-    EnableService,
-    GeometryService,
-    HarnessBrowser3dLibraryAPI,
-    HooksService,
-    LightsService,
-    LoadingService,
-    MappingService,
-    PassService,
-    PickingService,
-    PickingPickerService,
-    PositionService,
-    PreprocessService,
-    SelectionService,
-    SettingsService,
-    ViewService,
-  ],
-})
-export class HarnessBrowser3dLibraryModule {}
+export default [
+  AddHarnessesService,
+  AnimateService,
+  BuildingBlockService,
+  BordnetMeshService,
+  CameraService,
+  ColorService,
+  CoordinateSystemService,
+  CurveService,
+  DefaultGeometryCreationService,
+  DiffService,
+  EffectComposerService,
+  EnableService,
+  GeometryService,
+  HarnessBrowser3dLibraryAPI,
+  HooksService,
+  LightsService,
+  LoadingService,
+  MappingService,
+  PassService,
+  PickingService,
+  PickingPickerService,
+  PositionService,
+  PreprocessService,
+  SelectionService,
+  SettingsService,
+  ViewService,
+] satisfies (Provider | EnvironmentProviders)[];

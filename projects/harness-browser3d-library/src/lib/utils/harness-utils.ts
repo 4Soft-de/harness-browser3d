@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -35,7 +35,7 @@ export class HarnessUtils {
     harness.nodes.forEach((node: Node) => elements.push(node.id));
     harness.segments.forEach((segment: Segment) => elements.push(segment.id));
     harness.occurrences.forEach((occurrence: Occurrence) =>
-      elements.push(occurrence.id)
+      elements.push(occurrence.id),
     );
     return elements;
   }
@@ -63,8 +63,8 @@ export class HarnessUtils {
         0,
         0,
         0,
-        1
-      )
+        1,
+      ),
     );
   }
 
@@ -73,13 +73,13 @@ export class HarnessUtils {
   }
 
   public static computeRadiusFromCrossSectionArea(
-    crossSectionArea: number
+    crossSectionArea: number,
   ): number {
     return Math.sqrt(crossSectionArea / Math.PI);
   }
 
   public static computeDefaultProtectionRadius(
-    crossSectionArea: number
+    crossSectionArea: number,
   ): number {
     return (
       this.computeRadiusFromCrossSectionArea(crossSectionArea) +
@@ -89,7 +89,7 @@ export class HarnessUtils {
 
   public static computeRatio(
     location: SegmentLocation,
-    length: number
+    length: number,
   ): number {
     const ratio = location.segmentOffsetLength / length;
     return Anchor[location.anchor as keyof typeof Anchor] ===
@@ -101,7 +101,7 @@ export class HarnessUtils {
   public static isCurveInverted(
     startNode: Node,
     endNode: Node,
-    curve: Curve<Vector3>
+    curve: Curve<Vector3>,
   ): boolean {
     const curveStart = curve.getPoint(0);
     const startPosition = HarnessUtils.convertPointToVector(startNode.position);
@@ -114,7 +114,7 @@ export class HarnessUtils {
   public static computeSegmentDirection(
     startNode: Node,
     endNode: Node,
-    direction: Vector3
+    direction: Vector3,
   ): Vector3 {
     const nodeAPosition = HarnessUtils.convertPointToVector(startNode.position);
     const nodeBPosition = HarnessUtils.convertPointToVector(endNode.position);

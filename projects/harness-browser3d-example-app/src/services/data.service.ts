@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -44,7 +44,7 @@ export class DataService {
             partNumber: filename.substring(0, filename.length - 4),
             data: data,
           };
-        })
+        }),
       );
   }
 
@@ -64,10 +64,10 @@ export class DataService {
         this.exampleBordnetInternal = exampleBordnet;
         this.exampleBordnetInternal.harnesses.forEach(
           (harness: Harness) =>
-            (harness.graphics = this.filterGeos(harness, geos))
+            (harness.graphics = this.filterGeos(harness, geos)),
         );
         return this.exampleBordnetInternal;
-      })
+      }),
     );
   }
 

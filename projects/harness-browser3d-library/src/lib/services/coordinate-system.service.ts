@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -30,7 +30,10 @@ import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 import { CameraService } from './camera.service';
 
 class CoordinateSystemPass extends Pass {
-  constructor(private readonly scene: Scene, private readonly camera: Camera) {
+  constructor(
+    private readonly scene: Scene,
+    private readonly camera: Camera,
+  ) {
     super();
   }
 

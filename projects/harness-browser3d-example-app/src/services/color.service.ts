@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2024 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -68,7 +68,7 @@ export class ColorService {
 
   private static checkIfExistsAndDelete(
     array: HarnessElement[],
-    module: HarnessElement
+    module: HarnessElement,
   ): boolean {
     const index = array.indexOf(module);
     if (index > -1) {
@@ -80,13 +80,13 @@ export class ColorService {
 
   setColors() {
     const color1ChangeList = this.color1Modules.map((module) =>
-      ColorService.convertToApiColorArray(module, this.color1)
+      ColorService.convertToApiColorArray(module, this.color1),
     );
     const color2ChangeList = this.color2Modules.map((module) =>
-      ColorService.convertToApiColorArray(module, this.color2)
+      ColorService.convertToApiColorArray(module, this.color2),
     );
     const color3ChangeList = this.color3Modules.map((module) =>
-      ColorService.convertToApiColorArray(module, this.color3)
+      ColorService.convertToApiColorArray(module, this.color3),
     );
 
     return [...color1ChangeList, ...color2ChangeList, ...color3ChangeList];
