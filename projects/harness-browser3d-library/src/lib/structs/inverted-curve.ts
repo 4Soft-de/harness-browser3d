@@ -1,4 +1,4 @@
-import { Curve, Vector3 } from 'three';
+import { Curve, CurveJSON, Vector3 } from 'three';
 
 export class InvertedCurve implements Curve<Vector3> {
   type: string;
@@ -64,7 +64,7 @@ export class InvertedCurve implements Curve<Vector3> {
     throw new Error('Method not implemented.');
   }
 
-  toJSON(): object {
+  toJSON(): CurveJSON {
     throw new Error('Method not implemented.');
   }
 

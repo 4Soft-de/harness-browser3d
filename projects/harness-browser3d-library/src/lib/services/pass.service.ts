@@ -88,7 +88,7 @@ export class PassService implements OnDestroy {
 
   public getAntiAliasPass(): Pass {
     if (!this.antiAliasPass) {
-      this.antiAliasPass = new SMAAPass(0, 0);
+      this.antiAliasPass = new SMAAPass();
       this.antiAliasPass.enabled = this.settingsService.enableAntiAliasing;
     }
     return this.antiAliasPass;

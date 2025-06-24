@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "19.x",
     "@angular/router": "19.x",
     "rxjs": "7.x",
-    "three": "0.165.x",
+    "three": "0.177.x",
     "tslib": "2.x",
     "zone.js": "0.15.x",
     "stats.js": "0.17.x"
@@ -32,7 +32,7 @@
     "@angular/cli": "19.x",
     "@angular/compiler-cli": "19.x",
     "@types/stats.js": "0.17.x",
-    "@types/three": "0.165.x",
+    "@types/three": "0.177.x",
     "ng-packagr": "19.x",
     "openapi-typescript": "7.x",
     "prettier": "3.x",
