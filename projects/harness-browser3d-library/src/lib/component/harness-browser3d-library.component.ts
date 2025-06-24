@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2024 4Soft GmbH
+  Copyright (C) 2025 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -54,7 +54,6 @@ import harnessBrowser3dLibraryProviders from './harness-browser3d-library.provid
   templateUrl: './harness-browser3d-library.component.html',
   styleUrls: ['./harness-browser3d-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   providers: harnessBrowser3dLibraryProviders,
 })
 export class HarnessBrowser3dLibraryComponent
