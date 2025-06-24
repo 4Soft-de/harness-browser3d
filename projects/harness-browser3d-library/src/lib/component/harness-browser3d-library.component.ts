@@ -54,7 +54,6 @@ import harnessBrowser3dLibraryProviders from './harness-browser3d-library.provid
   templateUrl: './harness-browser3d-library.component.html',
   styleUrls: ['./harness-browser3d-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   providers: harnessBrowser3dLibraryProviders,
 })
 export class HarnessBrowser3dLibraryComponent
