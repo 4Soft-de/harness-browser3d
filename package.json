@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve --open",
     "watch": "ng build --watch --configuration development",
-    "build:library": "npm run generate:api && ng build harness-browser3d-library --configuration development",
+    "build:library:dev": "npm run generate:api && ng build harness-browser3d-library --configuration development",
+    "build:library:prod": "npm run generate:api && ng build harness-browser3d-library --configuration production",
     "watch:library": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch",
     "generate:api": "npx openapi-typescript projects/harness-browser3d-library/assets/geometry-api.yaml --output projects/harness-browser3d-library/src/generated/geometry.ts"
   },
