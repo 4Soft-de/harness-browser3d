@@ -9,7 +9,7 @@
     },
     {
       "type": "npm",
-      "script": "build:library",
+      "script": "build:library:dev",
       "group": "build",
       "problemMatcher": [],
       "label": "build library",
