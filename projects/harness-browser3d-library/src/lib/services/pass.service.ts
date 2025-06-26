@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2025 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -19,7 +19,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Pass } from 'three/examples/jsm/postprocessing/Pass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';
@@ -41,12 +41,12 @@ export class PassService implements OnDestroy {
     private readonly effectComposerService: EffectComposerService,
     private readonly pickingService: PickingService,
     private readonly selectionService: SelectionService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     const sub = settingsService.updatedCameraSettings.subscribe(
       () =>
         (this.getAntiAliasPass().enabled =
-          this.settingsService.enableAntiAliasing)
+          this.settingsService.enableAntiAliasing),
     );
     this.subscription.add(sub);
   }
@@ -68,7 +68,7 @@ export class PassService implements OnDestroy {
     const postProcessing = [
       this.getAntiAliasPass(),
       // RenderPass cannot be last
-      new ShaderPass(CopyShader),
+      new ShaderPass(GammaCorrectionShader),
     ];
 
     rendering.forEach((pass, index) => {
@@ -88,7 +88,7 @@ export class PassService implements OnDestroy {
 
   public getAntiAliasPass(): Pass {
     if (!this.antiAliasPass) {
-      this.antiAliasPass = new SMAAPass(0, 0);
+      this.antiAliasPass = new SMAAPass();
       this.antiAliasPass.enabled = this.settingsService.enableAntiAliasing;
     }
     return this.antiAliasPass;

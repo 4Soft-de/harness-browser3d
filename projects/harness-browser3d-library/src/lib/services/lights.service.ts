@@ -17,9 +17,9 @@ export class LightsService {
   constructor(private readonly cameraService: CameraService) {}
 
   public addLights(scene: Scene) {
-    const lightA = new DirectionalLight(0xffffff, 0.5);
-    const lightB = new DirectionalLight(0xffffff, 0.5);
-    const ambientLight = new AmbientLight(0xffffff, 0.5);
+    const lightA = new DirectionalLight(0xffffff, 0.5 * Math.PI);
+    const lightB = new DirectionalLight(0xffffff, 0.5 * Math.PI);
+    const ambientLight = new AmbientLight(0xffffff, 0.5 * Math.PI);
     this.lightA.push(lightA);
     this.lightB.push(lightB);
     scene.add(lightA);
@@ -39,11 +39,11 @@ export class LightsService {
     const dir = new Vector3()
       .subVectors(target, camera.position)
       .applyMatrix4(
-        new Matrix4().makeRotationAxis(axis, MathUtils.degToRad(45))
+        new Matrix4().makeRotationAxis(axis, MathUtils.degToRad(45)),
       );
 
     this.lightA.forEach((lightA) =>
-      lightA.position.copy(dir).multiplyScalar(-1).normalize()
+      lightA.position.copy(dir).multiplyScalar(-1).normalize(),
     );
     this.lightB.forEach((lightB) => lightB.position.copy(dir).normalize());
   }

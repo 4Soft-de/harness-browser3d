@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2025 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -16,7 +16,7 @@
 */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
@@ -38,7 +38,7 @@ export class SelectionService implements OnDestroy {
   constructor(
     private readonly cameraService: CameraService,
     lightsService: LightsService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     lightsService.addLights(this.scene);
 
@@ -46,7 +46,7 @@ export class SelectionService implements OnDestroy {
       this.settingsService.updatedGeometrySettings.subscribe(() => {
         this.clearGeos();
         this.resetMesh();
-      })
+      }),
     );
   }
 
@@ -72,7 +72,7 @@ export class SelectionService implements OnDestroy {
 
   public selectElements(
     ids: Set<string>,
-    zoom: boolean = this.settingsService.zoomSelection
+    zoom: boolean = this.settingsService.zoomSelection,
   ) {
     this.resetMesh();
 
@@ -86,7 +86,7 @@ export class SelectionService implements OnDestroy {
       }
     });
     if (selectedObjects.length > 0) {
-      const selectGeo = mergeBufferGeometries(selectedObjects);
+      const selectGeo = mergeGeometries(selectedObjects);
       this.selectMesh = new Mesh(selectGeo, GeometryMaterial.selection);
       this.scene.add(this.selectMesh);
     }

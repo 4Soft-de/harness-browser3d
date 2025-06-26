@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2025 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -48,7 +48,7 @@ export class PickingService implements OnDestroy {
     private readonly cameraService: CameraService,
     private readonly pickingPickerService: PickingPickerService,
     private readonly selectionService: SelectionService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
   ) {
     let sub = settingsService.updatedPickingSettings.subscribe(() => {
       this.getPass().visibleEdgeColor = this.settingsService.hoverColor;
@@ -87,7 +87,7 @@ export class PickingService implements OnDestroy {
     if (this.mousePosition !== this.previousMousePosition) {
       this.previousMousePosition = this.mousePosition;
       const id = this.pickingPickerService.determineHarnessElementId(
-        this.mousePosition
+        this.mousePosition,
       );
       this.hoverId(id);
     }
@@ -102,7 +102,7 @@ export class PickingService implements OnDestroy {
       this.outlinePass = new OutlinePass(
         new Vector2(),
         this.scene,
-        this.cameraService.getCamera()
+        this.cameraService.getCamera(),
       );
 
       this.outlinePass.edgeStrength = 100;
@@ -125,17 +125,17 @@ export class PickingService implements OnDestroy {
     this.addEventListener(
       canvas,
       'mousemove',
-      (event) => (this.mousePosition = getMousePosition(event, canvas))
+      (event) => (this.mousePosition = getMousePosition(event, canvas)),
     );
     this.addEventListener(
       canvas,
       'mouseout',
-      this.clearMousePosition.bind(this)
+      this.clearMousePosition.bind(this),
     );
     this.addEventListener(
       canvas,
       'mouseleave',
-      this.clearMousePosition.bind(this)
+      this.clearMousePosition.bind(this),
     );
   }
 
@@ -149,12 +149,12 @@ export class PickingService implements OnDestroy {
     this.addEventListener(
       canvas,
       'touchmove',
-      this.clearMousePosition.bind(this)
+      this.clearMousePosition.bind(this),
     );
     this.addEventListener(
       canvas,
       'touchend',
-      this.clearMousePosition.bind(this)
+      this.clearMousePosition.bind(this),
     );
   }
 
@@ -162,22 +162,22 @@ export class PickingService implements OnDestroy {
     this.addEventListener(
       canvas,
       'keydown',
-      (event) => (this.multiPickEnabled = getCtrlPressed(event))
+      (event) => (this.multiPickEnabled = getCtrlPressed(event)),
     );
     this.addEventListener(
       canvas,
       'keyup',
-      (event) => (this.multiPickEnabled = getCtrlPressed(event))
+      (event) => (this.multiPickEnabled = getCtrlPressed(event)),
     );
   }
 
   private addEventListener(
     canvas: HTMLCanvasElement,
     name: string,
-    listener: (event: Event) => void
+    listener: (event: Event) => void,
   ): void {
     this.subscription.add(
-      fromEvent(canvas, name).pipe(debounceTime(10)).subscribe(listener)
+      fromEvent(canvas, name).pipe(debounceTime(10)).subscribe(listener),
     );
   }
 
@@ -213,7 +213,7 @@ export class PickingService implements OnDestroy {
         : (this.pickedIds = new Set([id]));
       this.selectionService.selectElements(
         this.pickedIds,
-        this.settingsService.zoomPicking
+        this.settingsService.zoomPicking,
       );
       this.pickedIds$.next(this.pickedIds);
     }

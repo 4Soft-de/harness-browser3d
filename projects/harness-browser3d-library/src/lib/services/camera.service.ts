@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2025 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -64,7 +64,7 @@ export class CameraService {
     const sphere = this.computeBoundingSphere(mesh);
     this.focusCameraOnSphere(
       sphere,
-      this.cameraSettings.selectionDistanceFactor
+      this.cameraSettings.selectionDistanceFactor,
     );
   }
 
@@ -88,21 +88,21 @@ export class CameraService {
 
     const centerSphereDir = new Vector3().addVectors(
       sphere.center,
-      new Vector3(0, 1, 0)
+      new Vector3(0, 1, 0),
     );
 
     const intersection = this.computeIntersection(
       leftSpherePos,
       leftSphereDir,
       sphere.center,
-      centerSphereDir
+      centerSphereDir,
     );
 
     const additionalDistance = intersection.y * distanceFactor - intersection.y;
 
     this.camera.position.addVectors(
       intersection,
-      new Vector3(0, additionalDistance, 0)
+      new Vector3(0, additionalDistance, 0),
     );
     this.controls.target.copy(sphere.center);
     this.controls.update();
@@ -116,7 +116,7 @@ export class CameraService {
 
     return new Vector3().subVectors(
       this.camera.position,
-      new Vector3(-1, 0, 0).unproject(this.camera)
+      new Vector3(-1, 0, 0).unproject(this.camera),
     );
   }
 
@@ -125,7 +125,7 @@ export class CameraService {
     beginA: Vector3,
     endA: Vector3,
     beginB: Vector3,
-    endB: Vector3
+    endB: Vector3,
   ) {
     const A = beginB.x * endB.y - beginB.y * endB.x;
     const B = beginA.x * endA.y - beginA.y * endA.x;

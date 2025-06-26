@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2022 4Soft GmbH
+  Copyright (C) 2025 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -51,8 +51,8 @@ export class CurveService {
           knotVector,
           controlPoints,
           degree,
-          controlPoints.length
-        )
+          controlPoints.length,
+        ),
       );
     });
 
@@ -61,7 +61,7 @@ export class CurveService {
 
   private unclampedKnots(
     numberOfControlPoints: number,
-    degree: number
+    degree: number,
   ): number[] {
     const knotVector: number[] = [];
     const knotVectorLength = degree + numberOfControlPoints + 1;
@@ -73,7 +73,7 @@ export class CurveService {
 
   private clampedKnots(
     numberOfControlPoints: number,
-    degree: number
+    degree: number,
   ): number[] {
     const knotVector: number[] = [];
     const knotVectorLength = degree + numberOfControlPoints + 1;
@@ -102,7 +102,7 @@ export class CurveService {
   public cutCurve(
     startRatio: number,
     endRatio: number,
-    curve: Curve<Vector3>
+    curve: Curve<Vector3>,
   ): Curve<Vector3> {
     const points: Vector3[] = [];
     const stepSize = 0.1;

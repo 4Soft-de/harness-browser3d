@@ -4,12 +4,12 @@
     {
       "label": "run example",
       "type": "shell",
-      "command": "ng serve --open",
+      "command": "npm run start",
       "problemMatcher": []
     },
     {
       "type": "npm",
-      "script": "build:library",
+      "script": "build:library:dev",
       "group": "build",
       "problemMatcher": [],
       "label": "build library",

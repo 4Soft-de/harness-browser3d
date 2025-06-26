@@ -13,7 +13,7 @@ export class DiffService {
 
   constructor(
     private readonly bordnetMeshService: BordnetMeshService,
-    private readonly mappingService: MappingService
+    private readonly mappingService: MappingService,
   ) {}
 
   public applyDiffState(harnesses: Harness[]) {
@@ -22,43 +22,42 @@ export class DiffService {
       const map = this.createDiffStateMapping(harnesses);
       const array = this.mappingService.applyMapping(
         DiffStateAPIEnum.unmodified,
-        map
+        map,
       );
       GeometryUtils.applyGeoAttribute(
         geo,
         this.shaderKey,
-        new Int8BufferAttribute(array, 1)
+        new Int8BufferAttribute(array, 1),
       );
     }
   }
 
   private createDiffStateMapping(
-    harnesses: Harness[]
+    harnesses: Harness[],
   ): Map<string, DiffStateAPIEnum> {
     const map = new Map<string, DiffStateAPIEnum>();
     harnesses.forEach((harness) => {
       harness.nodes.forEach((node) =>
-        map.set(node.id, this.readDiffState(node))
+        map.set(node.id, this.readDiffState(node)),
       );
       harness.segments.forEach((segment) =>
-        map.set(segment.id, this.readDiffState(segment))
+        map.set(segment.id, this.readDiffState(segment)),
       );
       harness.occurrences.forEach((occurrence) =>
-        map.set(occurrence.id, this.readDiffState(occurrence))
+        map.set(occurrence.id, this.readDiffState(occurrence)),
       );
     });
     return map;
   }
 
   private readDiffState(
-    harnessElement: Node | Segment | Occurrence
+    harnessElement: Node | Segment | Occurrence,
   ): DiffStateAPIEnum {
-    let result = DiffStateAPIEnum.unmodified;
-    if (harnessElement.viewProperties) {
-      const stateString = harnessElement.viewProperties[this.propertyKey];
-      result = this.getDiffState(stateString) ?? DiffStateAPIEnum.unmodified;
+    const stateString = harnessElement.viewProperties?.[this.propertyKey];
+    if (stateString === undefined) {
+      return DiffStateAPIEnum.unmodified;
     }
-    return result;
+    return this.getDiffState(stateString) ?? DiffStateAPIEnum.unmodified;
   }
 
   private getDiffState(property: string): DiffStateAPIEnum | undefined {

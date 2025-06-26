@@ -19,13 +19,12 @@
     "paths": {
       "harness-browser3d-library": [
         "dist/harness-browser3d-library/harness-browser3d-library",
-        "dist/harness-browser3d-library"
+        "./dist/harness-browser3d-library"
       ]
     },
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
