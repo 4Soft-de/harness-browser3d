@@ -52,7 +52,7 @@ import harnessBrowser3dLibraryProviders from './harness-browser3d-library.provid
 @Component({
   selector: 'lib-harness-browser3d',
   templateUrl: './harness-browser3d-library.component.html',
-  styleUrls: ['./harness-browser3d-library.component.scss'],
+  styleUrls: ['./harness-browser3d-library.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: harnessBrowser3dLibraryProviders,
 })

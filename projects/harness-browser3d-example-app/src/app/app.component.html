@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2022 4Soft GmbH
+    Copyright (C) 2025 4Soft GmbH
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
     published by the Free Software Foundation, either version 2.1 of the
@@ -15,57 +15,55 @@
     http://www.gnu.org/licenses/lgpl-2.1.html.
 -->
 
-<div fxLayout="column" class="full-height">
-  <mat-toolbar color="primary" fxLayoutGap="10px" style="min-height: 45px">
-    <mat-icon>3d_rotation</mat-icon>
-    <span>Browser</span>
-    <span class="toolbar-spacer"></span>
-    <mat-slide-toggle class="example-margin" (change)="geometry($event)"
-      >Loaded Geometries</mat-slide-toggle
-    >
-    <button mat-raised-button color="accent" (click)="resetCamera()">
-      <mat-icon>restart_alt</mat-icon> Reset View
-    </button>
-    <button mat-raised-button color="accent" (click)="clearScene()">
-      <mat-icon>delete</mat-icon> Clear Scene
-    </button>
-    <button mat-raised-button color="accent" (click)="fileInput.click()">
-      <mat-icon>add</mat-icon> {{ file ? file.name : "Upload Bordnet" }}
-    </button>
-    <input
-      hidden
-      type="file"
-      #fileInput
-      accept=".json"
-      (change)="uploadBordnet(fileInput.files)"
-    />
-    <mat-form-field>
-      <mat-label>Add Harness</mat-label>
-      <mat-select [(value)]="selectedBordnet">
-        <mat-option *ngFor="let struct of selectableBordnets" [value]="struct">
+<mat-toolbar class="flex flex-row space-x-1 h-16" color="primary">
+  <mat-icon>3d_rotation</mat-icon>
+  <span>Browser</span>
+  <mat-slide-toggle (change)="geometry($event)">
+    Loaded Geometries
+  </mat-slide-toggle>
+  <button mat-raised-button color="accent" (click)="resetCamera()">
+    <mat-icon>restart_alt</mat-icon> Reset View
+  </button>
+  <button mat-raised-button color="accent" (click)="clearScene()">
+    <mat-icon>delete</mat-icon> Clear Scene
+  </button>
+  <button mat-raised-button color="accent" (click)="fileInput.click()">
+    <mat-icon>add</mat-icon> {{ file ? file.name : "Upload Bordnet" }}
+  </button>
+  <input
+    hidden
+    type="file"
+    #fileInput
+    accept=".json"
+    (change)="uploadBordnet(fileInput.files)"
+  />
+  <mat-form-field>
+    <mat-label>Add Harness</mat-label>
+    <mat-select [(value)]="selectedBordnet">
+      @for (struct of selectableBordnets; track $index) {
+        <mat-option [value]="struct">
           {{ struct.name }}
         </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>View</mat-label>
-      <mat-select [(value)]="selectedView">
-        <mat-option *ngFor="let struct of selectableViews" [value]="struct">
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>View</mat-label>
+    <mat-select [(value)]="selectedView">
+      @for (struct of selectableViews; track $index) {
+        <mat-option [value]="struct">
           {{ struct.name }}
         </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </mat-toolbar>
-  <div fxLayout="row" class="full-height browser-background" fxLayoutGap="5px">
-    <div
-      fxLayout="column"
-      fxFlex="30"
-      class="panel full-height"
-      fxLayoutGap="5px"
-      fxLayoutAlign="space-evenly stretch"
-    >
-      <mat-card fxFlex fxLayout="column" class="side-panel">
-        <ng-container *ngIf="selectedView.name === 'Default'">
+      }
+    </mat-select>
+  </mat-form-field>
+</mat-toolbar>
+
+<div class="flex flex-row h-[calc(100vh-64px)]">
+  <div class="flex flex-col w-1/4">
+    <mat-card class="overflow-scroll">
+      @if (selectedView.name === "Default") {
+        <ng-container>
           <mat-form-field>
             <input
               matInput
@@ -73,55 +71,51 @@
               placeholder="Filter modules..."
             />
           </mat-form-field>
-          <div class="table-container" fxFlex>
+          <div>
             <table mat-table [dataSource]="dataSource">
               <ng-container matColumnDef="module">
-                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.id }}
+                </td>
               </ng-container>
               <ng-container matColumnDef="actions">
-                <td
-                  mat-cell
-                  fxLayout="row"
-                  fxLayoutGap="2px"
-                  *matCellDef="let module"
-                >
-                  <ng-container>
+                <td mat-cell *matCellDef="let module">
+                  <div class="flex flex-row -space-x-4">
                     <mat-checkbox
                       [checked]="true"
                       (change)="enableElements(module, $event.checked)"
+                      (click)="$event.stopPropagation()"
                     ></mat-checkbox>
                     <button
                       mat-mini-fab
-                      class="my-fab color1"
+                      class="scale-50 bg-[rgb(6,111,223)]!"
                       (click)="setToColor(1, module, $event)"
                     ></button>
                     <button
                       mat-mini-fab
-                      class="my-fab color2"
+                      class="scale-50 bg-[rgb(126,188,137)]!"
                       (click)="setToColor(2, module, $event)"
                     ></button>
                     <button
                       mat-mini-fab
-                      class="my-fab color3"
+                      class="scale-50 bg-[rgb(238,150,75)]!"
                       (click)="setToColor(3, module, $event)"
                     ></button>
-                  </ng-container>
+                  </div>
                 </td>
               </ng-container>
 
               <tr
                 mat-row
                 (click)="toggleRowHighlighting(row, $event)"
-                [class.highlighted-row]="
+                [class.bg-[#ffd740]!]="
                   selection.includes(row.id) || pick.includes(row.id)
                 "
                 *matRowDef="let row; columns: displayedColumns"
               ></tr>
 
-              <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="9999">
-                  No data. Please load harness.
-                </td>
+              <tr *matNoDataRow>
+                <td colspan="9999">No data. Please load harness.</td>
               </tr>
             </table>
           </div>
@@ -129,7 +123,9 @@
             <mat-icon>restart_alt</mat-icon> Reset Selection
           </button>
         </ng-container>
-        <ng-container *ngIf="selectedView.name === 'Diff'">
+      }
+      @if (selectedView.name === "Diff") {
+        <ng-container>
           <mat-checkbox
             [checked]="true"
             (change)="displayUnmodified($event.checked)"
@@ -161,90 +157,77 @@
             Display modified harness elements before the change
           </mat-checkbox>
         </ng-container>
+      }
+    </mat-card>
+    @if (!colorService.colorsAreEmpty()) {
+      <mat-card class="flex flex-col">
+        @if (colorService.color1Modules.length > 0) {
+          <mat-card>
+            <mat-list dense>
+              @for (module of colorService.color1Modules; track $index) {
+                <mat-list-item class="flex flex-row bg-[rgb(6,111,223)]!">
+                  <div matListItemTitle>{{ module["id"] }}</div>
+                  <div matListItemIcon (click)="removeColor(module)">
+                    <mat-icon>delete</mat-icon>
+                  </div>
+                </mat-list-item>
+              }
+            </mat-list>
+          </mat-card>
+        }
+        @if (colorService.color2Modules.length > 0) {
+          <mat-card>
+            <mat-list dense>
+              @for (module of colorService.color2Modules; track $index) {
+                <mat-list-item class="flex flex-row bg-[rgb(126,188,137)]!">
+                  <div matListItemTitle>{{ module["id"] }}</div>
+                  <div matListItemIcon (click)="removeColor(module)">
+                    <mat-icon>delete</mat-icon>
+                  </div>
+                </mat-list-item>
+              }
+            </mat-list>
+          </mat-card>
+        }
+        @if (colorService.color3Modules.length > 0) {
+          <mat-card>
+            <mat-list dense>
+              @for (module of colorService.color3Modules; track $index) {
+                <mat-list-item class="flex flex-row bg-[rgb(238,150,75)]!">
+                  <div matListItemTitle>{{ module["id"] }}</div>
+                  <div matListItemIcon (click)="removeColor(module)">
+                    <mat-icon>delete</mat-icon>
+                  </div>
+                </mat-list-item>
+              }
+            </mat-list>
+          </mat-card>
+        }
+        @if (!colorService.colorsAreEmpty()) {
+          <div class="flex flex-row space-x-1">
+            <button mat-raised-button color="accent" (click)="resetColors()">
+              <mat-icon>delete</mat-icon> Discard Colors
+            </button>
+            <button mat-raised-button color="accent" (click)="setColors()">
+              <mat-icon>palette</mat-icon> Apply Colors
+            </button>
+          </div>
+        }
       </mat-card>
-      <mat-card
-        fxLayout="column"
-        fxLayoutGap="10px"
-        class="side-panel"
-        *ngIf="!colorService.colorsAreEmpty()"
-      >
-        <mat-card
-          *ngIf="colorService.color1Modules.length > 0"
-          class="color-card color1"
-        >
-          <mat-list dense>
-            <mat-list-item *ngFor="let module of colorService.color1Modules">
-              <div matListItemLine class="list-item">
-                <h3>{{ module["id"] }}</h3>
-                <span class="item-span"></span>
-                <button mat-icon-button (click)="removeColor(module)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-card>
-        <mat-card
-          *ngIf="colorService.color2Modules.length > 0"
-          class="color-card color2"
-        >
-          <mat-list dense>
-            <mat-list-item *ngFor="let module of colorService.color2Modules">
-              <div matListItemLine class="list-item">
-                <h3>{{ module["id"] }}</h3>
-                <span class="item-span"></span>
-                <button mat-icon-button (click)="removeColor(module)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-card>
-        <mat-card
-          *ngIf="colorService.color3Modules.length > 0"
-          class="color-card color3"
-        >
-          <mat-list dense>
-            <mat-list-item *ngFor="let module of colorService.color3Modules">
-              <div matListItemLine class="list-item">
-                <h3>{{ module["id"] }}</h3>
-                <span class="item-span"></span>
-                <button mat-icon-button (click)="removeColor(module)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-card>
-        <div
-          fxLayout="row"
-          fxLayoutAlign="end center"
-          fxLayoutGap="10px"
-          *ngIf="!colorService.colorsAreEmpty()"
-        >
-          <button mat-raised-button color="accent" (click)="resetColors()">
-            <mat-icon>delete</mat-icon> Discard Colors
-          </button>
-          <button mat-raised-button color="accent" (click)="setColors()">
-            <mat-icon>palette</mat-icon> Apply Colors
-          </button>
-        </div>
-      </mat-card>
-    </div>
-    <div fxLayout="column" fxFlex="70" class="browser-background">
-      <lib-harness-browser3d
-        class="browser_panel"
-        (initialized)="addAPI($event)"
-        (pickedIds)="pickIds($event)"
-        [addHarnesses]="addHarnesses$ | async"
-        [selectedIds]="selectedIds$ | async"
-        [disableIds]="disableIds$ | async"
-        [enableIds]="enableIds$ | async"
-        [colors]="colors$ | async"
-        [settings]="settings"
-        [hooks]="hooks"
-      ></lib-harness-browser3d>
-    </div>
+    }
   </div>
+  <lib-harness-browser3d
+    class="size-full"
+    (initialized)="addAPI($event)"
+    (pickedIds)="pickIds($event)"
+    [addHarnesses]="addHarnesses$ | async"
+    [selectedIds]="selectedIds$ | async"
+    [disableIds]="disableIds$ | async"
+    [enableIds]="enableIds$ | async"
+    [colors]="colors$ | async"
+    [settings]="settings"
+    [hooks]="hooks"
+  ></lib-harness-browser3d>
 </div>
-<div #stats class="stats"></div>
+
+<div #stats class="fixed bottom-0 right-0 w-20 h-12"></div>

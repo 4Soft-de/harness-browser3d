@@ -21,6 +21,8 @@
     "@angular/platform-browser": "20.3.13",
     "@angular/platform-browser-dynamic": "20.3.13",
     "@angular/router": "20.3.13",
+    "@tailwindcss/postcss": "4.1.17",
+    "postcss": "8.5.6",
     "rxjs": "7.8.2",
     "stats.js": "0.17.0",
     "tailwindcss": "4.1.17",
