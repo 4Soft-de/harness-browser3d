@@ -1,8 +1,12 @@
 {
   "workbench.settings.enableNaturalLanguageSearch": false,
+  "workbench.cloudChanges.autoResume": "off",
+  "workbench.cloudChanges.continueOn": "off",
+  "workbench.settings.showAISearchToggle": false,
   "json.schemaDownload.enable": false,
   "typescript.disableAutomaticTypeAcquisition": true,
   "npm.fetchOnlinePackageInfo": false,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "chat.disableAIFeatures": true
 }
