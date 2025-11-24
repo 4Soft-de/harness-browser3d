@@ -22,10 +22,11 @@
     "@angular/platform-browser-dynamic": "20.3.13",
     "@angular/router": "20.3.13",
     "rxjs": "7.8.2",
+    "stats.js": "0.17.0",
+    "tailwindcss": "4.1.17",
     "three": "0.177.0",
     "tslib": "2.8.1",
-    "zone.js": "0.15.1",
-    "stats.js": "0.17.0"
+    "zone.js": "0.15.1"
   },
   "devDependencies": {
     "@angular/build": "20.3.11",
