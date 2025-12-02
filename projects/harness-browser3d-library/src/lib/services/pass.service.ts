@@ -17,9 +17,9 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Pass } from 'three/examples/jsm/postprocessing/Pass';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { BordnetMeshService } from './bordnet-mesh.service';
 import { CameraService } from './camera.service';

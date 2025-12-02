@@ -21,7 +21,7 @@ import { WebGLRenderer } from 'three';
 import {
   EffectComposer,
   Pass,
-} from 'three/examples/jsm/postprocessing/EffectComposer';
+} from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
 

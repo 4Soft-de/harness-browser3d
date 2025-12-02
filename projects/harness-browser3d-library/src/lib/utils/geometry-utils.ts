@@ -20,7 +20,7 @@ import { GeometryModeAPIEnum } from '../../api/structs';
 import { BufferAttribute, BufferGeometry } from 'three';
 import { LoadingService } from '../services/loading.service';
 import { SettingsService } from '../services/settings.service';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 export class GeometryUtils {
   public static applyGeoAttribute(
