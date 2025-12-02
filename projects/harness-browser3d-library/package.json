@@ -12,9 +12,9 @@
   },
   "homepage": "https://github.com/4Soft-de/harness-browser3d#README.md",
   "peerDependencies": {
-    "@angular/common": "17.x",
-    "@angular/core": "17.x",
-    "three": "0.165.x"
+    "@angular/common": "20.x",
+    "@angular/core": "20.x",
+    "three": "0.181.x"
   },
   "dependencies": {
     "tslib": "2.x"
