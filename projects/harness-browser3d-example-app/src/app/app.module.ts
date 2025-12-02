@@ -18,9 +18,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,7 +29,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { HarnessBrowser3dLibraryComponent } from 'harness-browser3d-library';
 
 @NgModule({
@@ -39,9 +40,7 @@ import { HarnessBrowser3dLibraryComponent } from 'harness-browser3d-library';
   imports: [
     HarnessBrowser3dLibraryComponent,
     BrowserModule,
-    BrowserAnimationsModule,
     MatCardModule,
-    FlexLayoutModule,
     MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -53,9 +52,8 @@ import { HarnessBrowser3dLibraryComponent } from 'harness-browser3d-library';
     MatSlideToggleModule,
     MatSelectModule,
     MatCheckboxModule,
-    HttpClientModule,
   ],
-  providers: [],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

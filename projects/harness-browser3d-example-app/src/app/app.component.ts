@@ -22,7 +22,7 @@ import {
   Component,
   ElementRef,
   OnDestroy,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import {
   GeometryModeAPIEnum,
@@ -57,15 +57,13 @@ type HarnessElement = Node | Segment | Occurrence;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
   standalone: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription = new Subscription();
 
-  @ViewChild('stats')
-  private stats!: ElementRef<HTMLDivElement>;
+  private stats = viewChild.required<ElementRef<HTMLDivElement>>('stats');
 
   title = 'harness-browser3d-example-app';
   api?: HarnessBrowser3dLibraryAPI;
@@ -129,7 +127,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     stats.dom.style.position = 'inherit';
     stats.dom.style.removeProperty('top');
     stats.dom.style.removeProperty('left');
-    this.stats.nativeElement.appendChild(stats.dom);
+    this.stats().nativeElement.appendChild(stats.dom);
     stats.showPanel(0);
     this.hooks = {
       animateBegin: () => stats.begin(),
