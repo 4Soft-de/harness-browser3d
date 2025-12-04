@@ -17,8 +17,8 @@
 
 import { Injectable } from '@angular/core';
 import { BufferGeometry, Camera, Mesh, Scene } from 'three';
-import { Pass } from 'three/examples/jsm/postprocessing/Pass';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { dispose } from '../utils/dispose-utils';
 import { GeometryUtils } from '../utils/geometry-utils';
 

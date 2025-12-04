@@ -26,7 +26,7 @@ import {
   Vector4,
   WebGLRenderer,
 } from 'three';
-import { Pass } from 'three/examples/jsm/postprocessing/Pass';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
 import { CameraService } from './camera.service';
 
 class CoordinateSystemPass extends Pass {

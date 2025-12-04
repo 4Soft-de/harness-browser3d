@@ -28,7 +28,7 @@ import { getCtrlPressed, getMousePosition } from '../utils/input-utils';
 import { CameraService } from './camera.service';
 import { SelectionService } from './selection.service';
 import { SettingsService } from './settings.service';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 import { PickingPickerService } from './picking-picker.service';
 
 @Injectable()

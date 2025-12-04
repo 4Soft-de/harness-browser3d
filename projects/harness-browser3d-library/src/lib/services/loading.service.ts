@@ -17,7 +17,7 @@
 
 import { Injectable } from '@angular/core';
 import { BufferGeometry, Mesh, Scene } from 'three';
-import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { Graphic } from '../../api/alias';
 import { GeometryUtils } from '../utils/geometry-utils';
 import { HooksService } from './hooks.service';
