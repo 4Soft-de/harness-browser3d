@@ -16,7 +16,7 @@
 */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { GeometryMaterial } from '../structs/material';
 import { ErrorUtils } from '../utils/error-utils';
 import { CameraService } from './camera.service';
@@ -25,8 +25,8 @@ import { Subscription } from 'rxjs';
 import { SettingsService } from './settings.service';
 import { dispose } from '../utils/dispose-utils';
 import { LightsService } from './lights.service';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { Pass } from 'three/examples/jsm/postprocessing/Pass';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
 
 @Injectable()
 export class SelectionService implements OnDestroy {

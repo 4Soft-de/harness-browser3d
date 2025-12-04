@@ -16,7 +16,7 @@
 */
 
 import { Injectable } from '@angular/core';
-import { NURBSCurve } from 'three/examples/jsm/curves/NURBSCurve';
+import { NURBSCurve } from 'three/examples/jsm/curves/NURBSCurve.js';
 import { CatmullRomCurve3, Curve, CurvePath, Vector3, Vector4 } from 'three';
 import { SettingsService } from './settings.service';
 import { SplineModeAPIEnum } from '../../api/structs';

@@ -35,7 +35,7 @@
     "@angular/cli": "20.3.12",
     "@angular/compiler-cli": "20.3.15",
     "@types/stats.js": "0.17.4",
-    "@types/three": "0.177.0",
+    "@types/three": "0.181.0",
     "ng-packagr": "20.3.2",
     "openapi-typescript": "7.10.1",
     "prettier": "3.6.2",
