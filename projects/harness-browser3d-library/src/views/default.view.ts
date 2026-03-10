@@ -31,8 +31,8 @@ function defaultViewVertexShader(): string {
     `;
 
   const code = `
-      vec3 emptyColor = vec3(0, 0, 0);
-      vColor = pColor == emptyColor ? pDefaultColor : pColor;
+      bool isEmpty = pColor == vec3(0, 0, 0);
+      vColor = isEmpty ? vec4(pDefaultColor, 1.0) : vec4(pColor, 1.0);
       gl_Position =
         pEnabled == 0.0 ||
         pDiffState == ${DiffStateAPIEnum.removed.toFixed(1)} ||

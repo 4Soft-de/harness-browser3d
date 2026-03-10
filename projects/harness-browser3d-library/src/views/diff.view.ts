@@ -80,7 +80,7 @@ function diffViewVertexShader(): string {
       ? ${modifiedOldState.colorString} : noneColor;
     vStateColor = unmodifiedColor + addedColor + removedColor + modifiedNewColor + modifiedOldColor;
     gl_Position =
-      vStateColor == vec4(0, 0, 0, 0) ||
+      vStateColor == noneColor ||
       pEnabled == 0.0
       ? vec4(gl_Position.xyz, 0) : gl_Position;
   `;

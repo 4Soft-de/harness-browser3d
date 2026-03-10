@@ -18,12 +18,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { WebGLRenderer } from 'three';
-import {
-  EffectComposer,
-  Pass,
-} from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
 
 @Injectable()
 export class EffectComposerService implements OnDestroy {
