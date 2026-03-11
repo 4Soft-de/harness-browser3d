@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2025 4Soft GmbH
+  Copyright (C) 2026 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -18,12 +18,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { WebGLRenderer } from 'three';
-import {
-  EffectComposer,
-  Pass,
-} from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { CameraService } from './camera.service';
 import { SettingsService } from './settings.service';
+import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
 
 @Injectable()
 export class EffectComposerService implements OnDestroy {

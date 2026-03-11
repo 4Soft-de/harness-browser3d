@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2025 4Soft GmbH
+  Copyright (C) 2026 4Soft GmbH
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 2.1 of the
@@ -31,8 +31,8 @@ function defaultViewVertexShader(): string {
     `;
 
   const code = `
-      vec3 emptyColor = vec3(0, 0, 0);
-      vColor = pColor == emptyColor ? pDefaultColor : pColor;
+      bool isEmpty = pColor == vec3(0, 0, 0);
+      vColor = isEmpty ? vec4(pDefaultColor, 1.0) : vec4(pColor, 1.0);
       gl_Position =
         pEnabled == 0.0 ||
         pDiffState == ${DiffStateAPIEnum.removed.toFixed(1)} ||
