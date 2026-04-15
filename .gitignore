@@ -4,7 +4,6 @@
 /dist
 /tmp
 /out-tsc
-/projects/harness-browser3d-library/src/scripts/dist
 **/generated
 # Only exists if Bazel was run
 /bazel-out

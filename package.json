@@ -1,24 +1,37 @@
 {
-  "name": "harness-browser3d",
+  "name": "@4soft/harness-browser3d",
   "version": "dev",
+  "license": "LGPL 2.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4Soft-de/harness-browser3d.git"
+  },
+  "author": "Andreas Rimmel",
+  "bugs": {
+    "url": "https://github.com/4Soft-de/harness-browser3d/issues"
+  },
+  "homepage": "https://github.com/4Soft-de/harness-browser3d#README.md",
+  "sideEffects": false,
   "scripts": {
     "ng": "ng",
-    "build:library:dev": "npm run generate:api && ng build harness-browser3d-library --configuration development",
-    "build:library:prod": "npm run generate:api && ng build harness-browser3d-library --configuration production",
-    "watch:library": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch",
-    "generate:api": "npx openapi-typescript projects/harness-browser3d-library/assets/geometry-api.yaml --output projects/harness-browser3d-library/src/generated/geometry.ts"
+    "build:dev": "npm run generate:api && ng build harness-browser3d-library --configuration development",
+    "build:prod": "npm run generate:api && ng build harness-browser3d-library --configuration production",
+    "watch": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch",
+    "generate:api": "npx openapi-typescript assets/geometry-api.yaml --output src/generated/geometry.ts"
+  },
+  "peerDependencies": {
+    "@angular/common": "20.x",
+    "@angular/core": "20.x",
+    "three": "0.183.x"
   },
   "dependencies": {
+    "tslib": "2.x"
+  },
+  "devDependencies": {
     "@angular/common": "20.3.17",
     "@angular/compiler": "20.3.17",
     "@angular/core": "20.3.17",
     "@angular/platform-browser": "20.3.17",
-    "rxjs": "7.8.2",
-    "three": "0.183.2",
-    "tslib": "2.8.1",
-    "zone.js": "0.15.1"
-  },
-  "devDependencies": {
     "@angular/build": "20.3.19",
     "@angular/cli": "20.3.19",
     "@angular/compiler-cli": "20.3.17",
@@ -26,6 +39,9 @@
     "ng-packagr": "20.3.2",
     "openapi-typescript": "7.13.0",
     "prettier": "3.8.1",
-    "typescript": "5.9.3"
+    "rxjs": "7.8.2",
+    "three": "0.183.2",
+    "typescript": "5.9.3",
+    "zone.js": "0.15.1"
   }
 }
