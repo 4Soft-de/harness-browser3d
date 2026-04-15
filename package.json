@@ -20,9 +20,9 @@
     "generate:api": "npx openapi-typescript assets/geometry-api.yaml --output src/generated/geometry.ts"
   },
   "peerDependencies": {
-    "@angular/common": "20.x",
-    "@angular/core": "20.x",
-    "three": "0.183.x"
+    "@angular/core": "^20.0.0",
+    "rxjs": "^7.0.0",
+    "three": ">=0.183.0"
   },
   "dependencies": {
     "tslib": "2.x"
