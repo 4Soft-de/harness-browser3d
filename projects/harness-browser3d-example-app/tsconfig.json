@@ -1,7 +1,0 @@
-/* disables include errors in ide */
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "resolveJsonModule": true
-  }
-}

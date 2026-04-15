@@ -16,12 +16,6 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "harness-browser3d-library": [
-        "dist/harness-browser3d-library/harness-browser3d-library",
-        "./dist/harness-browser3d-library"
-      ]
-    },
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,

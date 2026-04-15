@@ -4,19 +4,25 @@
 
 - `npm clean-install`
 
+## Build Library
+
+### Development
+
+```shell
+npm run build:library:dev
+```
+
+### Production
+
+```shell
+npm run build:library:prod
+```
+
 ## Visual Studio Code
 
 Open in Visual Studio Code and run these tasks:
 
 - `build library`
-- `run example`
-
-## Command Line Alternative
-
-```shell
-npm run build:library:dev
-npm start
-```
 
 # Publishing
 
@@ -40,3 +46,8 @@ npm login
 
 npm publish --access public
 ```
+
+# Example Application
+
+The example application has been moved to a separate repository:
+[harness-browser3d-example](https://github.com/4Soft-de/harness-browser3d-example)

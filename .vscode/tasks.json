@@ -2,12 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "run example",
-      "type": "shell",
-      "command": "npm run start",
-      "problemMatcher": []
-    },
-    {
       "type": "npm",
       "script": "build:library:dev",
       "group": "build",
@@ -32,26 +26,11 @@
       "detail": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch"
     },
     {
-      "label": "build and run",
-      "dependsOrder": "sequence",
-      "dependsOn": ["build and watch library", "run example"],
-      "problemMatcher": []
-    },
-    {
       "type": "npm",
       "script": "generate:api",
       "problemMatcher": [],
       "label": "generate geometry typescript classes",
       "detail": "npx openapi-typescript projects/harness-browser3d-library/assets/geometry-api.yaml --output projects/harness-browser3d-library/src/generated/geometry.ts"
-    }
-  ],
-  "inputs": [
-    {
-      "id": "configuration",
-      "type": "pickString",
-      "description": "build configuration",
-      "options": ["development", "production"],
-      "default": "development"
     }
   ]
 }

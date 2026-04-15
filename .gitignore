@@ -11,8 +11,6 @@
 
 # dependencies
 node_modules/
-harness-browser3d-example-app/node_modules/
-harness-browser3d-library/node_modules/
 
 # profiling files
 chrome-profiler-events*.json
