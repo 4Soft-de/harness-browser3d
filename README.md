@@ -175,8 +175,7 @@ npm clean-install
 ## Build
 
 ```shell
-npm run build:dev    # Development build
-npm run build:prod   # Production build
+npm run build    # build
 npm run watch        # Watch mode
 ```
 
@@ -184,7 +183,7 @@ npm run watch        # Watch mode
 
 1. Update version in `package.json`
 2. Create git tag with version (e.g. `0.3.4`)
-3. Build: `npm run build:prod`
+3. Build: `npm run build`
 4. Publish:
 
 ```shell

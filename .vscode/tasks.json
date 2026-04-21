@@ -3,11 +3,11 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "build:dev",
+      "script": "build",
       "group": "build",
       "problemMatcher": [],
       "label": "build library",
-      "detail": "npm run generate:api && ng build harness-browser3d-library --configuration development"
+      "detail": "npm run generate:api && ng build harness-browser3d-library"
     },
     {
       "type": "npm",
@@ -23,7 +23,7 @@
         }
       },
       "label": "build and watch library",
-      "detail": "npm run generate:api && ng build harness-browser3d-library --configuration development --watch"
+      "detail": "npm run generate:api && ng build harness-browser3d-library --watch"
     },
     {
       "type": "npm",

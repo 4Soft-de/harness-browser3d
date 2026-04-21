@@ -4,7 +4,7 @@
   "workbench.cloudChanges.continueOn": "off",
   "workbench.settings.showAISearchToggle": false,
   "json.schemaDownload.enable": false,
-  "typescript.disableAutomaticTypeAcquisition": true,
+  "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
   "npm.fetchOnlinePackageInfo": false,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
