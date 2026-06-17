@@ -12,25 +12,22 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
+
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "baseUrl": "./",
+
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "harness-browser3d-library": [
-        "dist/harness-browser3d-library/harness-browser3d-library",
-        "./dist/harness-browser3d-library"
-      ]
-    },
     "noFallthroughCasesInSwitch": true,
+
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2022",
-    "module": "es2020",
-    "lib": ["es2018", "dom"]
+
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "DOM"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
