@@ -97,6 +97,17 @@ export class PickingService implements OnDestroy {
     return this.pickedIds$;
   }
 
+  /**
+   * Forgets the given elements, e.g. because they have been disabled: they
+   * leave the selection, and the element under the cursor is determined again
+   * on the next frame so that a stale hover outline disappears.
+   */
+  public deselectElements(ids: string[]): void {
+    ids.forEach((id) => this.pickedIds.delete(id));
+    this.selectionService.deselectElements(ids);
+    this.previousMousePosition = undefined;
+  }
+
   public getPass(): OutlinePass {
     if (!this.outlinePass) {
       this.outlinePass = new OutlinePass(

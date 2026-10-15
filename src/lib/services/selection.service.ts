@@ -32,6 +32,7 @@ import { Pass } from 'three/examples/jsm/postprocessing/Pass.js';
 export class SelectionService implements OnDestroy {
   private scene: Scene = new Scene();
   private selectMesh?: Mesh;
+  private selectedIds = new Set<string>();
   private readonly harnessElementGeos: Map<string, BufferGeometry> = new Map();
   private subscription: Subscription = new Subscription();
 
@@ -75,6 +76,7 @@ export class SelectionService implements OnDestroy {
     zoom: boolean = this.settingsService.zoomSelection,
   ) {
     this.resetMesh();
+    this.selectedIds = new Set(ids);
 
     const selectedObjects: BufferGeometry[] = [];
     ids.forEach((id) => {
@@ -95,7 +97,20 @@ export class SelectionService implements OnDestroy {
     }
   }
 
+  /**
+   * Drops the given elements from the current selection and keeps the others
+   * selected, without moving the camera.
+   */
+  public deselectElements(ids: string[]) {
+    const remainingIds = new Set(this.selectedIds);
+    ids.forEach((id) => remainingIds.delete(id));
+    if (remainingIds.size < this.selectedIds.size) {
+      this.selectElements(remainingIds, false);
+    }
+  }
+
   public resetMesh() {
+    this.selectedIds = new Set();
     if (this.selectMesh) {
       this.scene.remove(this.selectMesh);
       dispose(this.selectMesh);
