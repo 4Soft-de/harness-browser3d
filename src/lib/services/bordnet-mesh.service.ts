@@ -59,6 +59,10 @@ export class BordnetMeshService {
     const mergedHarnessGeo = GeometryUtils.mergeGeos(geos);
     if (this.bordnetMesh) {
       geos.shift();
+      // the merged geometry contains the previous one, which mergeGeos has
+      // already disposed; the material is shared with the current view and
+      // must survive, so the mesh is only taken out of the scene
+      this.scene.remove(this.bordnetMesh);
     }
     this.bordnetMesh = new Mesh(mergedHarnessGeo);
     this.scene.add(this.bordnetMesh);
