@@ -58,11 +58,15 @@ export class PickingPickerService implements OnDestroy {
 
     const declarations = `
       attribute vec3 pIndexColor;
+      attribute float pEnabled;
       varying vec4 vIndexColor;
     `;
 
+    // the views hide disabled elements the same way,
+    // so they must neither be pickable nor hoverable
     const code = `
       vIndexColor = vec4(pIndexColor, 0);
+      gl_Position = pEnabled == 0.0 ? vec4(gl_Position.xyz, 0) : gl_Position;
     `;
 
     let anchor = `#include <common>`;
