@@ -164,10 +164,13 @@ export class HarnessBrowser3dLibraryComponent
 
   @Input()
   set disableIds(ids: string[] | null | undefined) {
-    this.checkInput(
-      this.enableService.disableElements.bind(this.enableService),
-      ids,
-    );
+    this.checkInput(this.disableElements.bind(this), ids);
+  }
+
+  private disableElements(ids: string[]) {
+    this.enableService.disableElements(ids);
+    // a hidden element must neither stay selected nor keep its hover outline
+    this.pickingService.deselectElements(ids);
   }
 
   @Input()
